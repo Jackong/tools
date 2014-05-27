@@ -1,12 +1,15 @@
 {
-    "name": "bae-nodejs",
+    "name": "women",
     "version": "1.0.0",
-    "author": "bae",
-    "description": "The first bae nodejs app!",
+    "author": "jackong",
+    "description": "women",
     "scripts": {
         "start": "node server.js"
     },
     "dependencies": {
+        "express": "3.x",
+        "mocha": "1.x",
+        "should": "3.x"
     }
 }
 
