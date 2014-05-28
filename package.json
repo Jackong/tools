@@ -3,6 +3,7 @@
     "version": "1.0.0",
     "author": "jackong",
     "description": "women",
+    "private": true,
     "scripts": {
         "start": "node server.js"
     },
