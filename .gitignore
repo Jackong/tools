@@ -1,1 +1,5 @@
 .idea
+.baeapp
+node_modules
+bae_app_conf.lua
+local.sh
