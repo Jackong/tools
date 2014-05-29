@@ -1,19 +1,23 @@
 var port = 18080;
 var express = require('express');
+var methodOverride = require('method-override');
+var cookieParser = require('cookie-parser');
+var bodyParser = require('body-parser');
+
 var logger = require('./common/logger');
 
 logger.info('starting app');
 
 var app = express();
-app.use(express.bodyParser());
-app.use(express.methodOverride());
-app.use(express.cookieParser());
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded());
+app.use(cookieParser());
+app.use(methodOverride());
 
+var routers = require('./routes/index');
 
-app.get('/api/', function(req, res){
-    res.send('hello world');
-    logger.info('hello');
-});
+app.use('/api', routers);
+
 
 app.use(function notFoundHandler(req, res, next) {
     logger.error("request not found", {path: req.path, method: req.method, ip:req.ip, userAgent: req.headers['user-agent']});
@@ -22,7 +26,7 @@ app.use(function notFoundHandler(req, res, next) {
 });
 
 app.use(function serverErrorHandler(err, req, res, next) {
-    logger.error("request error", {error: err, path: req.path, method: req.method, ip:req.ip, userAgent: req.headers['user-agent']});
+    logger.error("request error", {error: err.stack, path: req.path, method: req.method, ip:req.ip, userAgent: req.headers['user-agent']});
     if (!err.status) {
         res.status(500);
         res.end('server error');
