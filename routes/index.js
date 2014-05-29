@@ -1,7 +1,7 @@
 var express = require('express');
 var router = express.Router();
 
-require('./before')(router);
+require('./around')(router);
 require('./users')(router);
 
 module.exports = router;
