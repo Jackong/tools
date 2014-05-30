@@ -12,7 +12,6 @@
     	"cookie-parser": "~1.0.1",
     	"body-parser": "~1.0.0",
 	"method-override": "~1.0.2",
-        "mocha": "~1.20.0",
         "should": "~3.3.2",
         "winston": "~0.7.3"
     }
