@@ -17,7 +17,6 @@ describe('authService', function(){
 
     beforeEach(function () {
         Auth.remove({account: notExistAccount}).exec();
-        Auth.remove({account: existAccount}).exec();
         Auth.create({account: existAccount, password: password, time: date});
     });
 
@@ -85,4 +84,7 @@ describe('authService', function(){
         })
     });
 
+    afterEach(function () {
+        Auth.remove({account: existAccount}).exec();
+    });
 });
