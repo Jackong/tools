@@ -13,14 +13,14 @@ var options = {
     pass: config.password
 };
 
-db.open(config.host, config.name, config.port, options);
+db.on('close', function () {
+    logger.info("mongodb: connect close retry connect");
+    db.open(config.host, config.name, config.port, options);
+});
 
 db.on('error', function (err) {
     logger.error('mongodb: connect error', err);
     db.close();
 });
 
-db.on('close', function () {
-    logger.info("mongodb: connect close retry connect");
-    db.open(config.host, config.name, config.port, options);
-});
+db.open(config.host, config.name, config.port, options);

@@ -17,9 +17,5 @@ module.exports = {
     },
     get: function (account, cb) {
         Auth.findOne({account: account}, cb);
-    },
-    test: function (account, password, cb) {
-        var auth = new Auth({ account: account, password: password, time: new Date()});
-        auth.save(cb);
     }
 };

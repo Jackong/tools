@@ -6,7 +6,8 @@ var auth = require('../services/auth');
 
 module.exports = function (router) {
     router.post('/account', function (req, res) {
-        var ok = auth.save(req.body.account, req.body.password);
-        res.send({ok: ok});
+        auth.create(req.body.account, req.body.password, function (err) {
+            res.send({ok: null === err});
+        });
     });
 };

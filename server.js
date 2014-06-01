@@ -5,6 +5,7 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 
 var logger = require('./common/logger');
+require('./common/mongo');
 
 logger.info('starting app');
 
