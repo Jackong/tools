@@ -2,11 +2,11 @@
  * Created by daisy on 14-5-30.
  */
 
-var account = require('../services/account');
+var auth = require('../services/auth');
 
 module.exports = function (router) {
     router.post('/account', function (req, res) {
-        var ok = account.save(req.body.account, req.body.password);
+        var ok = auth.save(req.body.account, req.body.password);
         res.send({ok: ok});
     });
 };

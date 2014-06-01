@@ -2,58 +2,87 @@
  * Created by daisy on 14-5-30.
  */
 
+require('../../common/mongo');
 require("should");
 
-var account = require('../../services/account');
+var authService = require('../../services/auth');
+var Auth = require('../../model/Auth');
+var date = require('../../common/util').date();
 
-describe('account', function(){
+describe('authService', function(){
+    var existAccount = 'exists@account.com';
+    var notExistAccount = 'not-exists@account.com';
+    var password = 'password';
+    var newPassword = 'newPassword';
+
     beforeEach(function () {
-        //todo delete 'not-exists@account.com' from db
-        //todo save 'exists@account.com', 'password' into db
+        Auth.remove({account: notExistAccount}).exec();
+        Auth.remove({account: existAccount}).exec();
+        Auth.create({account: existAccount, password: password, time: date});
     });
 
-    describe('.save()', function(){
-
-        it('should return true when the account is not exists', function(){
-            account.save('not-exists@account.com', 'password').should.be.true;
+    describe('.create()', function(){
+        it('should be successful when the account is not exists', function(done){
+            authService.create(notExistAccount, password, function (err) {
+                (err === null).should.be.true;
+                done();
+            });
         });
 
-        it('should return false when the account is exists', function () {
-            account.save('exists@account.com', 'password').should.be.false;
+        it('should be fail when the account is exists', function (done) {
+            authService.create(existAccount, password, function (err) {
+                (null === err).should.be.false;
+                done();
+            });
         });
     });
-    
+
     describe('.del()', function () {
-        it('should return true when the account is exists', function () {
-            account.del('exists@account.com').should.be.true;
+        it('should be successful when the account is exists', function (done) {
+            authService.del(existAccount, function (err, numberAffected) {
+                numberAffected.should.be.equal(1);
+                done();
+            });
         });
-        it('should return false when the account is not exists', function () {
-            account.del('not-exists@account.com').should.be.false;
+        it('should be fail when the account is not exists', function (done) {
+            authService.del(notExistAccount, function (err, numberAffected) {
+                numberAffected.should.be.equal(0);
+                done();
+            });
         });
     });
 
     describe('.updatePassword()', function () {
-        it('should return false when the account is not exists', function () {
-            account.updatePassword('not-exists@account.com', 'new-password').should.be.false;
+        it('should be fail when the account is not exists', function (done) {
+            authService.updatePassword(notExistAccount, newPassword, function (err, numberAffected) {
+                numberAffected.should.be.equal(0);
+                done();
+            });
         });
-        it('should return true when the account is exists', function () {
-            account.updatePassword('exists@account.com', 'new-password').should.be.true;
+        it('should be successful when the account is exists', function (done) {
+            authService.updatePassword(existAccount, newPassword, function (err, numberAffected) {
+                numberAffected.should.be.equal(1);
+                done();
+            });
         });
     });
 
     describe('.get()', function () {
-        it('should return null when the account is not exists', function () {
-            (account.get('not-exists@account.com') === null).should.be.true;
+        it('should be null when the account is not exists', function (done) {
+            authService.get(notExistAccount, function (err, auth) {
+                (auth === null).should.be.true;
+                done();
+            });
         });
-        it('should not return null when the account is exists', function () {
-            var obj = account.get('exists@account.com');
-            (obj === null).should.be.false;
-            obj.should.be.an.object;
-            obj.password.should.be.equal('password');
+        it('should be not null when the account is exists', function (done) {
+            authService.get(existAccount, function (err, obj) {
+                (obj === null).should.be.false;
+                obj.should.be.an.object;
+                obj.password.should.be.equal(password);
+                done();
+            });
+
         })
     });
-    afterEach(function () {
-        //todo delete 'not-exists@account.com' from db
-        //todo delete 'exists@account.com', 'password' into db
-    });
+
 });

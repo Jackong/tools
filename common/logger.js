@@ -1,5 +1,5 @@
 var winston = require('winston');
-var config = require('../config/logger.json');
+var config = require('./config')('logger');
 
 module.exports = new (winston.Logger)({
   transports: [

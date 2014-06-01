@@ -1,4 +1,10 @@
 {
-    "level": "debug",
-    "file": "/home/bae/log/user.log"
+    "dev": {
+        "level": "debug",
+        "file": "/home/bae/log/user.log"
+    },
+    "prod": {
+        "level": "error",
+        "file": "/home/bae/log/user.log"
+    }
 }
