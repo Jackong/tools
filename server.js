@@ -22,15 +22,15 @@ app.use('/api', routers);
 
 app.use(function notFoundHandler(req, res, next) {
     logger.error("request not found", {path: req.path, method: req.method, ip:req.ip, userAgent: req.headers['user-agent']});
-    res.status(404);
-    res.end(req.path + ' not found');
+    res.send(404, req.path + ' not found');
 });
 
 app.use(function serverErrorHandler(err, req, res, next) {
     logger.error("request error", {error: err.stack, path: req.path, method: req.method, ip:req.ip, userAgent: req.headers['user-agent']});
-    if (!err.status) {
-        res.status(500);
-        res.end('server error');
+    if (err.status) {
+        res.send(err.status, err.message);
+    } else {
+        res.send(500, 'server error');
     }
 });
 

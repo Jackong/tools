@@ -3,11 +3,14 @@
  */
 
 var auth = require('../services/auth');
+var logger = require('../common/logger');
 
 module.exports = function (router) {
-    router.post('/account', function (req, res) {
-        auth.create(req.body.account, req.body.password, function (err) {
-            res.send({ok: null === err});
+    router.route('/account')
+        .post(router.checker.body('account', 'password'))
+        .post(function (req, res) {
+            auth.create(req.body.account, req.body.password, function (err) {
+                res.send({ok: null === err});
+            });
         });
-    });
 };
