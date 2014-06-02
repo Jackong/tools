@@ -10,8 +10,13 @@ var wrap = function (res) {
         FAILURE: 1
     };
 
-    res.ok = function () {
-        this.return(this.CODE.OK);
+    res.ok = function (data) {
+        this.return(this.CODE.OK, undefined, data);
+    };
+
+    res.fail = function (req) {
+        logger.error('route failure', {path: req.path, method: req.method, ip:req.ip, userAgent: req.headers['user-agent']});
+        this.return(this.CODE.FAILURE);
     };
 
     res.error = function (err, req) {
@@ -22,8 +27,8 @@ var wrap = function (res) {
         this.return(isOk ? this.CODE.OK : this.CODE.FAILURE);
     };
 
-    res.return = function (code, msg) {
-        this.send({code: code, msg: msg});
+    res.return = function (code, msg, data) {
+        this.send({code: code, msg: msg, data: data});
     };
 };
 wrap(express.response);
