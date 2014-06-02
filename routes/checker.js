@@ -11,12 +11,10 @@ var map = {
 var check = function (req, res, next, from, name, defaultValue) {
     var value = req[from][name];
     if (map[name].exec(String(value))) {
-        next();
         return true;
     }
     if (defaultValue) {
         req[from][name] = defaultValue;
-        next();
         return true;
     }
     var msg = 'invalid param for ' + name;
@@ -46,6 +44,7 @@ var checker = function (from) {
                     }
                 }
             }
+            next();
         };
     };
 };
