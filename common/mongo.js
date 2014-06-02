@@ -14,12 +14,12 @@ var options = {
 };
 
 db.on('close', function () {
-    logger.info("mongodb: connect close retry connect");
+    logger.warn("mongodb: connect close retry connect");
     db.open(config.host, config.name, config.port, options);
 });
 
 db.on('error', function (err) {
-    logger.error('mongodb: connect error', err);
+    logger.error('mongodb error:', err.stack);
     db.close();
 });
 
