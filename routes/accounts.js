@@ -51,16 +51,23 @@ module.exports = function (router) {
     router.route('/accounts/forgot/:account')
         .get(router.checker.params('account'))
         .get(function forget(req, res) {
-            //todo: 生成一个会过期的重置页面链接发到邮箱
+            var sign = auth.forgot(req.params.account);
+            var url = req.protocol + '://' + req.host
+                + '/account/reset/' + req.params.account + '?sign=' + sign;
+            res.ok({url: url});
         });
 
     router.route('/accounts/reset/:account')
         .put(router.checker.params('account'))
         .put(router.checker.body('password'))
+        .put(router.checker.body('sign'))
         .put(function reset(req, res) {
             //todo: 检测签名及是否过期
             //todo: 重置密码
             //todo: 使链接过期
+            auth.reset(req.params.account, req.body.sign, req.body.password, function (err) {
+                
+            })
         })
 
 };

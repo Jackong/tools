@@ -14,6 +14,14 @@ describe('redis', function () {
             done();
         });
     });
+    it('should be has ttl after setting expire', function (done) {
+        redis.setex('exp_test', 100, 'value', function (err, result) {
+            (null === err).should.be.true;
+            result.should.be.equal('OK');
+            done();
+        });
+
+    });
     afterEach(function () {
         redis.del('jack');
     })
