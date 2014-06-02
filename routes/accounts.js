@@ -16,10 +16,19 @@ module.exports = function (router) {
 
     router.route('/accounts/:account')
         .put(router.checker.params('account'))
+        .put(router.checker.body('oldPassword'))
         .put(router.checker.body('password'))
         .put(function updatePassword(req, res) {
-            auth.updatePassword(req.params.account, req.body.password, function (err) {
-                res.error(err, req);
+            auth.get(req.params.account, function (err, account) {
+                if (null  === account) {
+                    return res.fail(req);
+                }
+                if (req.body.oldPassword !== account.password) {
+                    return res.fail(req);
+                }
+                auth.updatePassword(req.params.account, req.body.password, function (err) {
+                    res.error(err, req);
+                });
             });
         });
 
@@ -38,4 +47,20 @@ module.exports = function (router) {
                 return res.ok();
             });
         });
+
+    router.route('/accounts/forgot/:account')
+        .get(router.checker.params('account'))
+        .get(function forget(req, res) {
+            //todo: 生成一个会过期的重置页面链接发到邮箱
+        });
+
+    router.route('/accounts/reset/:account')
+        .put(router.checker.params('account'))
+        .put(router.checker.body('password'))
+        .put(function reset(req, res) {
+            //todo: 检测签名及是否过期
+            //todo: 重置密码
+            //todo: 使链接过期
+        })
+
 };
