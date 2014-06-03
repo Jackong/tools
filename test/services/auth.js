@@ -16,7 +16,7 @@ var notExistAccount = 'not-exists@account.com';
 var password = 'password';
 var newPassword = 'newPassword';
 
-describe('auth', function(){
+describe('auth', function () {
 
 
     beforeEach(function () {
@@ -24,8 +24,8 @@ describe('auth', function(){
         Auth.create({account: existAccount, password: password, time: util.date()});
     });
 
-    describe('.create()', function(){
-        it('should be successful when the account is not exists', function(done){
+    describe('.create()', function () {
+        it('should be successful when the account is not exists', function (done) {
             authService.create(notExistAccount, password, function (err) {
                 (err === null).should.be.true;
                 done();
@@ -88,21 +88,25 @@ describe('auth', function(){
         })
     });
 
-    describe('.reset', function () {
-        it('should be fail when sign is not match', function (done) {
-            authService.forgot(existAccount);
-            authService.reset(existAccount, util.md5(notExistAccount, system.salt), password, function (ok, msg) {
-                ok.should.be.false;
-                done();
-            });
+    describe('.reset()', function () {
+        it('should be return false when sign is not match', function () {
+            authService.reset(existAccount, util.encrypt(JSON.stringify({account: notExistAccount, expiration: util.time() + 30 * 60}))).should.be.false;
         });
 
-        it('should be fail when sign is expired', function (done) {
-            redis.del(redis.PREFIX.ACCOUNT_FORGOT + existAccount);
-            authService.reset(existAccount, util.md5(existAccount, system.salt), password, function (ok, msg) {
-                ok.should.be.false;
-                done();
-            });
+        it('should be return false when sign is expired', function () {
+            authService.reset(existAccount, util.encrypt(JSON.stringify({account: existAccount, expiration: util.time() - 1}))).should.be.false;
+        });
+
+        it('should be return true when sign is match and not expired', function () {
+            authService.reset(existAccount, util.encrypt(JSON.stringify({account: existAccount, expiration: util.time() + 1}))).should.be.true;
+        });
+
+        it('should be return false when sign is can not decode', function () {
+            authService.reset(existAccount, util.encrypt('aha')).should.be.false;
+        });
+
+        it('should be return false when sign is null', function () {
+            authService.reset(existAccount, null).should.be.false;
         });
     });
 

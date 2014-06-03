@@ -20,32 +20,18 @@ module.exports = {
     get: function (account, cb) {
         Auth.findOne({account: account}, cb);
     },
-    forgot: function (account, cb) {
-        var sign = util.md5(account, system.salt);
-        redis.setex(redis.PREFIX.ACCOUNT_FORGOT + account, 30 * 60, sign, function (err, result) {
-        });
-        return sign;
+    forgot: function (account) {
+        return util.encrypt(JSON.stringify({account: account, expiration: util.time() + 30 * 60}));
     },
-    reset: function (account, sign, password, cb) {
-        var okSign = util.md5(account, system.salt);
-        if (sign !== okSign) {
-            return cb(false,  account + ': invalid sign');
+    reset: function (account, sign) {
+        try {
+            var data = JSON.parse(util.decrypt(sign));
+            if (null === data || data.account !== account || data.expiration <= util.time()) {
+                return false;
+            }
+        } catch (e) {
+            return false;
         }
-        var _self = this;
-        redis.get(redis.PREFIX.ACCOUNT_FORGOT + account, function (err, result) {
-            if (null !== err) {
-                return cb(false, account + ': can not get sign');
-            }
-            if (null === result) {
-                return cb(false, account + ': sign is expired')
-            }
-            _self.updatePassword(account, password, function (err, numberAffected) {
-                if (null === err && numberAffected === 1) {
-                    redis.del(redis.PREFIX.ACCOUNT_FORGOT + account);
-                    return cb(true);
-                }
-                return cb(false, account + ': reset password fail, error: ' + err.message);
-            });
-        });
+        return true;
     }
 };

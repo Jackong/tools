@@ -28,8 +28,8 @@ module.exports = function (router) {
                 if (req.body.oldPassword !== account.password) {
                     return res.fail(req);
                 }
-                auth.updatePassword(req.params.account, req.body.password, function (err) {
-                    res.error(err, req);
+                auth.updatePassword(req.params.account, req.body.password, function (err, num) {
+                    null === err && num === 1 ? res.ok() : res.fail(req);
                 });
             });
         });
@@ -70,9 +70,13 @@ module.exports = function (router) {
         .put(router.checker.body('password'))
         .put(router.checker.body('sign'))
         .put(function reset(req, res) {
-            auth.reset(req.params.account, req.body.sign, req.body.password, function (ok, msg) {
-                ok ? res.ok() : res.fail(req, msg);
-            })
+            var canReset = auth.reset(req.params.account, req.body.sign);
+            if (!canReset) {
+                return res.fail(req);
+            }
+            auth.updatePassword(req.params.account, req.body.password, function (err, num) {
+                null === err && num === 1 ? res.ok() : res.fail(req);
+            });
         })
 
 };

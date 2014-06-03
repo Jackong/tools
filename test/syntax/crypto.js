@@ -3,19 +3,14 @@
  */
 
 require('should');
-var crypto = require('crypto');
-var system = require('../../common/config')('system');
+var util = require('../../common/util');
 
 describe('crypto', function () {
-    describe('#aes', function () {
+    describe('.encrypt() & .decrypt()', function () {
         it('should be equal after cipher and decipher', function () {
-            var cipher = crypto.createCipher('aes-256-cbc', system.salt);
             var enc = JSON.stringify({a: 'b'});
-            var crypted = cipher.update(enc,'utf8','hex');
-            crypted += cipher.final('hex');
-            var decipher = crypto.createDecipher('aes-256-cbc', system.salt);
-            var dec = decipher.update(crypted,'hex','utf8');
-            dec += decipher.final('utf8');
+            var crypted = util.encrypt(enc);
+            var dec = util.decrypt(crypted);
             dec.should.be.equal(enc);
         });
     });
