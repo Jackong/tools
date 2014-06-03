@@ -7,6 +7,7 @@ var util = require('../common/util');
 var system = require('../common/config')('system');
 
 module.exports = {
+    TOKEN: 'token',
     create: function (account, password, cb) {
         var auth = new Auth({ account: account, password: password, time: util.date()});
         auth.save(cb);
@@ -33,5 +34,11 @@ module.exports = {
             return false;
         }
         return true;
+    },
+    login: function (account, req, res) {
+        res.cookie(this.TOKEN, account, { signed: true, httpOnly: true, maxAge: 86400 * 15, path: '/' })
+    },
+    getAccount: function (req, res) {
+        return req.signedCookies.token;
     }
 };

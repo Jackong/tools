@@ -12,23 +12,30 @@ module.exports = function (router) {
         .post(router.checker.body('account', 'password'))
         .post(function register(req, res) {
             auth.create(req.body.account, req.body.password, function (err) {
-                res.error(err, req);
+                if (null !== err) {
+                    return res.fail(req);
+                }
+                auth.login(req.body.account, req, res);
+                res.ok();
             });
         });
 
-    router.route('/accounts/:account')
-        .put(router.checker.params('account'))
+    router.route('/accounts')
         .put(router.checker.body('oldPassword'))
         .put(router.checker.body('password'))
         .put(function updatePassword(req, res) {
-            auth.get(req.params.account, function (err, account) {
-                if (null  === account) {
+            var account = auth.getAccount(req, res);
+            if (!account) {
+                return res.fail(req);
+            }
+            auth.get(account, function (err, accountDoc) {
+                if (null  === accountDoc) {
                     return res.fail(req);
                 }
-                if (req.body.oldPassword !== account.password) {
+                if (req.body.oldPassword !== accountDoc.password) {
                     return res.fail(req);
                 }
-                auth.updatePassword(req.params.account, req.body.password, function (err, num) {
+                auth.updatePassword(account, req.body.password, function (err, num) {
                     null === err && num === 1 ? res.ok() : res.fail(req);
                 });
             });
@@ -46,6 +53,7 @@ module.exports = function (router) {
                 if (req.query.password !== account.password) {
                     return res.fail(req);
                 }
+                auth.login(req.params.account, req, res);
                 return res.ok();
             });
         });

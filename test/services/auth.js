@@ -110,6 +110,43 @@ describe('auth', function () {
         });
     });
 
+    describe('.login()', function () {
+        it('should set the account as token on cookie', function (done) {
+            var req = {};
+            var res = {
+                cookie: function (token, value, options) {
+                    token.should.be.equal(authService.TOKEN);
+                    value.should.be.equal(existAccount);
+                    options.should.be.eql({ signed: true, httpOnly: true, maxAge: 86400 * 15, path: '/' });
+                    done();
+                }
+            };
+            authService.login(existAccount, req, res);
+        });
+    });
+
+    describe('.getAccount()', function () {
+        it('should be get account when signed-cookie is valid', function () {
+            var req = {
+                signedCookies: {
+                    token: existAccount
+                }
+            };
+            var res = {};
+            authService.getAccount(req, res).should.be.equal(existAccount);
+        });
+
+        it('should get null when signed-cookie is null', function () {
+            var req = {
+                signedCookies: {
+                    token: null
+                }
+            };
+            var res = {};
+            (null === authService.getAccount(req, res)).should.be.true;
+        });
+    });
+
     afterEach(function () {
         Auth.remove({account: existAccount}).exec();
     });
