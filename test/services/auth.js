@@ -9,7 +9,7 @@ var authService = require('../../services/auth');
 var Auth = require('../../model/Auth');
 var date = require('../../common/util').date();
 
-describe('authService', function(){
+describe('auth', function(){
     var existAccount = 'exists@account.com';
     var notExistAccount = 'not-exists@account.com';
     var password = 'password';

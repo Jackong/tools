@@ -27,6 +27,25 @@ module.exports = {
         return sign;
     },
     reset: function (account, sign, password, cb) {
-
+        var okSign = util.md5(account, system.salt);
+        if (sign !== okSign) {
+            return cb(false,  account + ': invalid sign');
+        }
+        var _self = this;
+        redis.get(redis.PREFIX.ACCOUNT_FORGOT + account, function (err, result) {
+            if (null !== err) {
+                return cb(false, account + ': can not get sign');
+            }
+            if (null === result) {
+                return cb(false, account + ': sign is expired')
+            }
+            _self.updatePassword(account, password, function (err) {
+                if (null === err) {
+                    redis.del(redis.PREFIX.ACCOUNT_FORGOT + account);
+                    return cb(true);
+                }
+                return cb(false, account + ': reset password fail, error: ' + err.message);
+            });
+        });
     }
 };

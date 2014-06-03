@@ -4,6 +4,8 @@
 
 var auth = require('../services/auth');
 var logger = require('../common/logger');
+var message = require('bae-message');
+var msgConfig = require('../common/config')('message');
 
 module.exports = function (router) {
     router.route('/accounts')
@@ -54,7 +56,13 @@ module.exports = function (router) {
             var sign = auth.forgot(req.params.account);
             var url = req.protocol + '://' + req.host
                 + '/account/reset/' + req.params.account + '?sign=' + sign;
-            res.ok({url: url});
+            var bae = new message({
+                key : msgConfig.key,
+                secret : msgConfig.secret,
+                queue: msgConfig.queue
+            });
+            bae.mail('no-reply', req.params.account, '密码找回【iWomen】', '<!--HTML--><a href="' + url + '">点击找回密码（请匆回复）</a>');
+            res.ok();
         });
 
     router.route('/accounts/reset/:account')
@@ -62,11 +70,8 @@ module.exports = function (router) {
         .put(router.checker.body('password'))
         .put(router.checker.body('sign'))
         .put(function reset(req, res) {
-            //todo: 检测签名及是否过期
-            //todo: 重置密码
-            //todo: 使链接过期
-            auth.reset(req.params.account, req.body.sign, req.body.password, function (err) {
-                
+            auth.reset(req.params.account, req.body.sign, req.body.password, function (ok, msg) {
+                ok ? res.ok() : res.fail(req, msg);
             })
         })
 
