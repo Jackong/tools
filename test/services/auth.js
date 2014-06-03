@@ -7,17 +7,21 @@ require("should");
 
 var authService = require('../../services/auth');
 var Auth = require('../../model/Auth');
-var date = require('../../common/util').date();
+var util = require('../../common/util');
+var system = require('../../common/config')('system');
+var redis = require('../../common/redis');
+
+var existAccount = 'exists@account.com';
+var notExistAccount = 'not-exists@account.com';
+var password = 'password';
+var newPassword = 'newPassword';
 
 describe('auth', function(){
-    var existAccount = 'exists@account.com';
-    var notExistAccount = 'not-exists@account.com';
-    var password = 'password';
-    var newPassword = 'newPassword';
+
 
     beforeEach(function () {
         Auth.remove({account: notExistAccount}).exec();
-        Auth.create({account: existAccount, password: password, time: date});
+        Auth.create({account: existAccount, password: password, time: util.date()});
     });
 
     describe('.create()', function(){
@@ -82,6 +86,24 @@ describe('auth', function(){
             });
 
         })
+    });
+
+    describe('.reset', function () {
+        it('should be fail when sign is not match', function (done) {
+            authService.forgot(existAccount);
+            authService.reset(existAccount, util.md5(notExistAccount, system.salt), password, function (ok, msg) {
+                ok.should.be.false;
+                done();
+            });
+        });
+
+        it('should be fail when sign is expired', function (done) {
+            redis.del(redis.PREFIX.ACCOUNT_FORGOT + existAccount);
+            authService.reset(existAccount, util.md5(existAccount, system.salt), password, function (ok, msg) {
+                ok.should.be.false;
+                done();
+            });
+        });
     });
 
     afterEach(function () {

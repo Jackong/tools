@@ -20,7 +20,7 @@ module.exports = {
     get: function (account, cb) {
         Auth.findOne({account: account}, cb);
     },
-    forgot: function (account) {
+    forgot: function (account, cb) {
         var sign = util.md5(account, system.salt);
         redis.setex(redis.PREFIX.ACCOUNT_FORGOT + account, 30 * 60, sign, function (err, result) {
         });
@@ -39,8 +39,8 @@ module.exports = {
             if (null === result) {
                 return cb(false, account + ': sign is expired')
             }
-            _self.updatePassword(account, password, function (err) {
-                if (null === err) {
+            _self.updatePassword(account, password, function (err, numberAffected) {
+                if (null === err && numberAffected === 1) {
                     redis.del(redis.PREFIX.ACCOUNT_FORGOT + account);
                     return cb(true);
                 }
