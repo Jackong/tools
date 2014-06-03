@@ -20,10 +20,10 @@ module.exports = {
     get: function (account, cb) {
         Auth.findOne({account: account}, cb);
     },
-    forgot: function (account) {
+    forgotSign: function (account) {
         return util.encrypt(JSON.stringify({account: account, expiration: util.time() + 30 * 60}));
     },
-    reset: function (account, sign) {
+    canReset: function (account, sign) {
         try {
             var data = JSON.parse(util.decrypt(sign));
             if (null === data || data.account !== account || data.expiration <= util.time()) {

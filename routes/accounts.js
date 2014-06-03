@@ -50,12 +50,12 @@ module.exports = function (router) {
             });
         });
 
-    router.route('/accounts/forgot/:account')
+    router.route('/accounts/forgotSign/:account')
         .get(router.checker.params('account'))
         .get(function forget(req, res) {
-            var sign = auth.forgot(req.params.account);
+            var sign = auth.forgotSign(req.params.account);
             var url = req.protocol + '://' + req.host
-                + '/account/reset/' + req.params.account + '?sign=' + sign;
+                + '/account/canReset/' + req.params.account + '?sign=' + sign;
             var bae = new message({
                 key : msgConfig.key,
                 secret : msgConfig.secret,
@@ -65,12 +65,12 @@ module.exports = function (router) {
             res.ok();
         });
 
-    router.route('/accounts/reset/:account')
+    router.route('/accounts/canReset/:account')
         .put(router.checker.params('account'))
         .put(router.checker.body('password'))
         .put(router.checker.body('sign'))
         .put(function reset(req, res) {
-            var canReset = auth.reset(req.params.account, req.body.sign);
+            var canReset = auth.canReset(req.params.account, req.body.sign);
             if (!canReset) {
                 return res.fail(req);
             }

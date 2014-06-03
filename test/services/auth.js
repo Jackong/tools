@@ -88,25 +88,25 @@ describe('auth', function () {
         })
     });
 
-    describe('.reset()', function () {
+    describe('.canReset()', function () {
         it('should be return false when sign is not match', function () {
-            authService.reset(existAccount, util.encrypt(JSON.stringify({account: notExistAccount, expiration: util.time() + 30 * 60}))).should.be.false;
+            authService.canReset(existAccount, util.encrypt(JSON.stringify({account: notExistAccount, expiration: util.time() + 30 * 60}))).should.be.false;
         });
 
         it('should be return false when sign is expired', function () {
-            authService.reset(existAccount, util.encrypt(JSON.stringify({account: existAccount, expiration: util.time() - 1}))).should.be.false;
+            authService.canReset(existAccount, util.encrypt(JSON.stringify({account: existAccount, expiration: util.time() - 1}))).should.be.false;
         });
 
         it('should be return true when sign is match and not expired', function () {
-            authService.reset(existAccount, util.encrypt(JSON.stringify({account: existAccount, expiration: util.time() + 1}))).should.be.true;
+            authService.canReset(existAccount, util.encrypt(JSON.stringify({account: existAccount, expiration: util.time() + 1}))).should.be.true;
         });
 
         it('should be return false when sign is can not decode', function () {
-            authService.reset(existAccount, util.encrypt('aha')).should.be.false;
+            authService.canReset(existAccount, util.encrypt('aha')).should.be.false;
         });
 
         it('should be return false when sign is null', function () {
-            authService.reset(existAccount, null).should.be.false;
+            authService.canReset(existAccount, null).should.be.false;
         });
     });
 

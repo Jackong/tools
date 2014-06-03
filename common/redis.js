@@ -22,5 +22,4 @@ if (config.username && config.password && config.name) {
 }
 
 client.PREFIX = {
-    ACCOUNT_FORGOT: 'account:forgot:'
 };
