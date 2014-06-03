@@ -10,22 +10,21 @@
     <title>众里寻她</title>
 
     <!-- Bootstrap core CSS -->
-    <link href="css/bootstrap.css" rel="stylesheet">
+    <link href="http://cdn.bootcss.com/twitter-bootstrap/3.0.3/css/bootstrap.min.css" rel="stylesheet">
 
     <!-- Custom CSS for the 'Round About' Template -->
     <link href="css/index.css" rel="stylesheet">
 </head>
 
 <body>
-        <div class="col-xs-12 navbar-default navbar-fixed-top">
-            <div class="row iNav">
-                <div class="col-xs-4 text-left"><a href="#" style="color: #f489a5;"><li class="glyphicon glyphicon-home"></li></a></div>
-                <div class="col-xs-4 text-center"><a href="#" style="color: #f489a5;"><li class="glyphicon glyphicon-heart-empty"></li></a></div>
-                <div class="col-xs-4 text-right"><a href="#" style="color: #f489a5;"><li class="glyphicon glyphicon-picture"></li></a></div>
-            </div>
-        </div>
 
-    <hr/>
+    <div class="col-xs-12 navbar-default navbar-fixed-top">
+        <div class="row iNav">
+            <div class="col-xs-4 text-center"><a href="#" class="iMenu"><li class="glyphicon glyphicon-home"></li></a></div>
+            <div class="col-xs-4 text-center"><a href="#" class="iMenu"><li class="glyphicon glyphicon-signal"></li></a></div>
+            <div class="col-xs-4 text-center"><a href="#" class="iMenu"><li class="glyphicon glyphicon-picture"></li></a></div>
+        </div>
+    </div>
 
     <div class="container">
 
@@ -34,7 +33,7 @@
                 <div class="thumbnail">
                     <img src="http://placehold.it/300x200" alt="...">
                     <div class="caption">
-                        <h3 style="color: #f489a5;">哪能买到这双鞋子</h3>
+                        <h4 style="color: #f489a5;">哪能买到这双鞋子</h4>
                         <p>
                             <span class="label label-default" style="background-color: #f48fbe;">鞋子</span>
                             <span class="label label-default" style="background-color: #f48fbe;">粉色</span>
@@ -51,7 +50,7 @@
                 <div class="thumbnail">
                     <img src="http://placehold.it/300x200" alt="...">
                     <div class="caption">
-                        <h3 style="color: #f489a5;">哪能买到这双鞋子</h3>
+                        <h4 style="color: #f489a5;">哪能买到这双鞋子</h4>
                         <p>
                             <span class="label label-default" style="background-color: #f48fbe;">鞋子</span>
                             <span class="label label-default" style="background-color: #f48fbe;">粉色</span>
@@ -68,7 +67,7 @@
                 <div class="thumbnail">
                     <img src="http://placehold.it/300x200" alt="...">
                     <div class="caption">
-                        <h3 style="color: #f489a5;">哪能买到这双鞋子</h3>
+                        <h4 style="color: #f489a5;">哪能买到这双鞋子</h4>
                         <p>
                             <span class="label label-default" style="background-color: #f48fbe;">鞋子</span>
                             <span class="label label-default" style="background-color: #f48fbe;">粉色</span>
@@ -85,7 +84,7 @@
                 <div class="thumbnail">
                     <img src="http://placehold.it/300x200" alt="...">
                     <div class="caption">
-                        <h3 style="color: #f489a5;">哪能买到这双鞋子</h3>
+                        <h4 style="color: #f489a5;">哪能买到这双鞋子</h4>
                         <p>
                             <span class="label label-default" style="background-color: #f48fbe;">鞋子</span>
                             <span class="label label-default" style="background-color: #f48fbe;">粉色</span>
@@ -102,7 +101,7 @@
                 <div class="thumbnail">
                     <img src="http://placehold.it/300x200" alt="...">
                     <div class="caption">
-                        <h3 style="color: #f489a5;">哪能买到这双鞋子</h3>
+                        <h4 style="color: #f489a5;">哪能买到这双鞋子</h4>
                         <p>
                             <span class="label label-default" style="background-color: #f48fbe;">鞋子</span>
                             <span class="label label-default" style="background-color: #f48fbe;">粉色</span>
@@ -119,7 +118,7 @@
                 <div class="thumbnail">
                     <img src="http://placehold.it/300x200" alt="...">
                     <div class="caption">
-                        <h3 style="color: #f489a5;">哪能买到这双鞋子</h3>
+                        <h4 style="color: #f489a5;">哪能买到这双鞋子</h4>
                         <p>
                             <span class="label label-default" style="background-color: #f48fbe;">鞋子</span>
                             <span class="label label-default" style="background-color: #f48fbe;">粉色</span>
@@ -135,23 +134,32 @@
 
         </div>
 
-        <hr/>
-
-        <div id="footer">
+        <div class="footer">
             <div class="col-xs-12 navbar-default navbar-fixed-bottom">
                 <div class="row iNav">
-                    <div class="col-xs-6 text-left"><a href="#" style="color: #f489a5;">寻她</a></div>
-                    <div class="col-xs-6 text-right"><a href="#" style="color: #f489a5;">我的</a></div>
+                    <div class="col-xs-6 text-center">
+                        <a href="#" style="color: #f489a5;">
+                            <li class="glyphicon glyphicon-bullhorn"></li>
+                            <br/>寻她
+                        </a>
+                    </div>
+                    <div class="col-xs-6 text-center">
+                        <a href="#" style="color: #f489a5;">
+                            <li class="glyphicon glyphicon-user"></li>
+                            <br/>我的
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
 
     </div>
-    <!-- /container -->
 
-    <!-- JavaScript -->
-    <script src="js/jquery-1.10.2.js"></script>
-    <script src="js/bootstrap.js"></script>
+    <!-- jQuery文件。务必在bootstrap.min.js 之前引入 -->
+    <script src="http://cdn.bootcss.com/jquery/1.10.2/jquery.min.js"></script>
+
+    <!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
+    <script src="http://cdn.bootcss.com/twitter-bootstrap/3.0.3/js/bootstrap.min.js"></script>
 
 </body>
 
