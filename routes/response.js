@@ -14,8 +14,8 @@ var wrap = function (res) {
         this.return(this.CODE.OK, undefined, data);
     };
 
-    res.fail = function (req) {
-        logger.error('route failure', {path: req.path, method: req.method, ip:req.ip, userAgent: req.headers['user-agent']});
+    res.fail = function (req, msg) {
+        logger.error('route failure', {path: req.path, method: req.method, ip:req.ip, userAgent: req.headers['user-agent'], msg: msg});
         this.return(this.CODE.FAILURE);
     };
 

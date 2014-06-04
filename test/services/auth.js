@@ -7,21 +7,25 @@ require("should");
 
 var authService = require('../../services/auth');
 var Auth = require('../../model/Auth');
-var date = require('../../common/util').date();
+var util = require('../../common/util');
+var system = require('../../common/config')('system');
+var redis = require('../../common/redis');
 
-describe('authService', function(){
-    var existAccount = 'exists@account.com';
-    var notExistAccount = 'not-exists@account.com';
-    var password = 'password';
-    var newPassword = 'newPassword';
+var existAccount = 'exists@account.com';
+var notExistAccount = 'not-exists@account.com';
+var password = 'password';
+var newPassword = 'newPassword';
+
+describe('auth', function () {
+
 
     beforeEach(function () {
         Auth.remove({account: notExistAccount}).exec();
-        Auth.create({account: existAccount, password: password, time: date});
+        Auth.create({account: existAccount, password: password, time: util.date()});
     });
 
-    describe('.create()', function(){
-        it('should be successful when the account is not exists', function(done){
+    describe('.create()', function () {
+        it('should be successful when the account is not exists', function (done) {
             authService.create(notExistAccount, password, function (err) {
                 (err === null).should.be.true;
                 done();
@@ -82,6 +86,65 @@ describe('authService', function(){
             });
 
         })
+    });
+
+    describe('.canReset()', function () {
+        it('should be return false when sign is not match', function () {
+            authService.canReset(existAccount, util.encrypt(JSON.stringify({account: notExistAccount, expiration: util.time() + 30 * 60}))).should.be.false;
+        });
+
+        it('should be return false when sign is expired', function () {
+            authService.canReset(existAccount, util.encrypt(JSON.stringify({account: existAccount, expiration: util.time() - 1}))).should.be.false;
+        });
+
+        it('should be return true when sign is match and not expired', function () {
+            authService.canReset(existAccount, util.encrypt(JSON.stringify({account: existAccount, expiration: util.time() + 1}))).should.be.true;
+        });
+
+        it('should be return false when sign is can not decode', function () {
+            authService.canReset(existAccount, util.encrypt('aha')).should.be.false;
+        });
+
+        it('should be return false when sign is null', function () {
+            authService.canReset(existAccount, null).should.be.false;
+        });
+    });
+
+    describe('.login()', function () {
+        it('should set the account as token on cookie', function (done) {
+            var req = {};
+            var res = {
+                cookie: function (token, value, options) {
+                    token.should.be.equal(authService.TOKEN);
+                    value.should.be.equal(existAccount);
+                    options.should.be.eql({ signed: true, httpOnly: true, maxAge: 86400 * 15, path: '/' });
+                    done();
+                }
+            };
+            authService.login(existAccount, req, res);
+        });
+    });
+
+    describe('.getAccount()', function () {
+        it('should be get account when signed-cookie is valid', function () {
+            var req = {
+                signedCookies: {
+                    token: existAccount
+                }
+            };
+            var res = {};
+            authService.getAccount(req, res).should.be.equal(existAccount);
+        });
+
+        it('should get null when signed-cookie is null', function () {
+            var req = {
+                signedCookies: {
+                    token: null
+                }
+            };
+            var res = {};
+            (null === authService.getAccount(req, res)).should.be.true;
+        });
     });
 
     afterEach(function () {

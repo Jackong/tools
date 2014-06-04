@@ -7,6 +7,7 @@ var util = require('../common/util');
 var system = require('../common/config')('system');
 
 module.exports = {
+    TOKEN: 'token',
     create: function (account, password, cb) {
         var auth = new Auth({ account: account, password: password, time: util.date()});
         auth.save(cb);
@@ -20,13 +21,24 @@ module.exports = {
     get: function (account, cb) {
         Auth.findOne({account: account}, cb);
     },
-    forgot: function (account) {
-        var sign = util.md5(account, system.salt);
-        redis.setex(redis.PREFIX.ACCOUNT_FORGOT + account, 30 * 60, sign, function (err, result) {
-        });
-        return sign;
+    forgotSign: function (account) {
+        return util.encrypt(JSON.stringify({account: account, expiration: util.time() + 30 * 60}));
     },
-    reset: function (account, sign, password, cb) {
-
+    canReset: function (account, sign) {
+        try {
+            var data = JSON.parse(util.decrypt(sign));
+            if (null === data || data.account !== account || data.expiration <= util.time()) {
+                return false;
+            }
+        } catch (e) {
+            return false;
+        }
+        return true;
+    },
+    login: function (account, req, res) {
+        res.cookie(this.TOKEN, account, { signed: true, httpOnly: true, maxAge: 86400 * 15, path: '/' })
+    },
+    getAccount: function (req, res) {
+        return req.signedCookies.token;
     }
 };

@@ -3,6 +3,7 @@ var express = require('express');
 var methodOverride = require('method-override');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
+var system = require('./common/config')('system');
 
 var logger = require('./common/logger');
 require('./common/mongo');
@@ -12,7 +13,7 @@ logger.info('starting app');
 var app = express();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded());
-app.use(cookieParser());
+app.use(cookieParser(system.salt));
 app.use(methodOverride());
 
 var routers = require('./routes/index');
