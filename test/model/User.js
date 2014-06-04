@@ -5,35 +5,34 @@
 require('../../common/mongo');
 require("should");
 
-var authService = require('../../services/auth');
-var Auth = require('../../model/Auth');
+var User = require('../../model/User');
 var util = require('../../common/util');
-var system = require('../../common/config')('system');
-var redis = require('../../common/redis');
 
 var existAccount = 'exists@account.com';
 var notExistAccount = 'not-exists@account.com';
 var password = 'password';
 var newPassword = 'newPassword';
 
-describe('auth', function () {
+describe('User', function () {
 
 
     beforeEach(function () {
-        Auth.remove({account: notExistAccount}).exec();
-        Auth.create({account: existAccount, password: password, time: util.date()});
+        User.remove({account: notExistAccount}).exec();
+        User.create({account: existAccount, password: password, time: util.date()});
     });
 
-    describe('.create()', function () {
+    describe('.save()', function () {
         it('should be successful when the account is not exists', function (done) {
-            authService.create(notExistAccount, password, function (err) {
+            var user = new User({account: notExistAccount, password: password});
+            user.save(function (err) {
                 (err === null).should.be.true;
                 done();
             });
         });
 
         it('should be fail when the account is exists', function (done) {
-            authService.create(existAccount, password, function (err) {
+            var user = new User({account: existAccount, password: password});
+            user.save(function (err) {
                 (null === err).should.be.false;
                 done();
             });
@@ -42,52 +41,53 @@ describe('auth', function () {
 
     describe('.del()', function () {
         it('should be successful when the account is exists', function (done) {
-            authService.del(existAccount, function (err, numberAffected) {
+            User.remove({account: existAccount}, function (err, numberAffected) {
                 numberAffected.should.be.equal(1);
                 done();
             });
         });
         it('should be fail when the account is not exists', function (done) {
-            authService.del(notExistAccount, function (err, numberAffected) {
+            User.remove({account: notExistAccount}, function (err, numberAffected) {
                 numberAffected.should.be.equal(0);
                 done();
             });
         });
     });
 
+
     describe('.updatePassword()', function () {
         it('should be fail when the account is not exists', function (done) {
-            authService.updatePassword(notExistAccount, password, newPassword, function (err, numberAffected) {
+            User.update({account: notExistAccount, password: password}, {password: newPassword}, function (err, numberAffected) {
                 numberAffected.should.be.equal(0);
                 done();
             });
         });
         it('should be successful when the account is exists', function (done) {
-            authService.updatePassword(existAccount, password, newPassword, function (err, numberAffected) {
+            User.update({account: existAccount, password: password}, {password: newPassword}, function (err, numberAffected) {
                 numberAffected.should.be.equal(1);
                 done();
             });
         });
         it('should be fail when the old password is not right', function (done) {
-            authService.updatePassword(existAccount, newPassword, newPassword, function (err, num) {
-                num.should.be.equal(0);
+            User.update({account: existAccount, password: newPassword}, {password: newPassword}, function (err, numberAffected) {
+                numberAffected.should.be.equal(0);
                 done();
-            })
+            });
         })
     });
 
     describe('.get()', function () {
         it('should be null when the account is not exists', function (done) {
-            authService.get(notExistAccount, function (err, auth) {
-                (auth === null).should.be.true;
+            User.findOne({account: notExistAccount}, 'password', {lean: true}, function (err, user) {
+                (user === null).should.be.true;
                 done();
             });
         });
         it('should be not null when the account is exists', function (done) {
-            authService.get(existAccount, function (err, obj) {
-                (obj === null).should.be.false;
-                obj.should.be.an.object;
-                obj.password.should.be.equal(password);
+            User.findOne({account: existAccount}, 'password', {lean: true}, function (err, user) {
+                (user === null).should.be.false;
+                user.should.be.an.object;
+                user.password.should.be.equal(password);
                 done();
             });
 
@@ -96,23 +96,23 @@ describe('auth', function () {
 
     describe('.canReset()', function () {
         it('should be return false when sign is not match', function () {
-            authService.canReset(existAccount, util.encrypt(JSON.stringify({account: notExistAccount, expiration: util.time() + 30 * 60}))).should.be.false;
+            User.canReset(existAccount, util.encrypt(JSON.stringify({account: notExistAccount, expiration: util.time() + 30 * 60}))).should.be.false;
         });
 
         it('should be return false when sign is expired', function () {
-            authService.canReset(existAccount, util.encrypt(JSON.stringify({account: existAccount, expiration: util.time() - 10}))).should.be.false;
+            User.canReset(existAccount, util.encrypt(JSON.stringify({account: existAccount, expiration: util.time() - 10}))).should.be.false;
         });
 
         it('should be return true when sign is match and not expired', function () {
-            authService.canReset(existAccount, util.encrypt(JSON.stringify({account: existAccount, expiration: util.time() + 10}))).should.be.true;
+            User.canReset(existAccount, util.encrypt(JSON.stringify({account: existAccount, expiration: util.time() + 10}))).should.be.true;
         });
 
         it('should be return false when sign is can not decode', function () {
-            authService.canReset(existAccount, util.encrypt('aha')).should.be.false;
+            User.canReset(existAccount, util.encrypt('aha')).should.be.false;
         });
 
         it('should be return false when sign is null', function () {
-            authService.canReset(existAccount, null).should.be.false;
+            User.canReset(existAccount, null).should.be.false;
         });
     });
 
@@ -121,13 +121,13 @@ describe('auth', function () {
             var req = {};
             var res = {
                 cookie: function (token, value, options) {
-                    token.should.be.equal(authService.TOKEN);
+                    token.should.be.equal('token');
                     value.should.be.equal(existAccount);
                     options.should.be.eql({ signed: true, httpOnly: true, maxAge: 86400 * 15, path: '/' });
                     done();
                 }
             };
-            authService.login(existAccount, req, res);
+            User.login(existAccount, req, res);
         });
     });
 
@@ -139,7 +139,7 @@ describe('auth', function () {
                 }
             };
             var res = {};
-            authService.getAccount(req, res).should.be.equal(existAccount);
+            User.getAccount(req, res).should.be.equal(existAccount);
         });
 
         it('should get null when signed-cookie is null', function () {
@@ -149,11 +149,11 @@ describe('auth', function () {
                 }
             };
             var res = {};
-            (null === authService.getAccount(req, res)).should.be.true;
+            (null === User.getAccount(req, res)).should.be.true;
         });
     });
 
     afterEach(function () {
-        Auth.remove({account: existAccount}).exec();
+        User.remove({account: existAccount}).exec();
     });
 });
