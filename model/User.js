@@ -5,7 +5,7 @@ var util = require('../common/util');
 var mongoose = require('mongoose');
 
 var User = mongoose.Schema({
-    account: {type: String, unique: true},
+    account: {type: String, unique: true, lowercase: true, trim: true},
     password: String,
     nick: String,
     avatar: String,
