@@ -57,17 +57,23 @@ describe('auth', function () {
 
     describe('.updatePassword()', function () {
         it('should be fail when the account is not exists', function (done) {
-            authService.updatePassword(notExistAccount, newPassword, function (err, numberAffected) {
+            authService.updatePassword(notExistAccount, password, newPassword, function (err, numberAffected) {
                 numberAffected.should.be.equal(0);
                 done();
             });
         });
         it('should be successful when the account is exists', function (done) {
-            authService.updatePassword(existAccount, newPassword, function (err, numberAffected) {
+            authService.updatePassword(existAccount, password, newPassword, function (err, numberAffected) {
                 numberAffected.should.be.equal(1);
                 done();
             });
         });
+        it('should be fail when the old password is not right', function (done) {
+            authService.updatePassword(existAccount, newPassword, newPassword, function (err, num) {
+                num.should.be.equal(0);
+                done();
+            })
+        })
     });
 
     describe('.get()', function () {
@@ -94,11 +100,11 @@ describe('auth', function () {
         });
 
         it('should be return false when sign is expired', function () {
-            authService.canReset(existAccount, util.encrypt(JSON.stringify({account: existAccount, expiration: util.time() - 1}))).should.be.false;
+            authService.canReset(existAccount, util.encrypt(JSON.stringify({account: existAccount, expiration: util.time() - 10}))).should.be.false;
         });
 
         it('should be return true when sign is match and not expired', function () {
-            authService.canReset(existAccount, util.encrypt(JSON.stringify({account: existAccount, expiration: util.time() + 1}))).should.be.true;
+            authService.canReset(existAccount, util.encrypt(JSON.stringify({account: existAccount, expiration: util.time() + 10}))).should.be.true;
         });
 
         it('should be return false when sign is can not decode', function () {

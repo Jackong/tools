@@ -12,8 +12,8 @@ module.exports = {
         var auth = new Auth({ account: account, password: password, time: util.date()});
         auth.save(cb);
     },
-    updatePassword: function (account, password, cb) {
-        Auth.update({account: account}, {password: password}, cb);
+    updatePassword: function (account, oldPassword, password, cb) {
+        Auth.update({account: account, password: oldPassword}, {password: password}, cb);
     },
     del: function (account, cb) {
         Auth.remove({account: account}, cb);

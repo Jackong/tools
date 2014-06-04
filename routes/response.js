@@ -7,24 +7,28 @@ var logger = require('../common/logger');
 var wrap = function (res) {
     res.CODE = {
         OK: 0,
-        FAILURE: 1
+        FAILURE: 1,
+        UN_LOGIN: 2
     };
 
-    res.ok = function (data) {
-        this.return(this.CODE.OK, undefined, data);
+    res.ok = function (data, msg) {
+        this.return(this.CODE.OK, msg, data);
     };
 
-    res.fail = function (req, msg) {
-        logger.error('route failure', {path: req.path, method: req.method, ip:req.ip, userAgent: req.headers['user-agent'], msg: msg});
-        this.return(this.CODE.FAILURE);
-    };
-
-    res.error = function (err, req) {
-        var isOk = (null === err);
-        if (!isOk) {
-            logger.error('route failure', {error: err.message, path: req.path, method: req.method, ip:req.ip, userAgent: req.headers['user-agent']});
+    res.fail = function (msg, code) {
+        if (!code) {
+            code = this.CODE.FAILURE;
         }
-        this.return(isOk ? this.CODE.OK : this.CODE.FAILURE);
+        this.return(code, msg);
+    };
+
+    res.error = function (err, msg) {
+        var code = this.CODE.FAILURE;
+        if (null === err) {
+            code = this.CODE.OK;
+            msg = '';
+        }
+        this.return(code, msg);
     };
 
     res.return = function (code, msg, data) {

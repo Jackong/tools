@@ -13,7 +13,8 @@ module.exports = function (router) {
         .post(function register(req, res) {
             auth.create(req.body.account, req.body.password, function (err) {
                 if (null !== err) {
-                    return res.fail(req);
+                    logger.error('create account', req.body.account, err.message);
+                    return res.fail();
                 }
                 auth.login(req.body.account, req, res);
                 res.ok();
@@ -26,18 +27,18 @@ module.exports = function (router) {
         .put(function updatePassword(req, res) {
             var account = auth.getAccount(req, res);
             if (!account) {
-                return res.fail(req);
+                return res.fail('登录状态已经过期', res.CODE.UN_LOGIN);
             }
-            auth.get(account, function (err, accountDoc) {
-                if (null === accountDoc) {
-                    return res.fail(req);
+            auth.updatePassword(account, req.body.oldPassword, req.body.password, function (err, num) {
+                if (null !== err) {
+                    logger.error('update password', account, num, err.message);
+                    return res.fail('修改密码失败，请重试');
                 }
-                if (req.body.oldPassword !== accountDoc.password) {
-                    return res.fail(req);
+                if (1 === num) {
+                    return res.ok();
                 }
-                auth.updatePassword(account, req.body.password, function (err, num) {
-                    null === err && num === 1 ? res.ok() : res.fail(req);
-                });
+                logger.error('update password', account, num);
+                return res.fail('原密码错误');
             });
         });
 
@@ -46,12 +47,9 @@ module.exports = function (router) {
         .get(router.checker.query('password'))
         .get(function login(req, res) {
             auth.get(req.params.account, function (err, account) {
-                if (null === account) {
-                    return res.fail(req);
-                }
-
-                if (req.query.password !== account.password) {
-                    return res.fail(req);
+                if (null === account || req.query.password !== account.password) {
+                    logger.error('login', account);
+                    return res.fail();
                 }
                 auth.login(req.params.account, req, res);
                 return res.ok();
@@ -62,7 +60,7 @@ module.exports = function (router) {
         .get(function checkLogin(req, res) {
             var account = auth.getAccount(req, res);
             if (null === account) {
-                return res.fail(req);
+                return res.fail();
             }
             return res.ok();
         });
@@ -89,10 +87,18 @@ module.exports = function (router) {
         .put(function reset(req, res) {
             var canReset = auth.canReset(req.params.account, req.body.sign);
             if (!canReset) {
-                return res.fail(req);
+                return res.fail('链接无效或已过期');
             }
             auth.updatePassword(req.params.account, req.body.password, function (err, num) {
-                null === err && num === 1 ? res.ok() : res.fail(req);
+                if (null !== err) {
+                    logger.error('update password', account, num, err.message);
+                    return res.fail('修改密码失败，请重试');
+                }
+                if (1 === num) {
+                    return res.ok();
+                }
+                logger.error('update password', account, num);
+                return res.fail('原密码错误');
             });
         })
 
