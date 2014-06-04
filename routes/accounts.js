@@ -29,7 +29,7 @@ module.exports = function (router) {
                 return res.fail(req);
             }
             auth.get(account, function (err, accountDoc) {
-                if (null  === accountDoc) {
+                if (null === accountDoc) {
                     return res.fail(req);
                 }
                 if (req.body.oldPassword !== accountDoc.password) {
@@ -58,6 +58,15 @@ module.exports = function (router) {
             });
         });
 
+    router.route('accounts')
+        .get(function checkLogin(req, res) {
+            var account = auth.getAccount(req, res);
+            if (null === account) {
+                return res.fail(req);
+            }
+            return res.ok();
+        });
+    
     router.route('/accounts/forgotSign/:account')
         .get(router.checker.params('account'))
         .get(function forget(req, res) {
@@ -65,8 +74,8 @@ module.exports = function (router) {
             var url = req.protocol + '://' + req.host
                 + '/account/canReset/' + req.params.account + '?sign=' + sign;
             var bae = new message({
-                key : msgConfig.key,
-                secret : msgConfig.secret,
+                key: msgConfig.key,
+                secret: msgConfig.secret,
                 queue: msgConfig.queue
             });
             bae.mail('no-reply', req.params.account, '密码找回【iWomen】', '<!--HTML--><a href="' + url + '">点击找回密码（请匆回复）</a>');
