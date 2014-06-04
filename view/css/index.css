@@ -4,10 +4,9 @@ body {
 }
 .footer {
     background-color: #f5f5f5;
-    padding-bottom: 55px;
 }
 .iNav {
-    padding:12px;
+    padding:14px;
 }
 .iNav a {
     font-size:12pt;
@@ -20,4 +19,13 @@ body {
 
 .iMenu > *{
     color: #f489a5;
+}
+
+
+.btn-default {
+    color: #f46cb3;
+    border-color: #f46cb3;
+}
+a {
+    color: #f46cb3;
 }
