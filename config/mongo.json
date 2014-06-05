@@ -1,18 +1,8 @@
 {
-    "dev": {
-        "username":"",
-        "password":"",
-        "host":"localhost",
-        "name":"iwomen",
-        "port":27017,
-        "poolSize":5
-    },
-    "prod": {
-        "username":"GXTnHcjgvKPIl1MKbdxnmcQK",
-        "password":"2RGpR7kuue9wCQX4oFHL8hXYnE2zpsg4",
-        "host":"mongo.duapp.com",
-        "name":"XcdWGBMKMFLUcjNuLMzI",
-        "port":8908,
-        "poolSize":5
-    }
+    "username":"GXTnHcjgvKPIl1MKbdxnmcQK",
+    "password":"2RGpR7kuue9wCQX4oFHL8hXYnE2zpsg4",
+    "host":"mongo.duapp.com",
+    "name":"XcdWGBMKMFLUcjNuLMzI",
+    "port":8908,
+    "poolSize":5
 }

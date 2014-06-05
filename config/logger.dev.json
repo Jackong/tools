@@ -1,4 +1,4 @@
 {
-    "level": "error",
+    "level": "debug",
     "file": "/home/bae/log/user.log"
 }

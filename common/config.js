@@ -2,9 +2,13 @@
  * Created by daisy on 14-6-1.
  */
 module.exports = function (what) {
-    var config = require('../config/' + what + '.json');
     if (process.env.DEVELOPMENT) {
-        return config.dev;
+        var fs = require('fs');
+        var path = require('path');
+        var dev = '/config/' + what + '.dev.json';
+        if (fs.existsSync(path.dirname(__dirname) + dev)) {
+            return require('..' + dev);
+        }
     }
-    return config.prod;
+    return require('../config/' + what + '.json');
 };
