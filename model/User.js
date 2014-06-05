@@ -3,12 +3,21 @@
  */
 var util = require('../common/util');
 var mongoose = require('mongoose');
+var Schema = mongoose.Schema;
 
-var User = mongoose.Schema({
+var User = Schema({
     account: {type: String, unique: true, lowercase: true, trim: true},
     password: String,
     nick: String,
     avatar: String,
+    sex: {type: Boolean, default: true},
+    birthday: Date,
+    city: String,
+    webSite: String,
+    intro: String,
+    points: {type: Number, default: 0},
+    isValid: {type: Boolean, default: true},
+    time: {type: Date, default: Date.now },
     settings: {
         notifications: {
             isNotify: {type: Boolean, default: true},
@@ -21,7 +30,16 @@ var User = mongoose.Schema({
             followMe: {type: Boolean, default: true}
         }
     },
-    time: {type: Date, default: Date.now }
+    notifications: [{type: Schema.Types.ObjectId}],//Notification
+    followers: [{type: Schema.Types.ObjectId}],//User
+    following: {
+        users: {type: Schema.Types.ObjectId},//User
+        tags: {type: String, lowercase: true, trim: true}//Tag
+    },
+    looks: [{type: String}],//Look
+    likes: [{type: String}],//Look
+    wants: [{type: String}],//Look
+    tips: [{type: String}]//Look
 });
 
 util.modelMethods(User.statics, {
