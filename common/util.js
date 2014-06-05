@@ -34,3 +34,9 @@ exports.decrypt = function (crypted) {
     dec += decipher.final('utf8');
     return dec;
 };
+
+exports.modelMethods = function (methodObj, methods) {
+    for(var method in methods) {
+        methodObj[method] = methods[method];
+    }
+};

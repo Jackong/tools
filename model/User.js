@@ -24,28 +24,27 @@ var User = mongoose.Schema({
     time: {type: Date, default: Date.now }
 });
 
-User.statics.forgotSign = function (account) {
-    return util.encrypt(JSON.stringify({account: account, expiration: util.time() + 30 * 60}));
-};
-
-User.statics.canReset = function (account, sign) {
-    try {
-        var data = JSON.parse(util.decrypt(sign));
-        if (null === data || data.account !== account || data.expiration <= util.time()) {
+util.modelMethods(User.statics, {
+    forgotSign: function (account) {
+        return util.encrypt(JSON.stringify({account: account, expiration: util.time() + 30 * 60}));
+    },
+    canReset: function (account, sign) {
+        try {
+            var data = JSON.parse(util.decrypt(sign));
+            if (null === data || data.account !== account || data.expiration <= util.time()) {
+                return false;
+            }
+        } catch (e) {
             return false;
         }
-    } catch (e) {
-        return false;
+        return true;
+    },
+    login: function (account, req, res) {
+        res.cookie('token', account, { signed: true, httpOnly: true, maxAge: 86400 * 15, path: '/' })
+    },
+    getAccount: function (req, res) {
+        return req.signedCookies.token;
     }
-    return true;
-};
-
-User.statics.login = function (account, req, res) {
-    res.cookie('token', account, { signed: true, httpOnly: true, maxAge: 86400 * 15, path: '/' })
-};
-
-User.statics.getAccount = function (req, res) {
-    return req.signedCookies.token;
-};
+});
 
 module.exports = mongoose.model('User', User);
