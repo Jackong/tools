@@ -131,7 +131,7 @@ describe('User', function () {
         });
     });
 
-    describe('.getAccount()', function () {
+    describe('.getUid()', function () {
         it('should be get account when signed-cookie is valid', function () {
             var req = {
                 signedCookies: {
@@ -139,7 +139,7 @@ describe('User', function () {
                 }
             };
             var res = {};
-            User.getAccount(req, res).should.be.equal(existAccount);
+            User.getUid(req, res).should.be.equal(existAccount);
         });
 
         it('should get null when signed-cookie is null', function () {
@@ -149,7 +149,7 @@ describe('User', function () {
                 }
             };
             var res = {};
-            (null === User.getAccount(req, res)).should.be.true;
+            (null === User.getUid(req, res)).should.be.true;
         });
     });
 

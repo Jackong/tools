@@ -40,11 +40,11 @@ User.statics.canReset = function (account, sign) {
     return true;
 };
 
-User.statics.login = function (account, req, res) {
-    res.cookie('token', account, { signed: true, httpOnly: true, maxAge: 86400 * 15, path: '/' })
+User.statics.login = function (uid, req, res) {
+    res.cookie('token', uid, { signed: true, httpOnly: true, maxAge: 86400 * 15, path: '/' })
 };
 
-User.statics.getAccount = function (req, res) {
+User.statics.getUid = function (req, res) {
     return req.signedCookies.token;
 };
 
