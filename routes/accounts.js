@@ -4,8 +4,7 @@
 
 var User = require('../model/User');
 var logger = require('../common/logger');
-var message = require('bae-message');
-var msgConfig = require('../common/config')('message');
+var util = require('../common/util');
 
 module.exports = function (router) {
     router.route('/accounts')
@@ -72,12 +71,7 @@ module.exports = function (router) {
             var sign = User.forgotSign(req.params.account);
             var url = req.protocol + '://' + req.host
                 + '/account/reset/' + req.params.account + '?sign=' + sign;
-            var bae = new message({
-                key: msgConfig.key,
-                secret: msgConfig.secret,
-                queue: msgConfig.queue
-            });
-            bae.mail('no-reply', req.params.account, '密码找回【iWomen】', '<!--HTML--><a href="' + url + '">点击找回密码（请匆回复）</a>');
+            util.email(req.params.account, '密码找回【iWomen】', '<!--HTML--><a href="' + url + '">点击找回密码（30分钟内有效，请匆回复）</a>')
             res.ok();
         });
 
