@@ -13,7 +13,7 @@ require(['app'], function (app) {
                     action: '想要这件上衣',
                     time: '刚刚'
                 },
-                image: 'http://placehold.it/200x200',
+                image: 'http://placehold.it/300x200',
                 description: '非常漂亮的衣服',
                 likes: 22,
                 favorites: [
@@ -38,7 +38,7 @@ require(['app'], function (app) {
                     action: '想要这件上衣',
                     time: '刚刚'
                 },
-                image: 'http://placehold.it/200x200',
+                image: 'http://placehold.it/300x200',
                 description: null,
                 likes: 22,
                 favorites: [
@@ -58,7 +58,7 @@ require(['app'], function (app) {
                     action: '想要这件上衣',
                     time: '刚刚'
                 },
-                image: 'http://placehold.it/200x200',
+                image: 'http://placehold.it/300x200',
                 description: null,
                 likes: 22,
                 favorites: [

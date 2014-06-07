@@ -20,7 +20,9 @@
                     <span style="color: #f489a5;">{{look.publisher.action}}</span>
                     <span class="glyphicon glyphicon-time pull-right" style="color: #f489a5;">{{look.publisher.time}}</span>
                 </p>
-                <img ng-src="{{look.image}}" class="img-rounded img-responsive" alt="{{look.description}}">
+                <a href="#/look/{{look._id}}">
+                    <img ng-src="{{look.image}}" class="img-rounded img-responsive" alt="{{look.description}}">
+                </a>
                 <div class="caption">
                     <h4 ng-show="look.description" style="color: #f489a5;">{{look.description}}</h4>
                     <p class="center-block">
@@ -39,29 +41,32 @@
             </div>
         </div>
     </div>
-</div>
 
-<div class="footer">
-    <div class="col-xs-12 navbar-default navbar-fixed-bottom">
-        <div class="row iNav">
-            <div class="col-xs-4 text-center">
-                <a href="#/feed" style="color: #f489a5;">
-                    <li class="glyphicon glyphicon-home"></li>
-                    <br/>订阅
-                </a>
-            </div>
-            <div class="col-xs-4 text-center">
-                <a href="#/trend" style="color: #f489a5;">
-                    <li class="glyphicon glyphicon-signal"></li>
-                    <br/>趋势
-                </a>
-            </div>
-            <div class="col-xs-4 text-center">
-                <a href="#/mine" style="color: #f489a5;">
-                    <li class="glyphicon glyphicon-user"></li>
-                    <br/>我的
-                </a>
+    <footer>
+        <br/>
+        <br/>
+        <br/>
+        <div class="col-xs-12 navbar-default navbar-fixed-bottom">
+            <div class="row iNav">
+                <div class="col-xs-4 text-center">
+                    <a href="#/feed" style="color: #f489a5;">
+                        <li class="glyphicon glyphicon-home"></li>
+                        <br/>订阅
+                    </a>
+                </div>
+                <div class="col-xs-4 text-center">
+                    <a href="#/trend" style="color: #f489a5;">
+                        <li class="glyphicon glyphicon-signal"></li>
+                        <br/>趋势
+                    </a>
+                </div>
+                <div class="col-xs-4 text-center">
+                    <a href="#/mine" style="color: #f489a5;">
+                        <li class="glyphicon glyphicon-user"></li>
+                        <br/>我的
+                    </a>
+                </div>
             </div>
         </div>
-    </div>
+    </footer>
 </div>
