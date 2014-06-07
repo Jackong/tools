@@ -1,24 +1,10 @@
 /**
  * Created by daisy on 14-6-7.
  */
-define(['angular', 'services/user', 'angularMd5'], function (angular) {
+define(['app', 'services/user'], function (app) {
     'use strict';
 
-    return angular.module('controllers', ['services.user', 'angular-md5'])
-        .controller('AppCtrl', function ($scope, $location, Account) {
-            $scope.aria = 10;
-            Account.checkLogin(function (data) {
-                if (data.code === 0) {
-                    $location.path('/where2get');
-                } else {
-                    $location.path('/sign');
-                }
-            });
-        })
-        .controller('Where2GetCtrl', function ($scope) {
-
-        })
-        .controller('SignCtrl', function ($scope, $location, md5, Account) {
+    return app.controller('SignCtrl', function ($scope, $location, md5, Account) {
             var isValid = function () {
                 $scope.warning = null;
                 if ($scope.sign.$valid) {
@@ -39,7 +25,7 @@ define(['angular', 'services/user', 'angularMd5'], function (angular) {
                     }
                 });
             };
-            
+
             $scope.signUp = function () {
                 if (!isValid()) {
                     return;

@@ -25,7 +25,7 @@ require( [
 	'angular',
 	'app',
 	'routes'
-], function(angular, app, routes) {
+], function(angular, app) {
 	'use strict';
 	angular.element(document.getElementsByTagName('html')[0]);
 
