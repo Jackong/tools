@@ -23,6 +23,14 @@ body {
     color: #f46cb3;
     border-color: #f46cb3;
 }
+.btn-default:hover {
+    color: #f43946;
+    border-color: #f43946;
+}
+span, p, h4{
+    color: #f489a5;
+}
+
 a {
     color: #f46cb3;
 }

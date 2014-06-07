@@ -17,24 +17,24 @@
                     <a href="#/user/{{look.publisher._id}}">
                         <img class="img-circle img-responsive pull-left" ng-src="{{look.publisher.avatar}}">{{look.publisher.nick}}
                     </a>
-                    <span style="color: #f489a5;">{{look.publisher.action}}</span>
-                    <span class="glyphicon glyphicon-time pull-right" style="color: #f489a5;">{{look.publisher.time}}</span>
+                    <span>{{look.publisher.action}}</span>
+                    <span class="glyphicon glyphicon-time pull-right">{{look.publisher.time}}</span>
                 </p>
                 <a href="#/look/{{look._id}}">
                     <img ng-src="{{look.image}}" class="img-rounded img-responsive" alt="{{look.description}}">
                 </a>
                 <div class="caption">
-                    <h4 ng-show="look.description" style="color: #f489a5;">{{look.description}}</h4>
-                    <p class="center-block">
+                    <h4 ng-show="look.description" class="text-center">{{look.description}}</h4>
+                    <p>
                         <a href="#/look/like/{{look._id}}" class="btn btn-default glyphicon glyphicon-heart-empty" role="button">喜欢({{look.likes}})</a>
 <!--
                         <span ng-repeat="tag in look.tags" class="label label-default" style="background-color: #f48fbe;">{{tag}}</span>
 -->
                     </p>
-                    <p ng-repeat="favorite in look.favorites" style="color: #f489a5;">
+                    <p ng-repeat="favorite in look.favorites">
                         {{favorite.aspect}}：
                         <span class="glyphicon glyphicon-info-sign">小贴士({{favorite.tips}})</span>
-                        <a ng-show="favorite.tips <= 0" href="#/look/{{look._id}}/want/{{favorite._id}}" class="btn btn-default glyphicon glyphicon-eye-open" role="button" >想要({{favorite.wants}})</a>
+                        <a ng-show="favorite.tips <= 0" href="#/look/{{look._id}}/want/{{favorite._id}}" class="btn btn-default glyphicon glyphicon-star-empty" role="button" >想要({{favorite.wants}})</a>
                         <a ng-show="favorite.tips > 0" href="#/look/{{look._id}}/buy/{{favorite._id}}" class="btn btn-default glyphicon glyphicon-shopping-cart" role="button" >购买</a>
                     </p>
                 </div>
