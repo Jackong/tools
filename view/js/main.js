@@ -2,12 +2,16 @@ require.config({
 	paths: {
 		angular: 'libs/angular/angular',
         angularRoute: 'libs/angular-route/angular-route',
-		angularResource: 'libs/angular-resource/angular-resource'
+		angularResource: 'libs/angular-resource/angular-resource',
+        angularMd5: 'libs/angular-md5/angular-md5'
 	},
 	shim: {
         angular : {exports : 'angular'},
         angularRoute: ['angular'],
-        angularResource: ['angular']
+        angularResource: ['angular'],
+        angularMd5: {
+            deps: ['angular']
+        }
 	},
 	priority: [
 		"angular"

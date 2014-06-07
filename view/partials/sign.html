@@ -8,15 +8,16 @@
 
 <div class="container">
 
-    <form class="form-sign" role="form">
-        <input type="text" class="form-control" placeholder="邮箱" required autofocus>
-        <input type="password" class="form-control" placeholder="密码" required>
+    <form class="form-sign" role="form" name="sign">
+        <label ng-show="warning" class="alert alert-warning">{{warning}}</label>
+        <input ng-model="account" type="email" class="form-control" placeholder="邮箱" required autofocus>
+        <input ng-model="password" ng-minlength="6" type="password" class="form-control" placeholder="密码" required>
         <label class="pull-right">
-            <a href="">忘记密码</a>
+            <a href="#/account/forgot">忘记密码</a>
         </label>
 
-        <button class="btn btn-lg btn-default btn-block">登录</button>
-        <button class="btn btn-lg btn-default btn-block">注册</button>
+        <button class="btn btn-lg btn-default btn-block" ng-click="signIn()">登录</button>
+        <button class="btn btn-lg btn-default btn-block" ng-click="signUp()">注册</button>
     </form>
 
 </div>

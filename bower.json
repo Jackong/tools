@@ -1,17 +1,18 @@
 {
-  "name": "iWomen",
-  "version": "0.0.0",
-  "ignore": [
-    "**/.*",
-    "node_modules",
-    "bower_components",
-    "test",
-    "tests"
-  ],
-  "dependencies": {
-    "angular": "~1.2.1",
-    "angular-resource": "~1.2.1",
-    "angular-route": "~1.2.1",
-    "requirejs": "~2.1.9"
-  }
+    "name": "iWomen",
+    "version": "0.0.0",
+    "ignore": [
+        "**/.*",
+        "node_modules",
+        "bower_components",
+        "test",
+        "tests"
+    ],
+    "dependencies": {
+        "angular": "~1.2.1",
+        "angular-resource": "~1.2.1",
+        "angular-route": "~1.2.1",
+        "requirejs": "~2.1.9",
+        "angular-md5": "~0.1.7"
+    }
 }

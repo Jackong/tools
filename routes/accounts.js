@@ -42,21 +42,7 @@ module.exports = function (router) {
             });
         });
 
-    router.route('/accounts/:account')
-        .get(router.checker.params('account'))
-        .get(router.checker.query('password'))
-        .get(function login(req, res) {
-            User.findOne({account: req.params.account}, 'password', {lean: true}, function (err, user) {
-                if (null === user || req.query.password !== user.password) {
-                    logger.error('login', user);
-                    return res.fail();
-                }
-                User.login(user._id, req, res);
-                return res.ok();
-            });
-        });
-
-    router.route('/account/check')
+    router.route('/accounts/check')
         .get(function checkLogin(req, res) {
             var uid = User.getUid(req, res);
             if (uid) {
@@ -65,7 +51,7 @@ module.exports = function (router) {
             return res.fail();
         });
 
-    router.route('/account/forgot/:account')
+    router.route('/accounts/forgot/:account')
         .get(router.checker.params('account'))
         .get(function forget(req, res) {
             var sign = User.forgotSign(req.params.account);
@@ -75,7 +61,7 @@ module.exports = function (router) {
             res.ok();
         });
 
-    router.route('/account/reset/:account')
+    router.route('/accounts/reset/:account')
         .put(router.checker.params('account'))
         .put(router.checker.body('password'))
         .put(router.checker.body('sign'))
@@ -95,6 +81,22 @@ module.exports = function (router) {
                 logger.error('update password', account, num);
                 return res.fail('原密码错误');
             });
-        })
+        });
+
+    router.route('/accounts/:account')
+        .get(router.checker.params('account'))
+        .get(router.checker.query('password'))
+        .get(function login(req, res) {
+            User.findOne({account: req.params.account}, 'password', {lean: true}, function (err, user) {
+                if (null === user || req.query.password !== user.password) {
+                    logger.error('login', user);
+                    return res.fail();
+                }
+                User.login(user._id, req, res);
+                return res.ok();
+            });
+        });
+
+
 
 };
