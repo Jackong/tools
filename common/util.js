@@ -45,3 +45,9 @@ exports.email = function (to, subject, body) {
     });
     bae.mail('no-reply', to, subject, body);
 };
+
+exports.modelMethods = function (methodObj, methods) {
+    for(var method in methods) {
+        methodObj[method] = methods[method];
+    }
+};

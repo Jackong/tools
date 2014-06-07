@@ -1,13 +1,7 @@
 {
-    "dev": {
-        "host": "localhost",
-        "port": 6379
-    },
-    "prod": {
-        "host": "redis.duapp.com",
-        "port": 80,
-        "name": "uulQAzmFiQjGOebmXKxi",
-        "username": "TixdQ5pd2r9Su4Q1G0oUCEtO",
-        "password": "smUmBPlexEZNcAGyGkYHTcbBueYTnVMA"
-    }
+    "host": "redis.duapp.com",
+    "port": 80,
+    "name": "uulQAzmFiQjGOebmXKxi",
+    "username": "TixdQ5pd2r9Su4Q1G0oUCEtO",
+    "password": "smUmBPlexEZNcAGyGkYHTcbBueYTnVMA"
 }

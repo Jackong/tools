@@ -19,7 +19,7 @@ define(['app', 'services/user'], function (app) {
                 }
                 Account.signIn({account: $scope.account, password: md5.createHash($scope.password)}, function (data) {
                     if (data.code === 0) {
-                        $location.path('/where2get');
+                        $location.path('/feed');
                     } else {
                         $scope.warning = '哦欧，账号或密码错误';
                     }
@@ -32,7 +32,7 @@ define(['app', 'services/user'], function (app) {
                 }
                 Account.signUp({account: $scope.account, password: md5.createHash($scope.password)}, function (data) {
                     if (data.code === 0) {
-                        $location.path('/where2get');
+                        $location.path('/feed');
                     } else {
                         $scope.warning = '哦欧，这个账号已经被注册了，换一个试试';
                     }

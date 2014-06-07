@@ -1,0 +1,8 @@
+{
+    "username":"",
+    "password":"",
+    "host":"localhost",
+    "name":"iwomen",
+    "port":27017,
+    "poolSize":5
+}

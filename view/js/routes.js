@@ -12,11 +12,7 @@ define(['app', 'services/user', 'controllers/sign', 'controllers/where2get'], fu
                     templateUrl: 'partials/sign.html',
                     controller: 'SignCtrl'
                 })
-                .when('/mine', {
-                    templateUrl: 'partials/mine.html',
-                    controller: 'MineCtrl'
-                })
-                .when('/where2get', {
+                .when('/feed', {
                     templateUrl: 'partials/where2get.html',
                     controller: 'Where2GetCtrl'
                 })
@@ -30,7 +26,7 @@ define(['app', 'services/user', 'controllers/sign', 'controllers/where2get'], fu
             $scope.aria = 10;
             Account.checkLogin(function (data) {
                 if (data.code === 0) {
-                    $location.path('/where2get');
+                    $location.path('/feed');
                 } else {
                     $location.path('/sign');
                 }
