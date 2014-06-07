@@ -6,7 +6,7 @@ define(['app', 'services/user'], function (app) {
 
     return app.controller('SignCtrl', function ($scope, $location, md5, Account) {
             var isValid = function () {
-                $scope.warning = null;
+                $scope.warning = false;
                 if ($scope.sign.$valid) {
                     return true;
                 }
@@ -37,6 +37,20 @@ define(['app', 'services/user'], function (app) {
                         $scope.warning = '哦欧，这个账号已经被注册了，换一个试试';
                     }
                 });
+            };
+
+            $scope.forgot = function () {
+                $scope.warning = false;
+                if (!$scope.sign.$valid) {
+                    $scope.warning = '哦欧，邮箱格式输入有误';
+                    return;
+                }
+                Account.forgot({account: $scope.account}, function (data) {
+                    $scope.success = {
+                        link: 'http://mail.' + $scope.account.split('@')[1].split('.')[0] + '.com',
+                        msg: '已发送至邮箱，请确定并重置密码'
+                    };
+                })
             };
         });
 });

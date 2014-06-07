@@ -4,7 +4,7 @@
 
 var logger = require('../common/logger');
 var map = {
-    account: /^[A-Za-zd]+([-_.][A-Za-zd]+)*@([A-Za-zd]+[-.])+[A-Za-zd]{2,5}$/,
+    account: /^[A-Za-z0-9]+([-_.][A-Za-z0-9]+)*@([A-Za-z0-9]+[-.])+[A-Za-z0-9]{2,5}$/,
     password: /^[0-9a-zA-Z]{32}$/
 };
 

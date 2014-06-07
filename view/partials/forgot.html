@@ -1,0 +1,21 @@
+<link href="css/sign.css" rel="stylesheet">
+
+<div class="col-xs-12 navbar-default navbar-fixed-top">
+    <div class="row iNav">
+        <div class="col-xs-12 text-center"><a href="#" style="color: #f489a5;">众里寻她</a></div>
+    </div>
+</div>
+
+<div class="container">
+
+    <form class="form-sign" role="form" name="sign">
+        <label ng-show="success" class="alert alert-success">
+            温馨提醒：<a href="{{success.link}}" class="alert-link">{{success.msg}}</a>
+        </label>
+        <label ng-show="warning" class="alert alert-warning">{{warning}}</label>
+        <input ng-model="account" type="email" class="form-control" placeholder="邮箱" required autofocus>
+        <br/>
+        <button class="btn btn-lg btn-default btn-block" ng-click="forgot()">找回密码</button>
+    </form>
+
+</div>

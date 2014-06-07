@@ -17,6 +17,9 @@ define(['app'], function (app) {
             },
             updatePassword: {
                 method: 'PUT'
+            },
+            forgot: {
+                method: 'GET', url: 'api/accounts/forgot/:account'
             }
         })
     });

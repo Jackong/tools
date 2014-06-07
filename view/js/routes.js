@@ -20,6 +20,10 @@ define(['app', 'services/user', 'controllers/sign', 'controllers/where2get'], fu
                     templateUrl: 'partials/where2get.html',
                     controller: 'Where2GetCtrl'
                 })
+                .when('/account/forgot', {
+                    templateUrl: 'partials/forgot.html',
+                    controller: 'SignCtrl'
+                })
                 .otherwise({redirectTo: '/'});
         }])
         .controller('AppCtrl', function ($scope, $location, Account) {
@@ -30,7 +34,6 @@ define(['app', 'services/user', 'controllers/sign', 'controllers/where2get'], fu
                 } else {
                     $location.path('/sign');
                 }
-                $scope.$apply();
             });
         });
 
