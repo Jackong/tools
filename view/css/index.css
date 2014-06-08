@@ -15,7 +15,7 @@ body {
 }
 
 .iMenu > *{
-    color: #f489a5;
+    color: #838383;
 }
 
 
@@ -27,8 +27,12 @@ body {
     color: #f43946;
     border-color: #f43946;
 }
-span, p, h4{
+.icon {
     color: #f489a5;
+}
+
+span, p, h4{
+    color: #838383;
 }
 
 a {

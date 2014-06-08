@@ -9,33 +9,46 @@
 <hr/>
 
 <div class="container">
-
     <div class="row">
         <div ng-repeat="look in looks" class="col-sm-6 col-md-4">
             <div class="thumbnail">
                 <p>
-                    <a href="#/user/{{look.publisher._id}}">
-                        <img class="img-circle img-responsive pull-left" ng-src="{{look.publisher.avatar}}">{{look.publisher.nick}}
-                    </a>
-                    <span>{{look.publisher.action}}</span>
-                    <span class="glyphicon glyphicon-time pull-right">{{look.publisher.time}}</span>
+                    <div class="media">
+                        <a class="pull-left" href="#/user/{{look.publisher._id}}">
+                            <img width="50" height="50" class="media-object img-circle img-responsive pull-left" ng-src="{{look.publisher.avatar}}">
+                        </a>
+                        <div class="media-body">
+                            <h5 class="media-heading">
+                                <span class="icon" style="font-size: 16px">{{look.publisher.nick}}</span>
+                                <span class="pull-right">
+                                    <span class="glyphicon glyphicon-time"></span> {{look.publisher.time}}
+                                </span>
+                            </h5>
+                            <span>{{look.publisher.action}}</span>
+                            <span ng-show="look.description">#{{look.description}}</span>
+                        </div>
+                    </div>
                 </p>
                 <a href="#/look/{{look._id}}">
                     <img ng-src="{{look.image}}" class="img-rounded img-responsive" alt="{{look.description}}">
                 </a>
                 <div class="caption">
-                    <h4 ng-show="look.description" class="text-center">{{look.description}}</h4>
                     <p>
-                        <a href="#/look/like/{{look._id}}" class="btn btn-default glyphicon glyphicon-heart-empty" role="button">喜欢({{look.likes}})</a>
+                        <span class="glyphicon glyphicon-heart icon"></span>
+                        <span>{{look.likes}}人喜欢</span>
+                        <a href="#/look/like/{{look._id}}" type="button" class="btn btn-default">喜欢</a>
 <!--
                         <span ng-repeat="tag in look.tags" class="label label-default" style="background-color: #f48fbe;">{{tag}}</span>
 -->
                     </p>
                     <p ng-repeat="favorite in look.favorites">
-                        {{favorite.aspect}}：
-                        <span class="glyphicon glyphicon-info-sign">小贴士({{favorite.tips}})</span>
-                        <a ng-show="favorite.tips <= 0" href="#/look/{{look._id}}/want/{{favorite._id}}" class="btn btn-default glyphicon glyphicon-star-empty" role="button" >想要({{favorite.wants}})</a>
-                        <a ng-show="favorite.tips > 0" href="#/look/{{look._id}}/buy/{{favorite._id}}" class="btn btn-default glyphicon glyphicon-shopping-cart" role="button" >购买</a>
+                        <span class="glyphicon glyphicon-lock icon"></span>
+                        <span>{{favorite.aspect}}：{{favorite.tips}}个小贴士</span>
+                        <a ng-show="favorite.tips > 0" href="#/look/{{look._id}}/buy/{{favorite._id}}" class="btn btn-default">购买</a>
+                        <span ng-show="favorite.tips <= 0">
+                            - {{favorite.wants}}人想要
+                            <a href="#/look/{{look._id}}/want/{{favorite._id}}" type="button" class="btn btn-default">想要</a>
+                        </span>
                     </p>
                 </div>
             </div>
