@@ -10,8 +10,8 @@ var Tip = Schema({
     content: String,//内容
     time: Date,//时间
     isValid: {type: Boolean, default: true},
-    likers: [{type: Schema.Types.ObjectId}],//只记录User ID不引用
-    comments: [{//评论者
+    likes: [{type: Schema.Types.ObjectId}],//只记录User ID不引用
+    comments: [{//评论
         commenter: {type: Schema.Types.ObjectId},//User:评论者
         time: Date,
         content: String

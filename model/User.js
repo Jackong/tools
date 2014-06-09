@@ -29,17 +29,7 @@ var User = Schema({
             wantMyLook: {type: Boolean, default: true},
             followMe: {type: Boolean, default: true}
         }
-    },
-    notifications: [{type: Schema.Types.ObjectId}],//Notification
-    followers: [{type: Schema.Types.ObjectId}],//User
-    following: {
-        users: {type: Schema.Types.ObjectId},//User
-        tags: {type: String, lowercase: true, trim: true}//Tag
-    },
-    looks: [{type: String}],//Look
-    likes: [{type: String}],//Look
-    wants: [{type: String}],//Look
-    tips: [{type: String}]//Look
+    }
 });
 
 util.modelMethods(User.statics, {
