@@ -12,7 +12,9 @@ var Look = Schema({
     isValid: {type: Boolean, default: true},
     tags: [{type: String, lowercase: true, trim: true}],//标签
     description: String,//描述
-    likers: [{ type: Schema.Types.ObjectId }],//User:喜欢的人
+    created: {type: Date, default: Date.now},
+    updated: {type: Date, default: Date.now},
+    likes: [{ type: Schema.Types.ObjectId }],//User:喜欢的人
     favorites: [{type: Schema.Types.ObjectId}]//Favorite:心仪的东西
 });
 

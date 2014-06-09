@@ -154,16 +154,4 @@ describe('User', function () {
             });
         });
     });
-
-    describe('#look', function () {
-        describe('.postLook()', function () {
-            it('should be fail when image is not exists', function (done) {
-                done();
-            });
-
-            it('should be fail when favorite is not select', function (done) {
-                done();
-            });
-        })
-    });//#look
 });

@@ -7,8 +7,8 @@ var Schema = mongoose.Schema;
 /**
  * user._id as _id
  */
-var Follower = Schema({
-    followers: [{type: Schema.Types.ObjectId}]
+var Feed = Schema({
+    feeds: [{type: String}]
 });
 
-module.exports = mongoose.model('UserFollower', Follower);
+module.exports = mongoose.model('UserFeed', Feed);

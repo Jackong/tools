@@ -8,7 +8,7 @@ var Schema = mongoose.Schema;
  * user._id as _id
  */
 var Like = Schema({
-    ids: [{type: String}]
+    likes: [{type: String}]
 });
 
 module.exports = mongoose.model('UserLike', Like);

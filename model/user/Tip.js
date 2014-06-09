@@ -8,7 +8,7 @@ var Schema = mongoose.Schema;
  * user._id as _id
  */
 var Tip = Schema({
-    ids: [{type: String}]
+    tips: [{type: String}]
 });
 
 module.exports = mongoose.model('UserTip', Tip);

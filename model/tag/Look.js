@@ -9,7 +9,7 @@ var Schema = mongoose.Schema;
  */
 var Look = Schema({
     _id: {type: String, lowercase: true, trim: true},
-    ids: [{type: String}]
+    looks: [{type: String}]
 });
 
 module.exports = mongoose.model('TagLook', Look);

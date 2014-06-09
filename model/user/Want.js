@@ -8,7 +8,7 @@ var Schema = mongoose.Schema;
  * user._id as _id
  */
 var Want = Schema({
-    ids: [{type: String}]
+    wants: [{type: String}]
 });
 
 module.exports = mongoose.model('UserWant', Want);
