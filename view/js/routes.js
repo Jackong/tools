@@ -33,9 +33,14 @@ define(['app', 'services/user', 'controllers/sign'], function (app) {
             });
         })
         .controller('Where2GetCtrl', function ($scope) {
-            window.onScroll = function(container) {
-                console.log(container.scrollLeft + '-' + container.scrollTop);
+            var lastScrollY = 0;
+            $scope.showFooter = true;
+            $scope.scroll = function () {
+                $scope.showFooter = lastScrollY > window.pageYOffset;
+                lastScrollY = window.pageYOffset;
+                $scope.$apply();
             };
+            window.onscroll = $scope.scroll;
             $scope.looks = [
                 {
                     _id: '1',
