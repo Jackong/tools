@@ -1,7 +1,7 @@
 /**
  * Created by daisy on 14-6-4.
  */
-var util = require('../common/util');
+var helper = require('../common/helper');
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
@@ -32,14 +32,14 @@ var User = Schema({
     }
 });
 
-util.modelMethods(User.statics, {
+helper.modelMethods(User.statics, {
     forgotSign: function (account) {
-        return util.encrypt(JSON.stringify({account: account, expiration: util.time() + 30 * 60}));
+        return helper.encrypt(JSON.stringify({account: account, expiration: helper.time() + 30 * 60}));
     },
     canReset: function (account, sign) {
         try {
-            var data = JSON.parse(util.decrypt(sign));
-            if (null === data || data.account !== account || data.expiration <= util.time()) {
+            var data = JSON.parse(helper.decrypt(sign));
+            if (null === data || data.account !== account || data.expiration <= helper.time()) {
                 return false;
             }
         } catch (e) {

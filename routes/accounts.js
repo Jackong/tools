@@ -4,7 +4,7 @@
 
 var User = require('../model/User');
 var logger = require('../common/logger');
-var util = require('../common/util');
+var helper = require('../common/helper');
 
 module.exports = function (router) {
     router.route('/accounts')
@@ -57,7 +57,7 @@ module.exports = function (router) {
             var sign = User.forgotSign(req.params.account);
             var url = req.protocol + '://' + req.host
                 + '/account/reset/' + req.params.account + '?sign=' + sign;
-            util.email(req.params.account, '密码找回【iWomen】', '<!--HTML--><a href="' + url + '">点击找回密码（30分钟内有效，请匆回复）</a>')
+            helper.email(req.params.account, '密码找回【iWomen】', '<!--HTML--><a href="' + url + '">点击找回密码（30分钟内有效，请匆回复）</a>')
             res.ok();
         });
 

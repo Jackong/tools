@@ -6,7 +6,7 @@ require('../../common/mongo');
 var should = require("should");
 
 var User = require('../../model/User');
-var util = require('../../common/util');
+var helper = require('../../common/helper');
 
 var existAccount = 'exists@account.com';
 var notExistAccount = 'not-exists@account.com';
@@ -19,7 +19,7 @@ describe('User', function () {
         beforeEach(function () {
             User.remove({account: notExistAccount}).exec();
             User.remove({account: existAccount}).exec();
-            User.create({account: existAccount, password: password, time: util.date()});
+            User.create({account: existAccount, password: password, time: helper.date()});
         });
 
         describe('.save()', function () {
@@ -97,19 +97,19 @@ describe('User', function () {
 
         describe('.canReset()', function () {
             it('should be return false when sign is not match', function () {
-                User.canReset(existAccount, util.encrypt(JSON.stringify({account: notExistAccount, expiration: util.time() + 30 * 60}))).should.be.false;
+                User.canReset(existAccount, helper.encrypt(JSON.stringify({account: notExistAccount, expiration: helper.time() + 30 * 60}))).should.be.false;
             });
 
             it('should be return false when sign is expired', function () {
-                User.canReset(existAccount, util.encrypt(JSON.stringify({account: existAccount, expiration: util.time() - 10}))).should.be.false;
+                User.canReset(existAccount, helper.encrypt(JSON.stringify({account: existAccount, expiration: helper.time() - 10}))).should.be.false;
             });
 
             it('should be return true when sign is match and not expired', function () {
-                User.canReset(existAccount, util.encrypt(JSON.stringify({account: existAccount, expiration: util.time() + 10}))).should.be.true;
+                User.canReset(existAccount, helper.encrypt(JSON.stringify({account: existAccount, expiration: helper.time() + 10}))).should.be.true;
             });
 
             it('should be return false when sign is can not decode', function () {
-                User.canReset(existAccount, util.encrypt('aha')).should.be.false;
+                User.canReset(existAccount, helper.encrypt('aha')).should.be.false;
             });
 
             it('should be return false when sign is null', function () {
