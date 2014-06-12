@@ -9,7 +9,7 @@ var Schema = mongoose.Schema;
  */
 var Follower = Schema({
     _id: {type: String, lowercase: true, trim: true},
-    follwers: [{type: Schema.Types.ObjectId}]
+    followers: [{type: Schema.Types.ObjectId}]
 });
 
 module.exports = mongoose.model('TagFollower', Follower);
