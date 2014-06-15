@@ -8,6 +8,7 @@ var mongoose = require('mongoose');
 var UserFeed = require('../../../model/user/Feed');
 var TagFollower = require('../../../model/tag/Follower');
 var Look = require('../../../model/Look');
+var User = require('../../../model/User');
 
 
 var emptyFeedUid = new mongoose.Types.ObjectId;
@@ -21,11 +22,17 @@ var image = 'image';
 var tags = ['fashion'];
 var description = 'desc';
 var favorite = lookId + '-' + 'shirt';
+var account = 'jackongc@gmail.com';
 
 describe('UserFeed', function () {
     before(function () {
         var tagFollower = new TagFollower({_id: tags[0], followers: [hasFeedUid]});
         tagFollower.save(function (err) {
+            should.not.exist(err);
+        });
+
+        var user = new User({_id: publisher, account: account});
+        user.save(function (err) {
             should.not.exist(err);
         });
 
@@ -43,12 +50,12 @@ describe('UserFeed', function () {
         });
 
         UserFeed.push(filterFeedUid, notExistLookId).exec();
+
     });
     describe('#feeds', function () {
         it('should be return empty when my following did not published anything', function (done) {
             Look.feeds(emptyFeedUid, 0, 1, function (err, feeds) {
-                should.not.exist(err);
-                feeds.should.be.empty;
+                should.exist(err);
                 done();
             });
         });
@@ -56,13 +63,13 @@ describe('UserFeed', function () {
             Look.feeds(hasFeedUid, 0, 1, function (err, feeds) {
                 should.not.exist(err);
                 feeds.should.with.lengthOf(1);
+                feeds[0].publisher.should.be.an.Object.and.have.property('_id', publisher);
                 done();
             });
         });
         it('should be filter when the look is not exist', function (done) {
             Look.feeds(filterFeedUid, 0, 1, function (err, feeds) {
-                should.not.exist(err);
-                feeds.should.with.lengthOf(0);
+                should.exist(err);
                 done();
             });
         });
@@ -72,5 +79,6 @@ describe('UserFeed', function () {
         Look.remove({_id: lookId}).exec();
         UserFeed.remove({_id: filterFeedUid}).exec();
         TagFollower.remove({_id: tags[0]}).exec();
+        User.remove({account: account}).exec();
     })
 });

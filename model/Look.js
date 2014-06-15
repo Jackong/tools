@@ -4,12 +4,14 @@
 
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
+var async = require('async');
 
 var Favorite = require('./Favorite');
 var TagLook = require('./tag/Look');
 var UserPublication = require('./user/Publication');
 var UserWant = require('./user/Want');
 var UserFeed = require('./user/Feed');
+var User = require('./User');
 
 var logger = require('../common/logger');
 
@@ -144,24 +146,28 @@ Look.method('publish', function (callback) {
     });
 });
 
-Look.static('feeds', function (uid, skip, limit, callback) {
+Look.static('feeds', function (uid, skip, limit, cb) {
     var self = this;
-    UserFeed.findById(
-        {
-            _id: uid,
-            feeds: {
-                $slice: [skip, limit]
-            }
+    async.waterfall([
+        function findFeeds(callback) {
+            UserFeed.findById(
+                {
+                    _id: uid,
+                    feeds: {
+                        $slice: [skip, limit]
+                    }
+                },
+                {
+                    feeds: 1
+                },
+                callback
+            );
         },
-        {
-            feeds: 1
-        },
-        function (err, feed) {
-            if (null !== err || null === feed) {
-                callback(err, []);
+        function attachLooks(feed, callback) {
+            if (null === feed) {
+                callback('feed not found', null);
                 return;
             }
-
             self.find(
                 {
                     _id: {
@@ -174,9 +180,64 @@ Look.static('feeds', function (uid, skip, limit, callback) {
                     updated: 0,
                     likes: 0
                 },
+                {
+                    lean: true
+                },
                 callback
             );
-        });
+        },
+        function findPublishers(looks, callback) {
+            var uids = [];
+            async.each(looks, function (look, callback) {
+                uids.push(look.publisher);
+                callback();
+            }, function (err) {
+                User.find(
+                    {
+                        _id: {
+                            $in: uids
+                        }
+                    },
+                    {
+                        nick: 1,
+                        avatar: 1
+                    },
+                    function (err, users) {
+                        callback(err, looks, users);
+                    }
+                );
+            });
+        },
+        function makeUserMap(looks, users, callback) {
+            if (users.length <= 0) {
+                return callback('users not found', null);
+            }
+            var userMap = [];
+            async.each(users, function (user, callback) {
+                userMap[user._id] = user;
+                callback();
+            }, function (err) {
+                callback(null, looks, userMap);
+            });
+        },
+        function attachPublisher(looks, userMap, callback) {
+            async.filter(looks, function (look, callback) {
+                var user = userMap[look.publisher];
+                if (typeof user === 'undefined') {
+                    return callback(false);
+                }
+                look.publisher = user;
+                callback(true);
+            }, function (looks) {
+                callback(null, looks);
+            });
+        }/*,
+        function (looks, callback) {
+            async.each(looks, function (look, callback) {
+
+            });
+        }*/
+    ],cb);
 });
 
 module.exports = mongoose.model('Look', Look);
