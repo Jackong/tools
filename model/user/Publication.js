@@ -8,7 +8,8 @@ var Schema = mongoose.Schema;
  * user._id as _id
  */
 var Publication = Schema({
-    publications: [{type: String}]
+    publications: [{type: String}],
+    publicationCount: {type: Number, default: 0}
 });
 
 module.exports = mongoose.model('UserPublication', Publication);

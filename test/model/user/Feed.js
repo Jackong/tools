@@ -46,21 +46,21 @@ describe('UserFeed', function () {
     });
     describe('#feeds', function () {
         it('should be return empty when my following did not published anything', function (done) {
-            Look.feeds(emptyFeedUid, function (err, feeds) {
+            Look.feeds(emptyFeedUid, 0, 1, function (err, feeds) {
                 should.not.exist(err);
                 feeds.should.be.empty;
                 done();
             });
         });
         it('should be return not empty when my following published something', function (done) {
-            Look.feeds(hasFeedUid, function (err, feeds) {
+            Look.feeds(hasFeedUid, 0, 1, function (err, feeds) {
                 should.not.exist(err);
                 feeds.should.with.lengthOf(1);
                 done();
             });
         });
         it('should be filter when the look is not exist', function (done) {
-            Look.feeds(filterFeedUid, function (err, feeds) {
+            Look.feeds(filterFeedUid, 0, 1, function (err, feeds) {
                 should.not.exist(err);
                 feeds.should.with.lengthOf(0);
                 done();

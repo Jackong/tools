@@ -23,6 +23,7 @@ var Look = Schema({
     created: {type: Date, default: Date.now},
     updated: {type: Date, default: Date.now},
     likes: [{ type: Schema.Types.ObjectId }],//User:喜欢的人
+    likeCount: {type: Number, default: 0},
     favorites: [{type: String}]//Favorite:心仪的东西
 });
 
@@ -143,28 +144,39 @@ Look.method('publish', function (callback) {
     });
 });
 
-Look.static('feeds', function (uid, callback) {
+Look.static('feeds', function (uid, skip, limit, callback) {
     var self = this;
-    UserFeed.findById(uid, function (err, feed) {
-        if (null !== err || null === feed) {
-            callback(err, []);
-            return;
-        }
+    UserFeed.findById(
+        {
+            _id: uid,
+            feeds: {
+                $slice: [skip, limit]
+            }
+        },
+        {
+            feeds: 1
+        },
+        function (err, feed) {
+            if (null !== err || null === feed) {
+                callback(err, []);
+                return;
+            }
 
-        self.find(
-            {
-                _id: {
-                    $in: feed.feeds
+            self.find(
+                {
+                    _id: {
+                        $in: feed.feeds
+                    },
+                    isValid: true
                 },
-                isValid: true
-            },
-            {
-                isValid: 0,
-                updated: 0
-            },
-            callback
-        );
-    });
+                {
+                    isValid: 0,
+                    updated: 0,
+                    likes: 0
+                },
+                callback
+            );
+        });
 });
 
 module.exports = mongoose.model('Look', Look);

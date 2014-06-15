@@ -8,7 +8,8 @@ var Schema = mongoose.Schema;
  * user._id as _id
  */
 var Want = Schema({
-    wants: [{type: String}]
+    wants: [{type: String}],
+    wantCount: {type: Number, default: 0}
 });
 
 Want.static('sync', function (publisher, lookId) {

@@ -9,7 +9,8 @@ var Schema = mongoose.Schema;
  */
 var Follower = Schema({
     _id: {type: String, lowercase: true, trim: true},
-    followers: [{type: Schema.Types.ObjectId}]
+    followers: [{type: Schema.Types.ObjectId}],
+    followerCount: {type: Number, default: 0}
 });
 
 module.exports = mongoose.model('TagFollower', Follower);

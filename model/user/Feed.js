@@ -10,7 +10,8 @@ var TagFollower = require('../tag/Follower');
  * user._id as _id
  */
 var Feed = Schema({
-    feeds: [{type: String}]
+    feeds: [{type: String}],
+    feedCount: {type:Number, default: 0}
 });
 
 Feed.static('update4user', function (publisher, lookId) {

@@ -29,7 +29,8 @@ var User = Schema({
             wantMyLook: {type: Boolean, default: true},
             followMe: {type: Boolean, default: true}
         }
-    }
+    },
+    notifications: [{type: Schema.Types.ObjectId}]
 });
 
 helper.modelMethods(User.statics, {

@@ -8,7 +8,8 @@ var Schema = mongoose.Schema;
  * user._id as _id
  */
 var Like = Schema({
-    likes: [{type: String}]
+    likes: [{type: String}],
+    likeCount: {type: Number, default: 0}
 });
 
 module.exports = mongoose.model('UserLike', Like);
