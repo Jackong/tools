@@ -62,7 +62,7 @@ describe('UserFeed', function () {
         it('should be filter when the look is not exist', function (done) {
             Look.feeds(filterFeedUid, function (err, feeds) {
                 should.not.exist(err);
-                feeds.should.with.lengthOf(1);
+                feeds.should.with.lengthOf(0);
                 done();
             });
         });

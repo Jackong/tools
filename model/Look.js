@@ -144,12 +144,26 @@ Look.method('publish', function (callback) {
 });
 
 Look.static('feeds', function (uid, callback) {
+    var self = this;
     UserFeed.findById(uid, function (err, feed) {
-        var feeds = [];
-        if (null === err && null !== feed) {
-            feeds = feed.feeds;
+        if (null !== err || null === feed) {
+            callback(err, []);
+            return;
         }
-        callback(err, feeds);
+
+        self.find(
+            {
+                _id: {
+                    $in: feed.feeds
+                },
+                isValid: true
+            },
+            {
+                isValid: 0,
+                updated: 0
+            },
+            callback
+        );
     });
 });
 
