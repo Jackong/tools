@@ -11,4 +11,21 @@ var Want = Schema({
     wants: [{type: String}]
 });
 
+Want.static('sync', function (publisher, lookId) {
+    this.update(
+        {
+            _id: publisher
+        },
+        {
+            $addToSet:
+            {
+                wants: lookId
+            }
+        },
+        {
+            upsert: true
+        }
+    ).exec();
+});
+
 module.exports = mongoose.model('UserWant', Want);

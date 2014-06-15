@@ -3,16 +3,12 @@
  */
 
 var mongoose = require('mongoose');
-var util = require('util');
-var EventEmitter = require('events').EventEmitter;
 var Schema = mongoose.Schema;
 
 var Favorite = require('./Favorite');
 var TagLook = require('./tag/Look');
-var TagFollower = require('./tag/Follower');
 var UserPublication = require('./user/Publication');
 var UserWant = require('./user/Want');
-var UserFollower = require('./user/Follower');
 var UserFeed = require('./user/Feed');
 
 var logger = require('../common/logger');
@@ -75,74 +71,76 @@ Look.post('save', function syncPublication(doc) {
 });
 
 Look.post('save', function syncWant(doc) {
-    UserWant.update(
+    UserWant.sync(doc.publisher, doc._id);
+});
+
+Look.post('save', function syncFeed(doc) {
+    UserFeed.update4user(doc.publisher, doc._id);
+    UserFeed.update4tags(doc.tags, doc._id);
+});
+
+Look.method('republish', function (doc, callback) {
+    var tags = [];
+    for (var tagIndex = 0; tagIndex < this.tags.length; tagIndex++) {
+        var tag = this.tags[tagIndex];
+        if (doc.tags.indexOf(tag) > -1) {
+            continue;
+        }
+        tags.push(tag);
+    }
+    this.tags = tags;
+    UserFeed.update4tags(tags, doc._id);
+
+    if (doc.publisher !== this.publisher) {
+        UserWant.sync(this.publisher, doc._id);
+        UserFeed.update4user(this.publisher, doc._id);
+    }
+
+    var favoriteId = this.favorites[0];
+    if (doc.favorites.indexOf(favoriteId) < 0) {
+        var favorite = new Favorite({_id: favoriteId, wants:[this.publisher]});
+        favorite.save();
+    } else {
+        this.favorites.pop();
+    }
+
+    var self = this;
+    this.model('Look').update(
         {
-            _id: doc.publisher
+            _id: this._id
         },
         {
-            $addToSet:
-            {
-                wants: doc._id
+            $addToSet: {
+                tags: {
+                    $each: this.tags
+                },
+                favorites: {
+                    $each: this.favorites
+                }
             }
         },
         {
             upsert: true
-        }
-    ).exec();
-});
-
-Look.post('save', function syncFeed(doc) {
-    UserFollower.findById(doc.publisher, function (err, userFollower) {
-        if (null !== err || null === userFollower) {
-            return;
-        }
-        var followers = userFollower.followers;
-        for(var idx = 0; idx < followers.length; idx++) {
-            UserFeed.update(
-                {
-                    _id: followers[idx]
-                },
-                {
-                    $addToSet: {
-                        feeds: doc._id
-                    }
-                },
-                {
-                    upsert: true
-                }
-            ).exec();
-        }
-    });
-
-    var tags = doc.tags;
-    for(var idx = 0; idx < tags.length; idx++) {
-        TagFollower.findById(tags[idx], function (err, tagFollower) {
-            if (null !== err || null === tagFollower) {
-                return;
+        },
+        function (err, num) {
+            doc.tags = doc.tags.concat(tags);
+            doc.favorites = doc.favorites.concat(self.favorites);
+            if (null !== err || num !== 1) {
+                doc = null;
             }
-            var followers = tagFollower.followers;
-            for (var jdx = 0; jdx < followers.length; jdx++) {
-                UserFeed.update(
-                    {
-                        _id: followers[jdx]
-                    },
-                    {
-                        $addToSet: {
-                            feeds: doc._id
-                        }
-                    },
-                    {
-                        upsert: true
-                    }
-                ).exec();
-            }
-        });
-    }
+            callback(err, doc);
+        }
+    );
 });
-
 
 Look.method('publish', function (callback) {
-    this.save(callback);
+    var self = this;
+    this.model('Look').findById(this._id, function (err, doc) {
+        if (null === err && null !== doc) {
+            self.republish(doc, callback);
+        }
+        self.save(callback);
+    });
 });
 
 module.exports = mongoose.model('Look', Look);
