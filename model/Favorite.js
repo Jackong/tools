@@ -9,7 +9,8 @@ var Favorite = Schema({
     isValid: {type: Boolean, default: true},
     wants: [{ type: Schema.Types.ObjectId }],//User:想要的人
     wantCount: {type: Number, default: 0},
-    tips: [{type: Schema.Types.ObjectId}]//Tip:提示信息
+    tips: [{type: Schema.Types.ObjectId}],//Tip:提示信息
+    tipCount: {type: Number, default: 0}
 });
 var aspect = Favorite.virtual('aspect');
 aspect.get(function () {
