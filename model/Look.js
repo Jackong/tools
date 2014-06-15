@@ -143,4 +143,14 @@ Look.method('publish', function (callback) {
     });
 });
 
+Look.static('feeds', function (uid, callback) {
+    UserFeed.findById(uid, function (err, feed) {
+        var feeds = [];
+        if (null === err && null !== feed) {
+            feeds = feed.feeds;
+        }
+        callback(err, feeds);
+    });
+});
+
 module.exports = mongoose.model('Look', Look);

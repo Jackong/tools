@@ -5,7 +5,6 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 var UserFollower = require('./Follower');
 var TagFollower = require('../tag/Follower');
-var Look = require('../Look');
 
 /**
  * user._id as _id
@@ -22,19 +21,7 @@ Feed.static('update4user', function (publisher, lookId) {
         }
         var followers = userFollower.followers;
         for(var idx = 0; idx < followers.length; idx++) {
-            self.update(
-                {
-                    _id: followers[idx]
-                },
-                {
-                    $addToSet: {
-                        feeds: lookId
-                    }
-                },
-                {
-                    upsert: true
-                }
-            ).exec();
+            self.push(followers[idx], lookId).exec();
         }
     });
 });
@@ -48,28 +35,27 @@ Feed.static('update4tags', function (tags, lookId) {
             }
             var followers = tagFollower.followers;
             for (var jdx = 0; jdx < followers.length; jdx++) {
-                self.update(
-                    {
-                        _id: followers[jdx]
-                    },
-                    {
-                        $addToSet: {
-                            feeds: lookId
-                        }
-                    },
-                    {
-                        upsert: true
-                    }
-                ).exec();
+                self.push(followers[jdx], lookId).exec();
             }
         });
     }
 });
 
-Feed.static('gets', function (uid, callback) {
-    this.findById(uid, function (err, feed) {
-        callback(err, feed);
-    })
+Feed.static('push', function (uid, lookId, callback) {
+    return this.update(
+        {
+            _id: uid
+        },
+        {
+            $addToSet: {
+                feeds: lookId
+            }
+        },
+        {
+            upsert: true
+        },
+        callback
+    );
 });
 
 module.exports = mongoose.model('UserFeed', Feed);
