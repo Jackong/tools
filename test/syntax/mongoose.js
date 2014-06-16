@@ -11,7 +11,14 @@ var helper = require('../../common/helper');
 
 var TestSchema = mongoose.Schema({
     test: {type: String, lowercase: true, trim: true},
-    test2: String
+    test2: String,
+    test3: [
+        {
+            a: String,
+            b: Number,
+            c: [{type: Number}]
+        }
+    ]
 });
 
 helper.modelMethods(TestSchema.statics, {
@@ -59,6 +66,27 @@ describe('mongoose', function () {
                 doc.test2.should.be.equal('JackongC@gmail.com');
                 done();
             });
+        });
+    });
+
+    describe('#embed array', function () {
+        it('should be successful to save', function (done) {
+            var test = new Test({test:'jackongc@gmail.com', test2: 'jackongc@gmail.com', test3: [
+                {
+                    a:'a',
+                    b: 2,
+                    c:[1,2,3]
+                }
+            ]});
+            test.save(function (err, doc) {
+                should.not.exist(err);
+                should.exist(doc);
+                var elem1 = doc.test3[0];
+                elem1.should.have.property('a', 'a');
+                elem1.should.have.property('b', 2);
+                elem1.c.should.with.lengthOf(3);
+                done();
+            })
         });
     });
 
