@@ -8,6 +8,7 @@ var Schema = mongoose.Schema;
 var Tip = Schema({
     author: Schema.Types.ObjectId,//User:作者
     content: String,//内容
+    price: Number,
     time: Date,//时间
     isValid: {type: Boolean, default: true},
     likes: [{type: Schema.Types.ObjectId}],//只记录User ID不引用

@@ -139,3 +139,37 @@ exports.getFeeds = function (uid, skip, limit, cb) {
         }
     ],cb);
 };
+
+var republish = exports.republish = function (look, callback) {
+
+};
+
+var publish = exports.publish = function (hash, publisher, image, tags, aspect, description, callback) {
+    Look.findById(hash, function (err, look) {
+        if (null !== look) {
+            return republish(look, callback);
+        }
+        var look = new Look(
+            {
+                _id: hash,
+                publisher: publisher,
+                image: image,
+                tags: tags,
+                description: description,
+                favorites: [
+                    {
+                        aspect: aspect,
+                        wants: [publisher],
+                        wantCount: 1
+                    }
+                ]
+            }
+        );
+        async.parallel([
+            look.save(function (err, doc) {
+
+            })
+        ]);
+    });
+};
+

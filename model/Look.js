@@ -6,7 +6,6 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 var async = require('async');
 
-var Favorite = require('./Favorite');
 var TagLook = require('./tag/Look');
 var UserPublication = require('./user/Publication');
 var UserWant = require('./user/Want');
@@ -14,6 +13,14 @@ var UserFeed = require('./user/Feed');
 var User = require('./User');
 
 var logger = require('../common/logger');
+
+var Favorite = Schema({
+    _id: String,//aspect
+    wants: [{ type: Schema.Types.ObjectId }],//User:想要的人
+    wantCount: {type: Number, default: 0},
+    tips: [{type: Schema.Types.ObjectId}],//Tip:提示信息
+    tipCount: {type: Number, default: 0}
+});
 
 var Look = Schema({
     _id: String,//文件MD5
@@ -26,16 +33,8 @@ var Look = Schema({
     updated: {type: Date, default: Date.now},
     likes: [{ type: Schema.Types.ObjectId }],//User:喜欢的人
     likeCount: {type: Number, default: 0},
-    favorites: [{type: String}]//Favorite:心仪的东西
+    favorites: [Favorite]//Favorite:心仪的东西
 });
-
-var aspect = Look.virtual('aspect');
-
-Look.post('save', function saveFavorite(doc) {
-    var favorite = new Favorite({_id: doc.favorites[0], wants:[doc.publisher]});
-    favorite.save();
-});
-
 
 Look.post('save', function syncTag(doc) {
     for(var idx = 0; idx <= doc.tags.length; idx++) {
@@ -99,12 +98,12 @@ Look.method('republish', function (doc, callback) {
         UserFeed.update4user(this.publisher, doc._id);
     }
 
-    var favoriteId = this.favorites[0];
-    if (doc.favorites.indexOf(favoriteId) < 0) {
-        var favorite = new Favorite({_id: favoriteId, wants:[this.publisher]});
-        favorite.save();
-    } else {
-        this.favorites.pop();
+    for(var idx = 0; idx < doc.favorites.length; idx++) {
+        var favorite = doc.favorites[idx];
+        if (favorite._id == this.favorites[0]._id) {
+            this.favorites.pop();
+            break;
+        }
     }
 
     var self = this;

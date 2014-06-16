@@ -5,7 +5,6 @@ require('../../common/mongo');
 var mongoose = require('mongoose');
 var should = require("should");
 var Look = require('../../model/Look');
-var Favorite = require('../../model/Favorite');
 var TagLook = require('../../model/tag/Look');
 var TagFollower = require('../../model/tag/Follower');
 var UserPublication = require('../../model/user/Publication');
@@ -29,8 +28,16 @@ var description = 'description';
 var aspect1 = 'shirt';
 var aspect2 = 'dress';
 
-var favorite1 = id + '-' + aspect1;
-var favorite2 = id + '-' + aspect2;
+var favorite1 = {
+    _id: aspect1,
+    wants:[publisher],
+    wantCount: 1
+};
+var favorite2 = {
+    _id: aspect2,
+    wants:[publisher],
+    wantCount: 1
+};
 var existLookDoc = null;
 describe('Look', function () {
     beforeEach(function () {
@@ -77,21 +84,6 @@ describe('Look', function () {
     });
 
     describe('.publish()', function () {
-        it('should save favorites', function (done) {
-            look.publish(function (err, doc) {
-                should.not.exist(err);
-                doc.favorites.should.have.lengthOf(1);
-                setTimeout(function () {
-                    Favorite.findById(doc.favorites[0], function (err, favorite) {
-                        should.not.exist(err);
-                        favorite.should.be.an.object;
-                        favorite.aspect.should.be.equal(aspect1);
-                        done();
-                    });
-                },10);
-            });
-        });
-
         it('should sync tags looks', function (done) {
             look.publish(function (err, doc) {
                 TagLook.count({
@@ -235,12 +227,7 @@ describe('Look', function () {
             look.favorites = [favorite2];
             look.republish(existLookDoc, function (err, doc) {
                 doc.favorites.should.containEql(favorite1, favorite2);
-                Favorite.findById(favorite2, function (err, favorite) {
-                    should.not.exist(err);
-                    favorite.should.be.an.object;
-                    favorite.aspect.should.be.equal(aspect2);
-                    done();
-                });
+                done();
             });
         });
 
@@ -284,8 +271,6 @@ describe('Look', function () {
 
     afterEach(function () {
         Look.remove({_id: id}).exec();
-        Favorite.remove({_id: favorite1}).exec();
-        Favorite.remove({_id: favorite2}).exec();
         TagLook.remove({_id: {$in: tags}}).exec();
         UserPublication.remove({_id: publisher}).exec();
         UserWant.remove({_id: publisher}).exec();
