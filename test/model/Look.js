@@ -11,6 +11,7 @@ var UserPublication = require('../../model/user/Publication');
 var UserWant = require('../../model/user/Want');
 var UserFollower = require('../../model/user/Follower');
 var UserFeed = require('../../model/user/Feed');
+var LookService = require('../../services/Look');
 
 var look = null;
 var id = 'md5theimagefile';
@@ -40,6 +41,9 @@ var favorite2 = {
 };
 var existLookDoc = null;
 describe('Look', function () {
+    var publish = function (callback) {
+        LookService.publish(id, publisher, image, tags, aspect1, description, callback);
+    };
     beforeEach(function () {
         look = new Look({
             _id: id,
@@ -85,7 +89,7 @@ describe('Look', function () {
 
     describe('.publish()', function () {
         it('should sync tags looks', function (done) {
-            look.publish(function (err, doc) {
+            publish(function (err, doc) {
                 TagLook.count({
                     _id: {
                         $in: doc.tags
@@ -102,7 +106,7 @@ describe('Look', function () {
 
 
         it('should sync publications for the user', function (done) {
-            look.publish(function(err, doc) {
+            publish(function(err, doc) {
                 UserPublication.count({
                     _id: doc.publisher,
                     publications: {
@@ -116,7 +120,7 @@ describe('Look', function () {
         });
 
         it('should sync wants for the user', function (done) {
-            look.publish(function (err, doc) {
+            publish(function (err, doc) {
                 UserWant.count({
                     _id: doc.publisher,
                     wants: {
@@ -130,7 +134,7 @@ describe('Look', function () {
         });
 
         it('should sync feeds for the followers of the tags', function (done) {
-            look.publish(function (err, doc) {
+            publish(function (err, doc) {
                 setTimeout(function () {
                     UserFeed.count({
                         _id: tagFollowerId1,
@@ -146,7 +150,7 @@ describe('Look', function () {
         });
 
         it('should sync feeds for the followers of the publisher', function (done) {
-            look.publish(function (err, doc) {
+            publish(function (err, doc) {
                 setTimeout(function () {
                     UserFeed.count({
                         _id: userFollowerId1,
@@ -162,7 +166,7 @@ describe('Look', function () {
         });
 
         it('should sync feeds without duplication for the followers of the tags and the publisher', function (done) {
-            look.publish(function (err, doc) {
+            publish(function (err, doc) {
                 setTimeout(function () {
                     UserFeed.count({
                         _id: tagAndUserFollowerId,
@@ -179,7 +183,7 @@ describe('Look', function () {
 
         it('should not change the publisher when the look has been published by other one', function (done) {
             look.publisher = publisher2;
-            look.republish(existLookDoc, function (err, doc) {
+            LookService.republish(existLookDoc, look, function (err, doc) {
                 doc.publisher.should.not.equal(publisher2);
                 done();
             });
@@ -187,7 +191,7 @@ describe('Look', function () {
 
         it('should not new a publication when the look has been published by other one', function (done) {
             look.publisher = publisher2;
-            look.republish(existLookDoc, function (err, doc) {
+            LookService.republish(existLookDoc, look, function (err, doc) {
                 UserPublication.count({
                     _id: publisher2,
                     publications: {
@@ -202,7 +206,7 @@ describe('Look', function () {
 
         it('should append different tags when the look has been published with other tags', function (done) {
             look.tags.push(newTag);
-            look.republish(existLookDoc, function (err, doc) {
+            LookService.republish(existLookDoc, look, function (err, doc) {
                 doc.tags.should.containEql(newTag);
                 done();
             });
@@ -210,7 +214,7 @@ describe('Look', function () {
 
         it('should append to the wants when the look has been published by other one', function (done) {
             look.publisher = publisher2;
-            look.republish(existLookDoc, function (err, doc) {
+            LookService.republish(existLookDoc, look, function (err, doc) {
                 UserWant.count({
                     _id: publisher2,
                     wants: {
@@ -225,14 +229,14 @@ describe('Look', function () {
 
         it('should append different favorite when the look has been published with other favorite', function (done) {
             look.favorites = [favorite2];
-            look.republish(existLookDoc, function (err, doc) {
+            LookService.republish(existLookDoc, look, function (err, doc) {
                 doc.favorites.should.containEql(favorite1, favorite2);
                 done();
             });
         });
 
         it('should not append different favorite when the look has been published with an exist favorite', function (done) {
-            look.republish(existLookDoc, function (err, doc) {
+            LookService.republish(existLookDoc, look, function (err, doc) {
                 doc.favorites.should.be.eql([favorite1]);
                 done();
             });
@@ -240,22 +244,24 @@ describe('Look', function () {
 
         it('should add new feed for the followers of new publisher(want)', function (done) {
             look.publisher = publisher2;
-            look.republish(existLookDoc, function (err, doc) {
-                UserFeed.count({
-                    _id: userFollowerId2,
-                    feeds: {
-                        $all: [doc._id]
-                    }
-                }, function (err, count) {
-                    count.should.be.exactly(1);
-                    done();
-                });
+            LookService.republish(existLookDoc, look, function (err, doc) {
+                setTimeout(function () {
+                    UserFeed.count({
+                        _id: userFollowerId2,
+                        feeds: {
+                            $all: [doc._id]
+                        }
+                    }, function (err, count) {
+                        count.should.be.exactly(1);
+                        done();
+                    });
+                }, 20)
             });
         });
 
         it('should add new feed for the followers of new tags', function (done) {
             look.tags.push(newTag);
-            look.republish(existLookDoc, function (err, doc) {
+            LookService.republish(existLookDoc, look, function (err, doc) {
                 UserFeed.count({
                     _id: tagFollowerId2,
                     feeds: {

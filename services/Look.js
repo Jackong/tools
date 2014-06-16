@@ -140,18 +140,83 @@ exports.getFeeds = function (uid, skip, limit, cb) {
     ],cb);
 };
 
-var republish = exports.republish = function (look, callback) {
-
+var republish = exports.republish = function (old, look, callback) {
+    async.parallel([
+        function syncTagsFeed(callback) {
+            async.filter(look.tags, function (tag, callback) {
+                if (old.tags.indexOf(tag) > -1) {
+                    return callback(false);
+                }
+                callback(true);
+            }, function (tags) {
+                look.tags = tags;
+                UserFeed.update4tags(tags, look._id);
+                callback();
+            });
+        },
+        function syncFollowerFeed(callback) {
+            if (look.publisher !== old.publisher) {
+                UserFeed.update4user(look.publisher, look._id);
+            }
+            callback();
+        },
+        function syncWant(callback) {
+            if (look.publisher !== old.publisher) {
+                UserWant.sync(look.publisher, look._id);
+            }
+            callback();
+        },
+        function filterFavorite(callback) {
+            for(var idx = 0; idx < old.favorites.length; idx++) {
+                var favorite = old.favorites[idx];
+                if (favorite._id == look.favorites[0]._id) {
+                    look.favorites.pop();
+                    break;
+                }
+            }
+            callback();
+        }
+    ], function (err, results) {
+        if (typeof err !== 'undefined') {
+            return callback(err, null);
+        }
+        if (look.tags.length === 0 && look.favorites.length === 0) {
+            return callback(err, old);
+        }
+        Look.update(
+            {
+                _id: look._id
+            },
+            {
+                $addToSet: {
+                    tags: {
+                        $each: look.tags
+                    },
+                    favorites: {
+                        $each: look.favorites
+                    }
+                }
+            },
+            {
+                upsert: true
+            },
+            function (err, num) {
+                old.tags = old.tags.concat(look.tags);
+                old.favorites = old.favorites.concat(look.favorites);
+                if (null !== err || num !== 1) {
+                    old = null;
+                }
+                callback(err, old);
+            }
+        )
+    })
 };
 
-var publish = exports.publish = function (hash, publisher, image, tags, aspect, description, callback) {
-    Look.findById(hash, function (err, look) {
-        if (null !== look) {
-            return republish(look, callback);
-        }
+var publish = exports.publish = function (lookId, publisher, image, tags, aspect, description, callback) {
+    Look.findById(lookId, function (err, old) {
         var look = new Look(
             {
-                _id: hash,
+                _id: lookId,
                 publisher: publisher,
                 image: image,
                 tags: tags,
@@ -165,11 +230,62 @@ var publish = exports.publish = function (hash, publisher, image, tags, aspect, 
                 ]
             }
         );
-        async.parallel([
-            look.save(function (err, doc) {
+        if (null !== old) {
+            return republish(old, look, callback);
+        }
 
-            })
-        ]);
+        async.parallel([
+            function saveLook(callback) {
+                look.save(callback);
+            },
+            function syncTags(callback) {
+                TagLook.update(
+                    {
+                        _id: {
+                            $in: tags
+                        }
+                    },
+                    {
+                        $addToSet:
+                        {
+                            looks: lookId
+                        }
+                    },
+                    {
+                        upsert: true
+                    }
+                ).exec();
+                callback();
+            },
+            function syncPublication(callback) {
+                UserPublication.update(
+                    {
+                        _id: publisher
+                    },
+                    {
+                        $addToSet:
+                        {
+                            publications: lookId
+                        }
+                    },
+                    {
+                        upsert: true
+                    }
+                ).exec();
+                callback();
+            },
+            function syncWant(callback) {
+                UserWant.sync(publisher, lookId);
+                callback();
+            },
+            function syncFeed(callback) {
+                UserFeed.update4user(publisher, lookId);
+                UserFeed.update4tags(tags, lookId);
+                callback();
+            }
+        ], function (err, results) {
+            callback(err, look);
+        });
     });
 };
 

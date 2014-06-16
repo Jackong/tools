@@ -22,7 +22,7 @@ var lookId = 'theHashOfTheFile';
 var image = 'image';
 var tags = ['fashion'];
 var description = 'desc';
-var favorite = lookId + '-' + 'shirt';
+var aspect = 'shirt';
 var account = 'jackongc@gmail.com';
 
 describe('LookService', function () {
@@ -37,16 +37,7 @@ describe('LookService', function () {
             should.not.exist(err);
         });
 
-        var look = new Look({
-            _id: lookId,
-            publisher: publisher,
-            image: image,
-            tags: tags,
-            description: description,
-            favorites: [favorite]
-        });
-
-        look.publish(function (err, doc) {
+        LookService.publish(lookId, publisher, image, tags, aspect, description, function (err, doc) {
             should.not.exist(err);
         });
 
