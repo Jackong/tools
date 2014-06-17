@@ -239,23 +239,29 @@ var publish = exports.publish = function (lookId, publisher, image, tags, aspect
                 look.save(callback);
             },
             function syncTags(callback) {
-                TagLook.update(
-                    {
-                        _id: {
-                            $in: tags
-                        }
-                    },
-                    {
-                        $addToSet:
+                async.each(tags, function (tag, callback) {
+                    TagLook.update(
                         {
-                            looks: lookId
+                            _id: tag
+                        },
+                        {
+                            $addToSet:
+                            {
+                                looks: lookId
+                            },
+                            $inc: {
+                                lookCount: 1
+                            }
+                        },
+                        {
+                            upsert: true
                         }
-                    },
-                    {
-                        upsert: true
-                    }
-                ).exec();
-                callback();
+                    ).exec();
+                    callback();
+                }, function (err) {
+                    callback(err);
+                });
+
             },
             function syncPublication(callback) {
                 UserPublication.update(
