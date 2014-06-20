@@ -33,7 +33,7 @@ var aspect2 = 'dress';
 var account = 'jackongc@gmail.com';
 
 describe('LookService', function () {
-    describe('.feeds()', function () {
+    describe.skip('.feeds()', function () {
         before(function () {
             var tagFollower = new TagFollower({_id: tags[0], followers: [hasFeedUid]});
             tagFollower.save(function (err) {
@@ -93,7 +93,7 @@ describe('LookService', function () {
         };
         beforeEach(function () {
 
-            tagFollowerId1.should.not.eql(userFollowerId1);
+/*            tagFollowerId1.should.not.eql(userFollowerId1);
             userFollowerId1.should.not.eql(tagAndUserFollowerId);
 
             var tagFollower = new TagFollower({_id: tags[0], followers: [tagFollowerId1, tagAndUserFollowerId]});
@@ -105,7 +105,7 @@ describe('LookService', function () {
 
             userFollower.save(function (err) {
                 should.not.exist(err);
-            });
+            });*/
         });
 
         it('should sync tags looks', function (done) {
@@ -153,7 +153,7 @@ describe('LookService', function () {
             });
         });
 
-        it('should sync feeds for the followers of the tags', function (done) {
+        it.skip('should sync feeds for the followers of the tags', function (done) {
             publish(function (err, doc) {
                 setTimeout(function () {
                     UserFeed.count({
@@ -169,7 +169,7 @@ describe('LookService', function () {
             });
         });
 
-        it('should sync feeds for the followers of the publisher', function (done) {
+        it.skip('should sync feeds for the followers of the publisher', function (done) {
             publish(function (err, doc) {
                 setTimeout(function () {
                     UserFeed.count({
@@ -185,7 +185,7 @@ describe('LookService', function () {
             });
         });
 
-        it('should sync feeds without duplication for the followers of the tags and the publisher', function (done) {
+        it.skip('should sync feeds without duplication for the followers of the tags and the publisher', function (done) {
             publish(function (err, doc) {
                 setTimeout(function () {
                     UserFeed.count({
@@ -205,12 +205,12 @@ describe('LookService', function () {
             Look.remove({_id: lookId}).exec();
             TagLook.remove({_id: {$in: tags}}).exec();
             UserPublication.remove({_id: publisher}).exec();
-            UserWant.remove({_id: publisher}).exec();
+/*            UserWant.remove({_id: publisher}).exec();
             UserFeed.remove({_id: userFollowerId1}).exec();
             UserFeed.remove({_id: tagFollowerId1}).exec();
             UserFeed.remove({_id: tagAndUserFollowerId}).exec();
             TagFollower.remove({_id: tags[0]}).exec();
-            UserFollower.remove({_id: publisher}).exec();
+            UserFollower.remove({_id: publisher}).exec();*/
         });
     });
 
@@ -249,7 +249,7 @@ describe('LookService', function () {
                 tags: tags,
                 favorites: [favorite1]
             };
-            var newTagFollower = new TagFollower({_id: newTag, followers: [tagFollowerId2]});
+/*            var newTagFollower = new TagFollower({_id: newTag, followers: [tagFollowerId2]});
             newTagFollower.save(function (err) {
                 should.not.exist(err);
             });
@@ -257,7 +257,7 @@ describe('LookService', function () {
             var newUserFollower = new UserFollower({_id: publisher2, followers: [userFollowerId2]});
             newUserFollower.save(function (err) {
                 should.not.exist(err);
-            });
+            });*/
         });
 
         it('should not change the publisher when the look has been published by other one', function (done) {
@@ -321,7 +321,7 @@ describe('LookService', function () {
             });
         });
 
-        it('should add new feed for the followers of new publisher(want)', function (done) {
+        it.skip('should add new feed for the followers of new publisher(want)', function (done) {
             look.publisher = publisher2;
             LookService.republish(existLookDoc, look, function (err, doc) {
                 UserFeed.count({
@@ -336,7 +336,7 @@ describe('LookService', function () {
             });
         });
 
-        it('should add new feed for the followers of new tags', function (done) {
+        it.skip('should add new feed for the followers of new tags', function (done) {
             look.tags.push(newTag);
             LookService.republish(existLookDoc, look, function (err, doc) {
                 setTimeout(function () {
@@ -357,10 +357,10 @@ describe('LookService', function () {
             Look.remove({_id: lookId}).exec();
             TagLook.remove({_id: {$in: [newTag]}}).exec();
             UserWant.remove({_id: publisher2}).exec();
-            UserFeed.remove({_id: tagFollowerId2}).exec();
+/*            UserFeed.remove({_id: tagFollowerId2}).exec();
             UserFeed.remove({_id: userFollowerId2}).exec();
             TagFollower.remove({_id: newTag}).exec();
-            UserFollower.remove({_id: publisher2}).exec();
+            UserFollower.remove({_id: publisher2}).exec();*/
         })
     })
 });
