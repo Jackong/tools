@@ -4,6 +4,14 @@
 
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
+var TagLook = require('./tag/Look');
+var TagFollower = require('./tag/Follower');
+var UserPublication = require('./user/Publication');
+var UserWant = require('./user/Want');
+var UserFollower = require('./user/Follower');
+var UserFeed = require('./user/Feed');
+
+var logger = require('../common/logger');
 
 var Favorite = Schema({
     _id: String,//aspect
@@ -26,5 +34,7 @@ var Look = Schema({
     likeCount: {type: Number, default: 0},
     favorites: [Favorite]//Favorite:心仪的东西
 });
+
+
 
 module.exports = mongoose.model('Look', Look);
