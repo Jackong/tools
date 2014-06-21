@@ -17,20 +17,7 @@ var User = Schema({
     intro: String,
     points: {type: Number, default: 0},
     isValid: {type: Boolean, default: true},
-    time: {type: Date, default: Date.now },
-    settings: {
-        notifications: {
-            isNotify: {type: Boolean, default: true},
-            isMail: {type: Boolean, default: true},
-            likeMyTip: {type: Boolean, default: true},
-            comment: {type: Boolean, default: true},
-            likeMyLook: {type: Boolean, default: true},
-            tipMyWant: {type: Boolean, default: true},
-            wantMyLook: {type: Boolean, default: true},
-            followMe: {type: Boolean, default: true}
-        }
-    },
-    notifications: [{type: Schema.Types.ObjectId}]
+    time: {type: Date, default: Date.now }
 });
 
 helper.modelMethods(User.statics, {
