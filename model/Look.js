@@ -35,6 +35,27 @@ var Look = Schema({
     favorites: [Favorite]//Favorite:心仪的东西
 });
 
+Look.static('appendTagsAndFavorites', function (lookId, tags, favorites, callback) {
+    return this.update(
+        {
+            _id: lookId
+        },
+        {
+            $addToSet: {
+                tags: {
+                    $each: tags
+                },
+                favorites: {
+                    $each: favorites
+                }
+            }
+        },
+        {
+            upsert: true
+        },
+        callback
+    );
+});
 
 
 module.exports = mongoose.model('Look', Look);

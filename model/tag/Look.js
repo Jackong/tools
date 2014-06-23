@@ -13,4 +13,28 @@ var Look = Schema({
     lookCount: {type: Number, default: 0}
 });
 
+Look.static('putNewLook', function (tags, lookId, callback) {
+    async.each(tags, function (tag, callback) {
+        this.update(
+            {
+                _id: tag
+            },
+            {
+                $addToSet:
+                {
+                    looks: lookId
+                },
+                $inc: {
+                    lookCount: 1
+                }
+            },
+            {
+                upsert: true
+            },
+            callback
+        );
+    }, callback);
+
+});
+
 module.exports = mongoose.model('TagLook', Look);

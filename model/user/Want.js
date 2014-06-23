@@ -12,8 +12,8 @@ var Want = Schema({
     wantCount: {type: Number, default: 0}
 });
 
-Want.static('sync', function (publisher, lookId) {
-    this.update(
+Want.static('putNewLook', function (publisher, lookId, callback) {
+    return this.update(
         {
             _id: publisher
         },
@@ -25,8 +25,9 @@ Want.static('sync', function (publisher, lookId) {
         },
         {
             upsert: true
-        }
-    ).exec();
+        },
+        callback
+    );
 });
 
 module.exports = mongoose.model('UserWant', Want);
