@@ -31,7 +31,6 @@ var Look = Schema({
     created: {type: Date, default: Date.now},
     updated: {type: Date, default: Date.now},
     likes: [{ type: Schema.Types.ObjectId }],//User:喜欢的人
-    likeCount: {type: Number, default: 0},
     favorites: [Favorite]//Favorite:心仪的东西
 });
 

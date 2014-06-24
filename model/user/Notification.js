@@ -7,7 +7,7 @@ var Schema = mongoose.Schema;
 /**
  * user._id as _id
  */
-var Notification = Schema({
+var UserNotification = Schema({
     notifications: [
         {
             category: Number,//见User settings
@@ -18,4 +18,4 @@ var Notification = Schema({
     ]
 });
 
-module.exports = mongoose.model('UserNotification', Notification);
+module.exports = mongoose.model('UserNotification', UserNotification);

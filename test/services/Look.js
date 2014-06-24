@@ -26,8 +26,7 @@ describe('Look', function () {
                 favorites: [
                     {
                         _id: 'shirt',
-                        wants: [publisher],
-                        wantCount: 1
+                        wants: [publisher]
                     }
                 ]
             }
@@ -65,8 +64,7 @@ describe('Look', function () {
                     favorites: [
                         {
                             _id: 'glasses',
-                            wants: [publisher],
-                            wantCount: 1
+                            wants: [publisher]
                         }
                     ]
                 }

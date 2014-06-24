@@ -7,12 +7,11 @@ var Schema = mongoose.Schema;
 /**
  * user._id as _id
  */
-var Publication = Schema({
-    publications: [{type: String}],
-    publicationCount: {type: Number, default: 0}
+var UserPublication = Schema({
+    publications: [{type: String}]
 });
 
-Publication.static('putNewLook', function (publisher, lookId, callback) {
+UserPublication.static('putNewLook', function (publisher, lookId, callback) {
     return this.update(
         {
             _id: publisher
@@ -29,4 +28,4 @@ Publication.static('putNewLook', function (publisher, lookId, callback) {
         callback
     );
 });
-module.exports = mongoose.model('UserPublication', Publication);
+module.exports = mongoose.model('UserPublication', UserPublication);

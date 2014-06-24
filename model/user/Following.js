@@ -7,9 +7,8 @@ var Schema = mongoose.Schema;
 /**
  * user._id as _id
  */
-var Following = Schema({
-    followings: [{type: Schema.Types.ObjectId}],
-    followingCount: {type: Number, default: 0}
+var UserFollowing = Schema({
+    followings: [{type: Schema.Types.ObjectId}]
 });
 
-module.exports = mongoose.model('UserFollowing', Following);
+module.exports = mongoose.model('UserFollowing', UserFollowing);

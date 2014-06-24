@@ -5,7 +5,7 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
-var Setting = Schema({
+var UserSetting = Schema({
     notification: {
         enableNotify: {type: Boolean, default: true},
         enableMail: {type: Boolean, default: true},
@@ -18,4 +18,4 @@ var Setting = Schema({
     }
 });
 
-module.exports = mongoose.model('Setting', Setting);
+module.exports = mongoose.model('UserSetting', UserSetting);

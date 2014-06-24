@@ -7,12 +7,11 @@ var Schema = mongoose.Schema;
 /**
  * user._id as _id
  */
-var Want = Schema({
-    wants: [{type: String}],
-    wantCount: {type: Number, default: 0}
+var UserWant = Schema({
+    wants: [{type: String}]
 });
 
-Want.static('putNewLook', function (publisher, lookId, callback) {
+UserWant.static('putNewLook', function (publisher, lookId, callback) {
     return this.update(
         {
             _id: publisher
@@ -30,4 +29,4 @@ Want.static('putNewLook', function (publisher, lookId, callback) {
     );
 });
 
-module.exports = mongoose.model('UserWant', Want);
+module.exports = mongoose.model('UserWant', UserWant);

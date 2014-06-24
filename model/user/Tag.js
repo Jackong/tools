@@ -7,9 +7,8 @@ var Schema = mongoose.Schema;
 /**
  * user._id as _id
  */
-var Tag = Schema({
-    tags: [{type: String, lowercase: true, trim: true}],
-    tagCount: {type: Number, default: 0}
+var UserTag = Schema({
+    tags: [{type: String, lowercase: true, trim: true}]
 });
 
-module.exports = mongoose.model('UserTag', Tag);
+module.exports = mongoose.model('UserTag', UserTag);

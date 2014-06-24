@@ -7,9 +7,8 @@ var Schema = mongoose.Schema;
 /**
  * user._id as _id
  */
-var Like = Schema({
-    likes: [{type: String}],
-    likeCount: {type: Number, default: 0}
+var UserLike = Schema({
+    likes: [{type: String}]
 });
 
-module.exports = mongoose.model('UserLike', Like);
+module.exports = mongoose.model('UserLike', UserLike);

@@ -9,12 +9,11 @@ var TagFollower = require('../tag/Follower');
 /**
  * user._id as _id
  */
-var Feed = Schema({
-    feeds: [{type: String}],
-    feedCount: {type:Number, default: 0}
+var UserFeed = Schema({
+    feeds: [{type: String}]
 });
 
-Feed.static('update4user', function (publisher, lookId) {
+UserFeed.static('update4user', function (publisher, lookId) {
     var self = this;
     UserFollower.findById(publisher, function (err, userFollower) {
         if (null !== err || null === userFollower) {
@@ -27,7 +26,7 @@ Feed.static('update4user', function (publisher, lookId) {
     });
 });
 
-Feed.static('update4tags', function (tags, lookId) {
+UserFeed.static('update4tags', function (tags, lookId) {
     var self = this;
     for(var idx = 0; idx < tags.length; idx++) {
         TagFollower.findById(tags[idx], function (err, tagFollower) {
@@ -42,7 +41,7 @@ Feed.static('update4tags', function (tags, lookId) {
     }
 });
 
-Feed.static('push', function (uid, lookId, callback) {
+UserFeed.static('push', function (uid, lookId, callback) {
     return this.update(
         {
             _id: uid
@@ -59,4 +58,4 @@ Feed.static('push', function (uid, lookId, callback) {
     );
 });
 
-module.exports = mongoose.model('UserFeed', Feed);
+module.exports = mongoose.model('UserFeed', UserFeed);

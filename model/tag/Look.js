@@ -1,21 +1,25 @@
 /**
  * Created by daisy on 14-6-9.
  */
+var async = require('async');
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
 /**
- * user._id as _id
+ * tag._id as _id
  */
-var Look = Schema({
+var TagLook = Schema({
     _id: {type: String, lowercase: true, trim: true},
-    looks: [{type: String}],
-    lookCount: {type: Number, default: 0}
+    looks: [{type: String}]
 });
 
-Look.static('putNewLook', function (tags, lookId, callback) {
+TagLook.static('putNewLook', function (tags, lookId, callback) {
+    if (tags.length <= 0) {
+        return callback('can not put new look ' + lookId + ' to empty tags');
+    }
+    var self = this;
     async.each(tags, function (tag, callback) {
-        this.update(
+        self.update(
             {
                 _id: tag
             },
@@ -23,9 +27,6 @@ Look.static('putNewLook', function (tags, lookId, callback) {
                 $addToSet:
                 {
                     looks: lookId
-                },
-                $inc: {
-                    lookCount: 1
                 }
             },
             {
@@ -34,7 +35,11 @@ Look.static('putNewLook', function (tags, lookId, callback) {
             callback
         );
     }, callback);
-
 });
 
-module.exports = mongoose.model('TagLook', Look);
+TagLook.static('calLookCount', function (tag, callback) {
+    this.aggregate( { $project: { looks: 1 }},
+        { $unwind: '$looks' },
+        { $group: { _id: 'result', count: { $sum: 1 }}}, callback);
+});
+module.exports = mongoose.model('TagLook', TagLook);
