@@ -51,17 +51,24 @@ describe('TagLook', function () {
     });
 
     describe('.calLookCount()', function () {
-        var tag = 'jack';
+        var tag1 = 'jack';
+        var tag2 = 'daisy';
+        before(function () {
+            TagLook.putNewLook([tag2], new mongoose.Types.ObjectId, function (err) {
+                should.not.exist(err);
+            })
+        });
+
         it('should be 1 when only look be put', function (done) {
             async.waterfall([
                 function (callback) {
-                    TagLook.putNewLook([tag], new mongoose.Types.ObjectId, function (err) {
+                    TagLook.putNewLook([tag1], new mongoose.Types.ObjectId, function (err) {
                         should.not.exist(err);
                         callback(null, 1);
                     })
                 }
             ], function (err, count) {
-                TagLook.calLookCount(tag, function (err, res) {
+                TagLook.calLookCount(tag1, function (err, res) {
                     should.not.exist(err);
                     res[0].count.should.be.exactly(count);
                     done();
@@ -72,13 +79,13 @@ describe('TagLook', function () {
         it('should be 2 when 2 look be put', function (done) {
             async.waterfall([
                 function (callback) {
-                    TagLook.putNewLook([tag], new mongoose.Types.ObjectId, function (err) {
+                    TagLook.putNewLook([tag1], new mongoose.Types.ObjectId, function (err) {
                         should.not.exist(err);
                         callback(null, 1);
                     })
                 }
             ], function (err, count) {
-                TagLook.calLookCount(tag, function (err, res) {
+                TagLook.calLookCount(tag1, function (err, res) {
                     should.not.exist(err);
                     res[0].count.should.be.exactly(count + 1);
                     done();
@@ -88,7 +95,9 @@ describe('TagLook', function () {
 
         after(function () {
             TagLook.remove({
-                _id: tag
+                _id: {
+                    $in: [tag1, tag2]
+                }
             }).exec();
         })
     });

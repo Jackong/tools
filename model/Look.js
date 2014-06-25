@@ -56,5 +56,13 @@ Look.static('appendTagsAndFavorites', function (lookId, tags, favorites, callbac
     );
 });
 
+Look.static('calLikeCount4All', function (callback) {
+    this.aggregate(
+        { $project: { likes: 1 }},
+        { $unwind: '$likes' },
+        { $group: { _id: '$_id', count: { $sum: 1 }}},
+        callback
+    );
+});
 
 module.exports = mongoose.model('Look', Look);

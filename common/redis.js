@@ -22,4 +22,5 @@ if (config.username && config.password && config.name) {
 }
 
 client.PREFIX = {
+    LOOK_TREND: 'look:trend:'
 };

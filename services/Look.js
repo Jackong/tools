@@ -8,6 +8,7 @@ var Look = require('../model/Look');
 var TagLook = require('../model/tag/Look');
 var UserPublication = require('../model/user/Publication');
 var UserWant = require('../model/user/Want');
+var redis = require('../../common/redis');
 
 module.exports = {
     firstPublish: function (look, callback) {
@@ -88,5 +89,11 @@ module.exports = {
             }
             return this.firstPublish(look, callback);
         });
+    },
+    getTrend: function (start, num, callback) {
+
+    },
+    calTrend: function () {
+
     }
 };

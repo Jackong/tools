@@ -38,8 +38,12 @@ TagLook.static('putNewLook', function (tags, lookId, callback) {
 });
 
 TagLook.static('calLookCount', function (tag, callback) {
-    this.aggregate( { $project: { looks: 1 }},
+    this.aggregate(
+        { $project: { looks: 1 }},
         { $unwind: '$looks' },
-        { $group: { _id: 'result', count: { $sum: 1 }}}, callback);
+        { $group: { _id: '$_id', count: { $sum: 1 }}},
+        {$match: {_id: tag}},
+        callback
+    );
 });
 module.exports = mongoose.model('TagLook', TagLook);
