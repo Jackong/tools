@@ -10,6 +10,7 @@ var Look = require('../../model/Look');
 var TagLook = require('../../model/tag/Look');
 var UserPublication = require('../../model/user/Publication');
 var UserWant = require('../../model/user/Want');
+var User = require('../../model/User');
 var LookService = require('../../services/Look');
 
 describe('Look', function () {
@@ -134,6 +135,32 @@ describe('Look', function () {
             });
 
             updateLook.yield(null, 1);
+        }));
+    });
+
+    describe('.getTrend()', function () {
+        it('should call perfectUser() when looks is not empty', sinon.test(function (done) {
+            var getTrend = this.stub(Look, 'getTrend');
+            var perfectUser = this.stub(User, 'perfectUser');
+            LookService.getTrend(0, 1, function (err, looks) {
+                should.not.exist(err);
+                looks.should.with.lengthOf(1);
+                perfectUser.called.should.be.true;
+                done();
+            });
+            getTrend.yield(null, [look]);
+        }));
+
+        it('should not call perfectUser() when looks is empty', sinon.test(function (done) {
+            var getTrend = this.stub(Look, 'getTrend');
+            var perfectUser = this.stub(User, 'perfectUser');
+            LookService.getTrend(0, 1, function (err, looks) {
+                should.not.exist(err);
+                looks.should.with.lengthOf(0);
+                perfectUser.called.should.be.false;
+                done();
+            });
+            getTrend.yield(null, []);
         }))
     })
 });

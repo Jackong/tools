@@ -8,12 +8,11 @@ var should = require("should");
 var User = require('../../model/User');
 var helper = require('../../common/helper');
 
-var existAccount = 'exists@account.com';
-var notExistAccount = 'not-exists@account.com';
-var password = 'password';
-var newPassword = 'newPassword';
-
-describe('User', function () {
+describe('UserService', function () {
+    var existAccount = 'exists@account.com';
+    var notExistAccount = 'not-exists@account.com';
+    var password = 'password';
+    var newPassword = 'newPassword';
 
     describe('#account', function () {
         beforeEach(function () {
@@ -93,65 +92,6 @@ describe('User', function () {
                 });
 
             })
-        });
-
-        describe('.canReset()', function () {
-            it('should be return false when sign is not match', function () {
-                User.canReset(existAccount, helper.encrypt(JSON.stringify({account: notExistAccount, expiration: helper.time() + 30 * 60}))).should.be.false;
-            });
-
-            it('should be return false when sign is expired', function () {
-                User.canReset(existAccount, helper.encrypt(JSON.stringify({account: existAccount, expiration: helper.time() - 10}))).should.be.false;
-            });
-
-            it('should be return true when sign is match and not expired', function () {
-                User.canReset(existAccount, helper.encrypt(JSON.stringify({account: existAccount, expiration: helper.time() + 10}))).should.be.true;
-            });
-
-            it('should be return false when sign is can not decode', function () {
-                User.canReset(existAccount, helper.encrypt('aha')).should.be.false;
-            });
-
-            it('should be return false when sign is null', function () {
-                User.canReset(existAccount, null).should.be.false;
-            });
-        });
-
-        describe('.login()', function () {
-            it('should set the account as token on cookie', function (done) {
-                var req = {};
-                var res = {
-                    cookie: function (uid, value, options) {
-                        uid.should.be.equal('uid');
-                        value.should.be.equal(existAccount);
-                        options.should.be.eql({ signed: true, httpOnly: true, maxAge: 86400 * 15, path: '/' });
-                        done();
-                    }
-                };
-                User.login(existAccount, req, res);
-            });
-        });
-
-        describe('.getUid()', function () {
-            it('should be get account when signed-cookie is valid', function () {
-                var req = {
-                    signedCookies: {
-                        uid: existAccount
-                    }
-                };
-                var res = {};
-                User.getUid(req, res).should.be.equal(existAccount);
-            });
-
-            it('should get null when signed-cookie is null', function () {
-                var req = {
-                    signedCookies: {
-                        uid: null
-                    }
-                };
-                var res = {};
-                (null === User.getUid(req, res)).should.be.true;
-            });
         });
     });
 });

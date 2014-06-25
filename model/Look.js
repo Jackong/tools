@@ -56,38 +56,26 @@ Look.static('appendTagsAndFavorites', function (lookId, tags, favorites, callbac
     );
 });
 
-Look.static('getByIds', function (lookIds, callback) {
-    if (lookIds.length <= 0) {
-        return callback(null, []);
-    }
-    this.find(
-        {
-            _id: {
-                $in: lookIds
-            },
-            isValid: true
-        },
-        {
-            publisher: 1,
-            image: 1,
-            tags: 1,
-            description: 1,
-            updated: 1,
-            favorites: 1
-        },
-        callback
-    );
-});
-
-Look.static('calLikeCountByIds', function (lookIds, callback) {
-    if (lookIds.length <= 0) {
+Look.static('getTrend', function (start, num, callback) {
+    if (start < 0 || num <= 0) {
         return callback(null, []);
     }
     this.aggregate(
         { $project: { likes: 1 }},
         { $unwind: '$likes' },
-        { $group: { _id: '$_id', count: { $sum: 1 }}},
-        { $match: { _id: { $in: lookIds }}},
+        { $group: {
+            _id: '$_id',
+            publisher: '$publisher',
+            image: '$image',
+            tags: '$tags',
+            description: '$description',
+            created: '$created',
+            favorites: '$favorites',
+            likeCount: { $sum: 1 }
+        }},
+        { $sort: {likeCount: -1, created: -1}},
+        { $skip: start},
+        { $limit: num},
         callback
     );
 });
