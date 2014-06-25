@@ -56,11 +56,38 @@ Look.static('appendTagsAndFavorites', function (lookId, tags, favorites, callbac
     );
 });
 
-Look.static('calLikeCount4All', function (callback) {
+Look.static('getByIds', function (lookIds, callback) {
+    if (lookIds.length <= 0) {
+        return callback(null, []);
+    }
+    this.find(
+        {
+            _id: {
+                $in: lookIds
+            },
+            isValid: true
+        },
+        {
+            publisher: 1,
+            image: 1,
+            tags: 1,
+            description: 1,
+            updated: 1,
+            favorites: 1
+        },
+        callback
+    );
+});
+
+Look.static('calLikeCountByIds', function (lookIds, callback) {
+    if (lookIds.length <= 0) {
+        return callback(null, []);
+    }
     this.aggregate(
         { $project: { likes: 1 }},
         { $unwind: '$likes' },
         { $group: { _id: '$_id', count: { $sum: 1 }}},
+        { $match: { _id: { $in: lookIds }}},
         callback
     );
 });
