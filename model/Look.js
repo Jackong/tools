@@ -6,8 +6,6 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 var TagLook = require('./tag/Look');
 var TagFollower = require('./tag/Follower');
-var UserPublication = require('./user/Publication');
-var UserWant = require('./user/Want');
 var UserFollower = require('./user/Follower');
 var UserFeed = require('./user/Feed');
 

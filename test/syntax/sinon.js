@@ -45,7 +45,7 @@ describe('sinon', function () {
             stub.returned('jack').should.be.false;
         });
 
-        it.only('should be normal to using async.waterfall only with global sinon and inject callback', function (done) {
+        it('should be normal to using async.waterfall only with global sinon and inject callback', function (done) {
             var obj = {
                 method: function (arg, callback) {
                     callback(null, arg + 1);

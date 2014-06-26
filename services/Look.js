@@ -6,8 +6,9 @@ var async = require('async');
 
 var Look = require('../model/Look');
 var TagLook = require('../model/tag/Look');
-var UserPublication = require('../model/user/Publication');
-var UserWant = require('../model/user/Want');
+var UserLook = require('../model/user/Look');
+var USER_LOOK = require('../common/const').MODEL_USER_LOOK;
+
 var User = require('../model/User');
 var redis = require('../common/redis');
 
@@ -21,10 +22,10 @@ module.exports = {
                 TagLook.putNewLook(look.tags, look._id, callback);
             },
             function syncPublication(callback) {
-                UserPublication.putNewLook(look.publisher, look._id, callback);
+                UserLook.putNewLook(look.publisher, USER_LOOK.CATEGORY.PUBLISH, look._id, callback);
             },
             function syncWant(callback) {
-                UserWant.putNewLook(look.publisher, look._id, callback);
+                UserLook.putNewLook(look.publisher, USER_LOOK.CATEGORY.WANT, look._id, callback);
             }
         ], function (err, results) {
             callback(err, look);
@@ -36,7 +37,7 @@ module.exports = {
                 if (look.publisher === old.publisher) {
                     return callback(null, null);
                 }
-                UserWant.putNewLook(look.publisher, look._id, callback);
+                UserLook.putNewLook(look.publisher, USER_LOOK.CATEGORY.WANT, look._id, callback);
             },
             tags: function filterTags(callback) {
                 async.filter(look.tags, function (tag, callback) {
