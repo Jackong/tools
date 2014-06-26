@@ -4,6 +4,7 @@
 var should = require('should');
 var sinon = require('sinon');
 var mongoose = require('mongoose');
+var async = require('async');
 
 require('../../common/mongo');
 var Look = require('../../model/Look');
@@ -12,6 +13,11 @@ var UserPublication = require('../../model/user/Publication');
 var UserWant = require('../../model/user/Want');
 var User = require('../../model/User');
 var LookService = require('../../services/Look');
+
+sinon.config = {
+    useFakeTimers: false,
+    useFakeServer: false
+};
 
 describe('Look', function () {
     var look = null;
@@ -139,28 +145,53 @@ describe('Look', function () {
     });
 
     describe('.getTrend()', function () {
-        it('should call perfectUser() when looks is not empty', sinon.test(function (done) {
-            var getTrend = this.stub(Look, 'getTrend');
-            var perfectUser = this.stub(User, 'perfectUser');
+        afterEach(function () {
+            Look.getTrend.restore();
+            User.perfect.restore();
+        });
+        it('should perfect publishers info when looks is not empty', function (done) {
+            sinon.stub(Look, 'getTrend', function (start, num, callback) {
+                callback(null, [look]);
+            });
+            sinon.stub(User, 'perfect', function (uids, callback) {
+                var user = {};
+                user[look.publisher] = new User({_id: look.publisher, nick: 'jack', avatar: 'avatar url'});
+                callback(null, user);
+            });
             LookService.getTrend(0, 1, function (err, looks) {
                 should.not.exist(err);
                 looks.should.with.lengthOf(1);
-                perfectUser.called.should.be.true;
+                User.perfect.called.should.be.true;
                 done();
             });
-            getTrend.yield(null, [look]);
-        }));
+        });
 
-        it('should not call perfectUser() when looks is empty', sinon.test(function (done) {
-            var getTrend = this.stub(Look, 'getTrend');
-            var perfectUser = this.stub(User, 'perfectUser');
+        it('should not perfect publisher info when looks is empty', function (done) {
+            sinon.stub(Look, 'getTrend', function (start, num, callback) {
+                callback(null, []);
+            });
+            sinon.stub(User, 'perfect');
             LookService.getTrend(0, 1, function (err, looks) {
                 should.not.exist(err);
                 looks.should.with.lengthOf(0);
-                perfectUser.called.should.be.false;
+                User.perfect.called.should.be.false;
                 done();
             });
-            getTrend.yield(null, []);
-        }))
+        });
+
+        it('should be filter when the publisher is invalid', function (done) {
+            sinon.stub(Look, 'getTrend', function (start, num, callback) {
+                callback(null, [look]);
+            });
+            sinon.stub(User, 'perfect', function (uids, callback) {
+                callback(null, []);
+            });
+            LookService.getTrend(0, 1, function (err, looks) {
+                should.not.exist(err);
+                looks.should.with.lengthOf(0);
+                User.perfect.called.should.be.true;
+                done();
+            });
+        });
     })
 });

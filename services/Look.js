@@ -8,6 +8,7 @@ var Look = require('../model/Look');
 var TagLook = require('../model/tag/Look');
 var UserPublication = require('../model/user/Publication');
 var UserWant = require('../model/user/Want');
+var User = require('../model/User');
 var redis = require('../common/redis');
 
 module.exports = {
@@ -91,9 +92,29 @@ module.exports = {
         });
     },
     getTrend: function (start, num, callback) {
-
-    },
-    calTrend: function () {
+        Look.getTrend(start, num, function (err, looks) {
+            if (looks.length <= 0) {
+                return callback(null, looks);
+            }
+            async.waterfall([
+                function makePublisherIds(callback) {
+                    async.map(looks, function (look, callback) {
+                        callback(null, look.publisher);
+                    }, callback);
+                },
+                function makePublisherMap(publisherIds, callback) {
+                    User.perfect(publisherIds, callback);
+                },
+                function perfectDetailAndfilterNull(publisherMap, callback) {
+                    async.filter(looks, function (look, callback) {
+                        look.publisher = publisherMap[look.publisher];
+                        callback(look.publisher);
+                    }, function (looks) {
+                        callback(null, looks);
+                    });
+                }
+            ], callback);
+        });
 
     }
 };

@@ -61,16 +61,16 @@ Look.static('getTrend', function (start, num, callback) {
         return callback(null, []);
     }
     this.aggregate(
-        { $project: { likes: 1 }},
+        { $project: { likes: 1, publisher: 1, image: 1, tags: 1, description: 1, created: 1, favorites: 1}},
         { $unwind: '$likes' },
         { $group: {
             _id: '$_id',
-            publisher: '$publisher',
+/*            publisher: '$publisher',
             image: '$image',
             tags: '$tags',
             description: '$description',
             created: '$created',
-            favorites: '$favorites',
+            favorites: '$favorites',*/
             likeCount: { $sum: 1 }
         }},
         { $sort: {likeCount: -1, created: -1}},
