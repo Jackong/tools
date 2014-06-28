@@ -2,19 +2,16 @@
  * Created by daisy on 14-6-26.
  */
 var mongoose = require('mongoose');
-var Schema = mongoose.Schema;
-
 /**
  * user._id as _id
  */
-var UserLook = Schema({
+var UserLook = mongoose.Schema({
     looks: [{
-        category: Number,
-        look: String
+        type: String
     }]
 });
 
-UserLook.static('putNewLook', function (uid, category, lookId, callback) {
+UserLook.static('putNewLook', function (uid, lookId, callback) {
     return this.update(
         {
             _id: uid
@@ -22,10 +19,7 @@ UserLook.static('putNewLook', function (uid, category, lookId, callback) {
         {
             $addToSet:
             {
-                looks: {
-                    category: category,
-                    look: lookId
-                }
+                looks: lookId
             }
         },
         {
@@ -34,4 +28,22 @@ UserLook.static('putNewLook', function (uid, category, lookId, callback) {
         callback
     );
 });
-module.exports = mongoose.model('UserLook', UserLook);
+
+UserLook.static('gets', function (uid, start, num, callback) {
+    if (start < 0 || num <= 0) {
+        return callback(null, null);
+    }
+    this.findOne(
+        {
+            _id: uid
+        },
+        {
+            looks: {
+                $slice: [start, num]
+            }
+        },
+        callback
+    );
+});
+
+module.exports = UserLook;
