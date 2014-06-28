@@ -3,6 +3,8 @@
  */
 
 var User = require('../model/User');
+var UserService = require('../services/User');
+
 var logger = require('../common/logger');
 var helper = require('../common/helper');
 
@@ -16,7 +18,7 @@ module.exports = function (router) {
                     logger.error('create account', req.body.account, err.message);
                     return res.fail();
                 }
-                User.login(user._id, req, res);
+                UserService.login(user._id, req, res);
                 res.ok();
             });
         });
@@ -25,7 +27,7 @@ module.exports = function (router) {
         .put(router.checker.body('oldPassword'))
         .put(router.checker.body('password'))
         .put(function updatePassword(req, res) {
-            var uid = User.getUid(req, res);
+            var uid = UserService.getUid(req, res);
             if (!uid) {
                 return res.fail('登录状态已经过期', res.CODE.UN_LOGIN);
             }
@@ -44,7 +46,7 @@ module.exports = function (router) {
 
     router.route('/accounts/check')
         .get(function checkLogin(req, res) {
-            var uid = User.getUid(req, res);
+            var uid = UserService.getUid(req, res);
             if (uid) {
                 return res.ok();
             }
@@ -54,7 +56,7 @@ module.exports = function (router) {
     router.route('/accounts/forgot/:account')
         .get(router.checker.params('account'))
         .get(function forget(req, res) {
-            var sign = User.forgotSign(req.params.account);
+            var sign = UserService.forgotSign(req.params.account);
             var url = req.protocol + '://' + req.host
                 + '/account/reset/' + req.params.account + '?sign=' + sign;
             helper.email(req.params.account, '密码找回【iWomen】', '<!--HTML--><a href="' + url + '">点击找回密码（30分钟内有效，请匆回复）</a>')
@@ -66,7 +68,7 @@ module.exports = function (router) {
         .put(router.checker.body('password'))
         .put(router.checker.body('sign'))
         .put(function reset(req, res) {
-            var canReset = User.canReset(req.params.account, req.body.sign);
+            var canReset = UserService.canReset(req.params.account, req.body.sign);
             if (!canReset) {
                 return res.fail('链接无效或已过期');
             }
@@ -92,7 +94,7 @@ module.exports = function (router) {
                     logger.error('login', user);
                     return res.fail();
                 }
-                User.login(user._id, req, res);
+                UserService.login(user._id, req, res);
                 return res.ok();
             });
         });
