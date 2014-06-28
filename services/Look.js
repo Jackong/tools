@@ -95,7 +95,7 @@ module.exports = {
         });
     },
     getTrend: function (start, num, callback) {
-        Look.getTrend(start, num, function (err, looks) {
+        Look.getTrend(parseInt(start), parseInt(num), function (err, looks) {
             if (null !== err || looks.length <= 0) {
                 return callback(err, looks);
             }

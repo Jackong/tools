@@ -15,7 +15,8 @@ require.config({
 	},
 	priority: [
 		"angular"
-	]
+	],
+    urlArgs: "version=" + (new Date()).getTime()
 });
 
 //http://code.angularjs.org/1.2.1/docs/guide/bootstrap#overview_deferred-bootstrap
