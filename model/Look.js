@@ -78,4 +78,24 @@ Look.static('getTrend', function (start, num, callback) {
     );
 });
 
+
+Look.static('gets', function (lookIds, callback) {
+    this.find(
+        {
+            _id: {
+                $in: lookIds
+            }
+        },
+        {
+            likes: 1,
+            image: 1,
+            tags: 1,
+            description: 1,
+            created: 1,
+            favorites: 1
+        },
+        callback
+    )
+});
+
 module.exports = mongoose.model('Look', Look);

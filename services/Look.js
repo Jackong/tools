@@ -8,6 +8,8 @@ var Look = require('../model/Look');
 var TagLook = require('../model/tag/Look');
 var UserPublish = require('../model/user/Publish');
 var UserWant = require('../model/user/Want');
+var UserLike = require('../model/user/Like');
+var UserTip = require('../model/user/Tip');
 
 var User = require('../model/User');
 var redis = require('../common/redis');
@@ -94,8 +96,8 @@ module.exports = {
     },
     getTrend: function (start, num, callback) {
         Look.getTrend(start, num, function (err, looks) {
-            if (looks.length <= 0) {
-                return callback(null, looks);
+            if (null !== err || looks.length <= 0) {
+                return callback(err, looks);
             }
             async.waterfall([
                 function makePublisherIds(callback) {
@@ -116,6 +118,27 @@ module.exports = {
                 }
             ], callback);
         });
-
+    },
+    getMyWants: function (uid, start, num, callback) {
+        this.getMyLooks(uid, UserWant, start, num, callback);
+    },
+    getMyLikes: function (uid, start, num, callback) {
+        this.getMyLooks(uid, UserLike, start, num, callback);
+    },
+    getMyTips: function (uid, start, num, callback) {
+        this.getMyLooks(uid, start, num, callback);
+    },
+    getMyLooks: function (uid, UserLook, start, num, callback) {
+        async.waterfall([
+            function (callback) {
+                UserLook.gets(uid, start, num, callback);
+            },
+            function (userLook, callback) {
+                if (null === userLook) {
+                    return callback(null, []);
+                }
+                Look.gets(userLook.looks, callback);
+            }
+        ], callback)
     }
 };
