@@ -7,7 +7,8 @@ var map = {
     account: /^[A-Za-z0-9]+([-_.][A-Za-z0-9]+)*@([A-Za-z0-9]+[-.])+[A-Za-z0-9]{2,5}$/,
     password: /^[0-9a-zA-Z]{32}$/,
     page: /^[0-9]+$/,
-    num: /^[1-9][0-9]?$/
+    num: /^[1-9][0-9]?$/,
+    image: /^\/tmp\/.*$/
 };
 
 var check = function (req, res, next, from, name, defaultValue) {

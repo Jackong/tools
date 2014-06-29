@@ -1,7 +1,11 @@
 /**
  * Created by daisy on 14-6-28.
  */
-
+var multipart = require('connect-multiparty');
+var multipartMiddleware = multipart({
+    maxFilesSize: 4 * 1024 * 1024,
+    hash: 'md5'
+});
 var logger = require('../common/logger');
 var LookService = require('../services/Look');
 var UserService = require('../services/User');
@@ -17,6 +21,21 @@ module.exports = function (router) {
             LookService.getTrend(page * num, num, function (err, looks) {
                 res.ok({looks: looks});
             });
+        });
+
+    router.post('/looks/image', multipartMiddleware, function (req, res) {
+        logger.info('files:', req.files);
+        res.ok({
+            image: req.files.file.path,
+            hash: req.files.file.hash
+        });
+    });
+
+    router.route('/looks')
+        .post(router.checker.body('image'))
+        .post(function (req, res) {
+            logger.info('look', req.body);
+            res.ok();
         });
 };
 /*

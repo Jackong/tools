@@ -13,7 +13,7 @@ define(['app', 'services/user', 'services/look', 'controllers/sign'], function (
                     controller: 'SignCtrl'
                 })
                 .when('/feed', {
-                    templateUrl: 'partials/where2get.html',
+                    templateUrl: 'partials/where2get.html?v=8',
                     controller: 'Where2GetCtrl'
                 })
                 .when('/account/forgot', {
@@ -33,6 +33,40 @@ define(['app', 'services/user', 'services/look', 'controllers/sign'], function (
             });
         })
         .controller('Where2GetCtrl', function ($scope, Look) {
+            $scope.aspects = ['上衣','内裤','帽子'];
+            $scope.tags = [];
+            $scope.aspect = '...';
+
+            $scope.selectedAspect = function (aspect) {
+                $scope.tags.splice(0, 1, aspect);
+                $scope.aspect = aspect;
+            };
+
+            $scope.uploadSuccess = function (res) {
+                console.log(res);
+                res = JSON.parse(res);
+                if (res.code != 0) {
+                    $scope.warning = '图片上传失败，请使用格式及大小正确的图片重试';
+                    return;
+                }
+                $scope.image = res.data.image;
+                $scope.hash = res.data.hash;
+            };
+
+            $scope.publish = function () {
+                Look.save({
+                    hash: $scope.hash,
+                    image: $scope.image,
+                    description: $scope.description,
+                    aspect: $scope.aspect,
+                    tags: $scope.tags
+                }, function (res) {
+                    if (res.code === 0) {
+
+                    }
+                });
+            };
+
             var lastScrollY = 0;
             $scope.showFooter = true;
             $scope.scroll = function () {

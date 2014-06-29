@@ -2,7 +2,9 @@ define([
 	'angular',
 	'angularRoute',
     'angularResource',
-    'angularMd5'
+    'angularMd5',
+    'angularFlow',
+    'ngTagsInput'
 ], function (angular) {
 		'use strict';
 
@@ -11,6 +13,8 @@ define([
 		return angular.module('iWomen', [
 			'ngRoute',
             'ngResource',
-            'angular-md5'
+            'angular-md5',
+            'flow',
+            'bootstrap-tagsinput'
 		]);
 });
