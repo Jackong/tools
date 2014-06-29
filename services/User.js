@@ -19,7 +19,7 @@ module.exports = {
         return true;
     },
     login: function (uid, req, res) {
-        res.cookie('uid', uid, { signed: true, httpOnly: true, maxAge: 86400 * 15, path: '/' })
+        res.cookie('uid', uid, { signed: true, httpOnly: true, maxAge: 86400000 * 15, path: '/' })
     },
     getUid: function (req, res) {
         return req.signedCookies.uid;

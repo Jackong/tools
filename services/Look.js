@@ -4,6 +4,7 @@
 
 var async = require('async');
 
+var logger = require('../common/logger');
 var Look = require('../model/Look');
 var TagLook = require('../model/tag/Look');
 var UserPublish = require('../model/user/Publish');
@@ -86,12 +87,23 @@ module.exports = {
         })
     },
     publish: function (look, callback) {
-        Look.findById(look._id, function (err, old) {
-
-            if (null !== old) {
-                return this.republish(old, look, callback);
+        var self = this;
+        Look.findById(look._id,
+            {
+                publisher: 1,
+                image: 1,
+                tags: 1,
+                description: 1,
+                created: 1,
+                favorites: 1
+            },
+            {
+                lean: true
+            }, function (err, doc) {
+            if (doc !== null) {
+                return self.republish(doc, look, callback);
             }
-            return this.firstPublish(look, callback);
+            return self.firstPublish(look, callback);
         });
     },
     getTrend: function (start, num, callback) {
@@ -110,7 +122,10 @@ module.exports = {
                 },
                 function perfectDetailAndfilterNull(publisherMap, callback) {
                     async.filter(looks, function (look, callback) {
-                        look.publisher = publisherMap[look.publisher];
+                        var publisher = publisherMap[look.publisher];
+                        look.time = look.created;
+                        look.publisher = publisher;
+                        look.likeCount = 0;//todo query like count map
                         callback(look.publisher);
                     }, function (looks) {
                         callback(null, looks);

@@ -17,8 +17,8 @@ var User = Schema({
     intro: String,
     points: {type: Number, default: 0},
     isValid: {type: Boolean, default: true},
-    created: {type: Date, default: Date.now },
-    updated: {type: Date, default: Date.now }
+    created: {type: Number, default: Date.now },
+    updated: {type: Number, default: Date.now }
 });
 
 User.static('perfect', function (uids, callback) {
@@ -35,6 +35,9 @@ User.static('perfect', function (uids, callback) {
         {
             nick: 1,
             avatar: 1
+        },
+        {
+            lean: true
         },
         function (err, users) {
             if (err) {

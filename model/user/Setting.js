@@ -14,7 +14,9 @@ var UserSetting = Schema({
         likeMyLook: {type: Boolean, default: true},
         tipMyWant: {type: Boolean, default: true},
         wantMyLook: {type: Boolean, default: true},
-        followMe: {type: Boolean, default: true}
+        followMe: {type: Boolean, default: true},
+        created: {type: Number, default: Date.now },
+        updated: {type: Number, default: Date.now }
     }
 });
 

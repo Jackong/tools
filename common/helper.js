@@ -5,6 +5,20 @@ var crypto = require('crypto');
 var system = require('./config')('system');
 var message = require('bae-message');
 var msgConfig = require('../common/config')('message');
+var fs = require('fs');
+
+exports.getFileHash = function (filename, algorithm, callback) {
+    var shasum = crypto.createHash(algorithm);
+
+    var stream = fs.ReadStream(filename);
+    stream.on('data', function(d) {
+        shasum.update(d);
+    });
+
+    stream.on('end', function() {
+        callback(null, shasum.digest('hex'));
+    });
+};
 
 exports.date = function () {
     return new Date();

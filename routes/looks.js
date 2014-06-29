@@ -6,16 +6,21 @@ var multipartMiddleware = multipart({
     maxFilesSize: 4 * 1024 * 1024,
     hash: 'md5'
 });
+var async = require('async');
+
+require('../common/mongo');
 var logger = require('../common/logger');
+var helper = require('../common/helper');
+var Look = require('../model/Look');
 var LookService = require('../services/Look');
 var UserService = require('../services/User');
 
 module.exports = function (router) {
 
-    router.route('/looks/trend')
-        .get(router.checker.query('page'))
-        .get(router.checker.query('num'))
-        .get(function (req, res) {
+    router.get('/looks/trend',
+        router.checker.query('page'),
+        router.checker.query('num'),
+        function (req, res) {
             var page = req.query.page;
             var num = req.query.num;
             LookService.getTrend(page * num, num, function (err, looks) {
@@ -24,18 +29,55 @@ module.exports = function (router) {
         });
 
     router.post('/looks/image', multipartMiddleware, function (req, res) {
-        logger.info('files:', req.files);
         res.ok({
             image: req.files.file.path,
             hash: req.files.file.hash
         });
     });
 
-    router.route('/looks')
-        .post(router.checker.body('image'))
-        .post(function (req, res) {
-            logger.info('look', req.body);
-            res.ok();
+    router.post('/looks',
+        router.checker.body('image'),
+        function (req, res) {
+            var uid = UserService.getUid(req, res);
+            async.waterfall([
+                function checkAspect(callback) {
+                    callback(null);
+                },
+                function calcHash(callback) {
+                    helper.getFileHash(req.body.image, 'md5', callback);
+                },
+                function checkHash(hash, callback) {
+                    if (hash !== req.body.hash) {
+                        return callback('invalid image to upload');
+                    }
+                    callback(null);
+                },
+                function save(callback) {
+                    var look = new Look(
+                        {
+                            _id: req.body.hash,
+                            publisher: uid,
+                            image: req.body.image,
+                            tags: req.body.tags,
+                            description: req.body.description,
+                            favorites: [
+                                {
+                                    _id: req.body.aspect,
+                                    wants: [uid]
+                                }
+                            ]
+                        }
+                    );
+                    LookService.publish(look,callback);
+                }
+            ], function (err, look) {
+                if (typeof err !== 'undefined' && null !== err) {
+                    logger.error('look publish', err);
+                    return res.fail();
+                }
+                res.ok({look: look});
+            });
+
         });
 };
 /*

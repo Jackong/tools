@@ -1,4 +1,4 @@
-define(['app', 'services/user', 'services/look', 'controllers/sign'], function (app) {
+define(['app', 'services/user', 'services/look', 'filters/common', 'controllers/sign'], function (app) {
     'use strict';
 
     return app

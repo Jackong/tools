@@ -73,13 +73,13 @@
                 <p>
                     <div class="media">
                         <a class="pull-left" href="#/user/{{look.publisher._id}}">
-                            <img width="50" height="50" class="media-object img-circle img-responsive pull-left" ng-src="{{look.publisher.avatar}}">
+                            <img width="50" height="50" class="media-object img-circle img-responsive pull-left" ng-src="{{look.publisher.avatar | formatAvatar}}">
                         </a>
                         <div class="media-body">
                             <h5 class="media-heading">
-                                <span class="icon" style="font-size: 16px">{{look.publisher.nick}}</span>
+                                <span class="icon" style="font-size: 16px">{{look.publisher.nick | formatNick}}</span>
                                 <span class="pull-right">
-                                    <span class="glyphicon glyphicon-time"></span> {{look.publisher.time}}
+                                    <span class="glyphicon glyphicon-time"></span> {{look.time | formatTime}}
                                 </span>
                             </h5>
                             <span>{{look.publisher.action}}</span>
@@ -88,12 +88,12 @@
                     </div>
                 </p>
                 <a href="#/look/{{look._id}}">
-                    <img ng-src="{{look.image}}" class="img-rounded img-responsive" alt="{{look.description}}">
+                    <img ng-src="{{look.image | formatImage}}" class="img-rounded img-responsive" alt="{{look.description}}">
                 </a>
                 <div class="caption">
                     <p>
                         <span class="glyphicon glyphicon-heart icon"></span>
-                        <span>{{look.likes}}人喜欢</span>
+                        <span>{{look.likeCount}}人喜欢</span>
                         <a href="#/look/like/{{look._id}}" type="button" class="btn btn-default">喜欢</a>
 <!--
                         <span ng-repeat="tag in look.tags" class="label label-default" style="background-color: #f48fbe;">{{tag}}</span>
@@ -101,10 +101,10 @@
                     </p>
                     <p ng-repeat="favorite in look.favorites">
                         <span class="glyphicon glyphicon-lock icon"></span>
-                        <span>{{favorite.aspect}}：{{favorite.tips}}个小贴士</span>
-                        <a ng-show="favorite.tips > 0" href="#/look/{{look._id}}/buy/{{favorite._id}}" class="btn btn-default">购买</a>
-                        <span ng-show="favorite.tips <= 0">
-                            - {{favorite.wants}}人想要
+                        <span>{{favorite.aspect}}：{{favorite.tips.length}}个小贴士</span>
+                        <a ng-show="favorite.tips.length > 0" href="#/look/{{look._id}}/buy/{{favorite._id}}" class="btn btn-default">购买</a>
+                        <span ng-show="favorite.tips.length <= 0">
+                            - {{favorite.wants.length}}人想要
                             <a href="#/look/{{look._id}}/want/{{favorite._id}}" type="button" class="btn btn-default">想要</a>
                         </span>
                     </p>

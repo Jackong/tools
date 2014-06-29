@@ -11,9 +11,10 @@ var UserNotification = Schema({
     notifications: [
         {
             category: Number,//见User settings
-            time: {type: Date, default: Date.now},
             from: Schema.Types.ObjectId, //主语
-            isRead: {type: Boolean, default: false}//已读
+            isRead: {type: Boolean, default: false},//已读
+            created: {type: Number, default: Date.now },
+            updated: {type: Number, default: Date.now }
         }
     ]
 });
