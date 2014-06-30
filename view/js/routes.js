@@ -1,6 +1,5 @@
 define(['app', 'services/user', 'services/look', 'filters/common', 'controllers/sign'], function (app) {
     'use strict';
-
     return app
         .config(['$routeProvider', function ($routeProvider) {
             $routeProvider
@@ -32,7 +31,12 @@ define(['app', 'services/user', 'services/look', 'filters/common', 'controllers/
                 }
             });
         })
-        .controller('Where2GetCtrl', function ($scope, Look) {
+        .controller('Where2GetCtrl', function ($scope, $http, Look) {
+            $scope.image = {
+                url: 'url(http://www.placehold.it/150x150/EFEFEF/AAAAAA&text=image)',
+                width: '150px',
+                height: '150px'
+            };
             $scope.aspects = ['上衣','内裤','帽子'];
             $scope.tags = [];
             $scope.aspect = '...';
@@ -40,6 +44,31 @@ define(['app', 'services/user', 'services/look', 'filters/common', 'controllers/
             $scope.selectedAspect = function (aspect) {
                 $scope.tags.splice(0, 1, aspect);
                 $scope.aspect = aspect;
+            };
+
+            $scope.changeImage = function (elem) {
+
+                var fd = new FormData();
+                angular.forEach(elem.files, function (file) {
+                    fd.append('file', file);
+                });
+
+                $http.post('/api/looks/image', fd, {
+                    transformRequest: angular.identity,
+                    headers: {'Content-Type': undefined}
+                })
+                .success(function (res) {
+                    if (res.code != 0) {
+                        $scope.warning = '图片上传失败，请使用格式及大小正确的图片重试';
+                        return;
+                    }
+                    $scope.img = res.data.image;
+                    $scope.hash = res.data.hash;
+                    $scope.image.url = 'url(' + $scope.img + ')';
+                })
+                .error(function (res) {
+                    alert('上传失败！（如果你是使用的是Chrome，请关闭 设置=>宽带管理=>减少流量消耗）');
+                });
             };
 
             $scope.uploadSuccess = function (res) {
@@ -56,7 +85,7 @@ define(['app', 'services/user', 'services/look', 'filters/common', 'controllers/
             $scope.publish = function () {
                 Look.save({
                     hash: $scope.hash,
-                    image: $scope.image,
+                    image: $scope.img,
                     description: $scope.description,
                     aspect: $scope.aspect,
                     tags: $scope.tags

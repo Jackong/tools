@@ -3,7 +3,6 @@ define([
 	'angularRoute',
     'angularResource',
     'angularMd5',
-    'angularFlow',
     'ngTagsInput'
 ], function (angular) {
 		'use strict';
@@ -14,7 +13,6 @@ define([
 			'ngRoute',
             'ngResource',
             'angular-md5',
-            'flow',
             'bootstrap-tagsinput'
 		]);
 });

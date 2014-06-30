@@ -38,3 +38,11 @@ span, p, h4{
 a {
     color: #f46cb3;
 }
+
+.btn-image {
+    background-repeat: no-repeat;
+    display: block;
+    text-indent: -9999px;
+    font-size: 0;
+    border: none;
+}
