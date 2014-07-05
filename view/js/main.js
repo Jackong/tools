@@ -4,8 +4,16 @@ require.config({
         angularRoute: 'libs/angular-route/angular-route',
 		angularResource: 'libs/angular-resource/angular-resource',
         angularMd5: 'libs/angular-md5/angular-md5',
-        angularFlow: 'libs/ng-flow/src/angular-flow',
-        ngTagsInput: 'libs/bootstrap-tagsinput/dist/bootstrap-tagsinput-angular'
+        ngTagsInput: 'libs/bootstrap-tagsinput/dist/bootstrap-tagsinput-angular',
+        ngTagsInputOrigin: 'libs/bootstrap-tagsinput/dist/bootstrap-tagsinput.min',
+        jquery: [
+            'http://cdn.bootcss.com/jquery/1.10.2/jquery.min',
+            'libs/jquery/jquery.min'
+        ],
+        bootstrap: [
+            'http://cdn.bootcss.com/twitter-bootstrap/3.0.3/js/bootstrap.min',
+            'libs/bootstrap/dist/js/bootstrap.min'
+        ]
     },
 	shim: {
         angular : {exports : 'angular'},
@@ -17,8 +25,17 @@ require.config({
         ngTagsInput: {
             deps: [
                 'angular',
-                'libs/bootstrap-tagsinput/dist/bootstrap-tagsinput.min'
+                'ngTagsInputOrigin'
             ]
+        },
+        ngTagsInputOrigin: {
+            deps: [
+                'bootstrap'
+            ]
+        },
+        jquery: {exports: '$'},
+        bootstrap: {
+            deps: ['jquery']
         }
 	},
 	priority: [
@@ -32,9 +49,9 @@ window.name = "NG_DEFER_BOOTSTRAP!";
 
 require( [
 	'angular',
-	'app',
-	'routes'
-], function(angular, app) {
+    'bootstrap',
+	'app'
+], function(angular, bootstrap, app) {
 	'use strict';
     window.angular = angular;
 	angular.element(document.getElementsByTagName('html')[0]);
