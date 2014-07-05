@@ -40,7 +40,7 @@ User.static('perfect', function (uids, callback) {
             lean: true
         },
         function (err, users) {
-            if (err) {
+            if (err || users.length <= 0) {
                 return callback(null, []);
             }
             var userMap = {};
@@ -51,6 +51,23 @@ User.static('perfect', function (uids, callback) {
                 callback(err, userMap);
             });
         }
+    );
+});
+
+User.static('getOne', function (uid, callback) {
+    this.findOne(
+        {
+            _id: uid,
+            isValid: true
+        },
+        {
+            nick: 1,
+            avatar: 1
+        },
+        {
+            lean: true
+        },
+        callback
     );
 });
 

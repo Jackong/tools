@@ -11,7 +11,7 @@ var UserPublish = require('../model/user/Publish');
 var UserWant = require('../model/user/Want');
 var UserLike = require('../model/user/Like');
 var UserTip = require('../model/user/Tip');
-
+var Tip = require('../model/Tip');
 var User = require('../model/User');
 var redis = require('../common/redis');
 
@@ -155,5 +155,47 @@ module.exports = {
                 Look.gets(userLook.looks, callback);
             }
         ], callback)
+    },
+    getDetail: function (id, callback) {
+        Look.getOne(id, function (err, look) {
+            if (err || !look) {
+                return callback(err, null);
+            }
+            async.parallel({
+                publisher: function(callback) {
+                    User.getOne(look.publisher, callback);
+                },
+                favorites: function (callback) {
+                    if (look.favorites.length <= 0) {
+                        return callback(null, []);
+                    }
+                    var favorite2tips = {};
+                    async.filter(look.favorites, function (favorite, callback) {
+                        Tip.gets(favorite.tips, function (err, tips) {
+                            if (err) {
+                                return callback(false);
+                            }
+                            favorite2tips[favorite._id] = tips;
+                            callback(true);
+                        })
+                    }, function (favorites) {
+                        if (favorites.length <= 0) {
+                            return callback(null, []);
+                        }
+                        async.map(favorites, function (favorite, callback) {
+                            favorite.tips = favorite2tips[favorite._id];
+                            callback(null, favorite);
+                        }, callback)
+                    });
+                }
+            }, function (err, result) {
+                if (err || !result.publisher) {
+                    return callback(err, null);
+                }
+                look.publisher = result.publisher;
+                look.favorites = result.favorites;
+                callback(err, look);
+            })
+        });
     }
 };

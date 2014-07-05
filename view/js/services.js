@@ -25,6 +25,10 @@ define(['angular', 'angularResource'], function (angular) {
             })
         })
         .factory('Look', function ($resource) {
-            return $resource('api/looks/:type')
+            return $resource('api/looks/:lookId', {}, {
+                gets: {
+                    method: 'GET', url: 'api/looks/:type'
+                }
+            })
         });
 });

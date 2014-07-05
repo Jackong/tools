@@ -42,7 +42,7 @@ describe('UserService', function () {
                 cookie: function (uid, value, options) {
                     uid.should.be.equal('uid');
                     value.should.be.equal(existAccount);
-                    options.should.be.eql({ signed: true, httpOnly: true, maxAge: 86400 * 15, path: '/' });
+                    options.should.be.eql({ signed: true, httpOnly: true, maxAge: 86400000 * 15, path: '/' });
                     done();
                 }
             };

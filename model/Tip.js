@@ -4,6 +4,7 @@
 
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
+var async = require('async');
 
 var Tip = Schema({
     author: Schema.Types.ObjectId,//User:作者
@@ -19,4 +20,30 @@ var Tip = Schema({
         content: String
     }]
 });
+
+Tip.static('gets', function (tids, callback) {
+    if (tids.length <= 0) {
+        return callback(null, []);
+    }
+    this.find(
+        {
+            _id: {
+                $in: tids
+            },
+            isValid: true
+        },
+        {
+            author: 1,
+            content: 1,
+            price: 1,
+            created: 1,
+            comments: 1
+        },
+        {
+            lean: true
+        },
+        callback
+    );
+});
+
 module.exports = mongoose.model('Tip', Tip);

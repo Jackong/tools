@@ -78,4 +78,16 @@ module.exports = function (router) {
             });
 
         });
+    router.get('/looks/:lookId',
+        router.checker.params('lookId'),
+        function (req, res) {
+            LookService.getDetail(req.params.lookId, function (err, look) {
+                if (err) {
+                    logger.error('get look detail', err);
+                    return res.ok({look: null});
+                }
+                res.ok({look: look});
+            });
+        }
+    )
 };

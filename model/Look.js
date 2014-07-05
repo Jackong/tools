@@ -81,7 +81,8 @@ Look.static('gets', function (lookIds, callback) {
         {
             _id: {
                 $in: lookIds
-            }
+            },
+            isValid: true
         },
         {
             image: 1,
@@ -95,6 +96,27 @@ Look.static('gets', function (lookIds, callback) {
         },
         callback
     )
+});
+
+Look.static('getOne', function (lookId, callback) {
+    this.findOne(
+        {
+            _id: lookId,
+            isValid: true
+        },
+        {
+            publisher: 1,
+            image: 1,
+            tags: 1,
+            description: 1,
+            created: 1,
+            favorites: 1
+        },
+        {
+            lean: true
+        },
+        callback
+    );
 });
 
 module.exports = mongoose.model('Look', Look);

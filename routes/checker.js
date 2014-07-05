@@ -8,7 +8,8 @@ var map = {
     password: /^[0-9a-zA-Z]{32}$/,
     page: /^[0-9]+$/,
     num: /^[1-9][0-9]?$/,
-    image: /^\/tmp\/.*$/
+    image: /^\/tmp\/.*$/,
+    lookId: /^[0-9A-Fa-f]{32}$/
 };
 
 var check = function (req, res, next, from, name, defaultValue) {

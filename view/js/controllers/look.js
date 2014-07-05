@@ -79,10 +79,10 @@ define(['angular', 'ngTagsInput'], function (angular) {
         };
 
         $scope.looks = [];
-        Look.get({type: 'trend', page: 0, num: 10}, function (res) {
+        Look.gets({type: 'trend', page: 0, num: 10}, function (res) {
             $scope.looks = res.data.looks;
-            $cacheFactory.get('looks') ? $cacheFactory.get('looks').destroy() : '';
-            var caches = $cacheFactory('looks');
+            var caches = $cacheFactory.get('looks');
+            caches ? caches.destroy() : caches = $cacheFactory('looks');
             angular.forEach($scope.looks, function(look, key) {
                 caches.put(look._id, look);
             });
@@ -94,9 +94,20 @@ define(['angular', 'ngTagsInput'], function (angular) {
             //todo
         };
     })
-    .controller('LookDetailCtrl', function ($scope, $routeParams, $cacheFactory) {
+    .controller('LookDetailCtrl', function ($scope, $routeParams, $cacheFactory, Look) {
             $scope.view = 'partials/look/detail.html';
-            $scope.look = $cacheFactory.get('looks').get($routeParams.lookId);
+            var lookId = $routeParams.lookId;
+            var caches = $cacheFactory.get('looks');
+            if (caches) {
+                $scope.look = $cacheFactory.get('looks').get(lookId);
+            } else {
+                caches = $cacheFactory('looks');
+                Look.get({lookId: lookId}, function (res) {
+                    $scope.look = res.data.look;
+                    caches.put(lookId, $scope.look);
+                });
+            }
+
             $scope.like = function () {
                 //todo
             };

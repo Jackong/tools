@@ -12,6 +12,8 @@ var TagLook = require('../../model/tag/Look');
 var UserPublish = require('../../model/user/Publish');
 var UserWant = require('../../model/user/Want');
 var User = require('../../model/User');
+var Tip = require('../../model/Tip');
+
 var LookService = require('../../services/Look');
 
 sinon.config = {
@@ -195,5 +197,62 @@ describe('Look', function () {
                 done();
             });
         });
-    })
+    });
+
+    describe('.getDetail()', function () {
+        var publisherId = null;
+        beforeEach(function () {
+            publisherId = look.publisher;
+            sinon.stub(Look, 'getOne', function (id, callback) {
+                if (look._id === id) {
+                    return callback(null, look);
+                }
+                callback(null, null);
+            });
+            sinon.stub(User, 'getOne', function (uid, callback) {
+                if (uid !== publisherId) {
+                    return callback(null, null);
+                }
+                callback(null, new User({_id: uid, nick: 'jack', avatar: 'avatar url'}));
+            });
+            sinon.stub(Tip, 'gets', function (tipIds, callback) {
+                callback(null, []);
+            });
+        });
+        afterEach(function () {
+            Look.getOne.restore();
+            User.getOne.restore();
+            Tip.gets.restore();
+        });
+        it('should perfect publisher info and tips info when look is exist', function (done) {
+            LookService.getDetail(look._id, function (err, look) {
+                should.not.exist(err);
+                should.exist(look);
+                Look.getOne.called.should.be.true;
+                User.getOne.called.should.be.true;
+                Tip.gets.called.should.be.true;
+                done();
+            });
+        });
+
+        it('should not perfect user info and tips info when look is not exist', function (done) {
+            LookService.getDetail(new mongoose.Types.ObjectId, function (err, look) {
+                should.not.exist(err);
+                should.not.exist(look);
+                Look.getOne.called.should.be.true;
+                User.getOne.called.should.be.false;
+                Tip.gets.called.should.be.false;
+                done();
+            });
+        });
+
+        it('should be null when the publisher is not exist or invalid', function (done) {
+            publisherId = new mongoose.Types.ObjectId;
+            LookService.getDetail(look._id, function (err, look) {
+                should.not.exist(err);
+                should.not.exist(look);
+                done();
+            })
+        })
+    });
 });
