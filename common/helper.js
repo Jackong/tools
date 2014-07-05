@@ -28,6 +28,10 @@ exports.time = function () {
     return new Date().getTime();
 };
 
+exports.now = function () {
+    return Date.now();
+};
+
 exports.md5 = function (str, salt) {
     if (salt) {
         salt = '';

@@ -14,6 +14,7 @@ var helper = require('../common/helper');
 var Look = require('../model/Look');
 var LookService = require('../services/Look');
 var UserService = require('../services/User');
+var favorites = require('../config/look/favorites');
 
 module.exports = function (router) {
 
@@ -28,6 +29,10 @@ module.exports = function (router) {
             });
         });
 
+    router.get('/looks/favorites', function (req, res) {
+        res.ok({favorites: favorites});
+    });
+
     router.post('/looks/image', multipartMiddleware, function (req, res) {
         res.ok({
             image: req.files.file.path,
@@ -36,6 +41,8 @@ module.exports = function (router) {
     });
 
     router.post('/looks',
+        router.checker.body('lookId'),
+        router.checker.body('favoriteId'),
         function (req, res) {
             var uid = UserService.getUid(req, res);
             async.waterfall([
@@ -46,7 +53,7 @@ module.exports = function (router) {
                     helper.getFileHash(req.body.image, 'md5', callback);
                 },
                 function checkHash(hash, callback) {
-                    if (hash !== req.body.hash) {
+                    if (hash !== req.body.lookId) {
                         return callback('invalid image to upload');
                     }
                     callback(null);
@@ -54,14 +61,14 @@ module.exports = function (router) {
                 function save(callback) {
                     var look = new Look(
                         {
-                            _id: req.body.hash,
+                            _id: req.body.lookId,
                             publisher: uid,
                             image: req.body.image,
                             tags: req.body.tags,
                             description: req.body.description,
                             favorites: [
                                 {
-                                    _id: req.body.aspect,
+                                    _id: req.body.favoriteId,
                                     wants: [uid]
                                 }
                             ]
@@ -81,7 +88,7 @@ module.exports = function (router) {
     router.get('/looks/:lookId',
         router.checker.params('lookId'),
         function (req, res) {
-            LookService.getDetail(req.params.lookId, function (err, look) {
+            LookService.getDetail(req.params.lookId.toLowerCase(), function (err, look) {
                 if (err) {
                     logger.error('get look detail', err);
                     return res.ok({look: null});
@@ -89,5 +96,14 @@ module.exports = function (router) {
                 res.ok({look: look});
             });
         }
-    )
+    );
+
+    router.get('/looks/:lookId/favorites',
+        router.checker.params('lookId'),
+        router.checker.params('favoriteId'),
+        function (req, res) {
+            //todo get favorites by look id
+        }
+    );
+
 };

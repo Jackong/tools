@@ -5,6 +5,7 @@
 var async = require('async');
 
 var logger = require('../common/logger');
+var helper = require('../common/helper');
 var Look = require('../model/Look');
 var TagLook = require('../model/tag/Look');
 var UserPublish = require('../model/user/Publish');
@@ -74,10 +75,13 @@ module.exports = {
 
                 });
             }
-            Look.appendTagsAndFavorites(look._id, tags, favorites,
+            var now = helper.now();
+            Look.appendTagsAndFavorites(look._id, tags, favorites, now,
                 function (err, num) {
                     old.tags = old.tags.concat(tags);
                     old.favorites = old.favorites.concat(favorites);
+                    old.likeCount = 0;//todo
+                    old.updated = now;
                     if (null !== err || num !== 1) {
                         old = null;
                     }
@@ -122,9 +126,7 @@ module.exports = {
                 },
                 function perfectDetailAndfilterNull(publisherMap, callback) {
                     async.filter(looks, function (look, callback) {
-                        var publisher = publisherMap[look.publisher];
-                        look.time = look.created;
-                        look.publisher = publisher;
+                        look.publisher = publisherMap[look.publisher];
                         look.likeCount = 0;//todo query like count map
                         callback(look.publisher);
                     }, function (looks) {
@@ -192,6 +194,7 @@ module.exports = {
                 if (err || !result.publisher) {
                     return callback(err, null);
                 }
+                look.likeCount = 0;//todo
                 look.publisher = result.publisher;
                 look.favorites = result.favorites;
                 callback(err, look);

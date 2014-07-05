@@ -26,12 +26,14 @@ var Look = Schema({
     favorites: [Favorite]//Favorite:心仪的东西
 });
 
-Look.static('appendTagsAndFavorites', function (lookId, tags, favorites, callback) {
+
+Look.static('appendTagsAndFavorites', function (lookId, tags, favorites, time, callback) {
     return this.update(
         {
             _id: lookId
         },
         {
+            updated: time,
             $addToSet: {
                 tags: {
                     $each: tags
@@ -61,7 +63,7 @@ Look.static('getTrend', function (start, num, callback) {
             image: 1,
             tags: 1,
             description: 1,
-            created: 1,
+            updated: 1,
             favorites: 1
         },
         {
@@ -69,7 +71,7 @@ Look.static('getTrend', function (start, num, callback) {
             $skip: start,
             $limit: num,
             $sort: {
-                created: -1
+                updated: -1
             }
         }
         , callback);
@@ -88,7 +90,7 @@ Look.static('gets', function (lookIds, callback) {
             image: 1,
             tags: 1,
             description: 1,
-            created: 1,
+            updated: 1,
             favorites: 1
         },
         {
@@ -109,7 +111,7 @@ Look.static('getOne', function (lookId, callback) {
             image: 1,
             tags: 1,
             description: 1,
-            created: 1,
+            updated: 1,
             favorites: 1
         },
         {

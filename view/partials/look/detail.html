@@ -8,6 +8,7 @@
                     <span class="glyphicon glyphicon-heart icon"></span>
                     <span>{{look.likeCount}}人喜欢</span>
                     <button ng-click="like()" class="btn btn-default">喜欢</button>
+                    <button class="btn btn-default">问问其它</button>
                     <button ng-click="share()" class="glyphicon glyphicon-share pull-right btn btn-default">分享</button>
                 </p>
                 <p>
@@ -20,7 +21,7 @@
 
                 <div class="panel panel-default" ng-repeat="favorite in look.favorites">
                     <div class="panel-heading">
-                        <h3 class="panel-title">哪儿有卖这款{{favorite._id}}？ <a href="#/looks/{{look._id}}/wants" class="pull-right">{{favorite.wants.length}}人想要</a></h3>
+                        <h3 class="panel-title">哪儿有卖这款{{favorites[favorite._id]}}？ <a href="#/looks/{{look._id}}/wants" class="pull-right">{{favorite.wants.length}}人想要</a></h3>
                     </div>
                     <div class="panel-body">
                         <div class="media" ng-repeat="tip in favorite.tips">
@@ -54,7 +55,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">取消</span></button>
-                <h4 class="modal-title" id="tipModalLabel">我知道哪儿有卖这款{{favoriteId}}</h4>
+                <h4 class="modal-title" id="tipModalLabel">我知道哪儿有卖这款{{favorites[favoriteId]}}</h4>
             </div>
 
             <div class="modal-body">

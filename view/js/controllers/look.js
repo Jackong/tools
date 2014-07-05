@@ -5,20 +5,22 @@ define(['angular', 'ngTagsInput'], function (angular) {
     angular.module('iWomen.controllers.look', [
         'bootstrap-tagsinput'
     ])
-    .controller('TrendCtrl', function ($scope, $http, $cacheFactory, Look) {
+    .controller('TrendCtrl', function ($scope, $http, LookCache) {
         $scope.view = 'partials/look/list.html';
         $scope.image = {
             url: 'url(http://www.placehold.it/200x200/EFEFEF/AAAAAA&text=image)',
             width: '200px',
             height: '200px'
         };
-        $scope.aspects = ['上衣','内裤','帽子'];
         $scope.tags = [];
-        $scope.aspect = '...';
 
-        $scope.selectedAspect = function (aspect) {
-            $scope.tags.splice(0, 1, aspect);
-            $scope.aspect = aspect;
+        LookCache.favorites(function (favorites) {
+            $scope.favorites = favorites;
+        });
+
+        $scope.selectedFavorite = function (favorite) {
+            $scope.tags.splice(0, 1, $scope.favorites[favorite]);
+            $scope.favorite = favorite;
         };
 
         $scope.changeImage = function (elem) {
@@ -65,28 +67,31 @@ define(['angular', 'ngTagsInput'], function (angular) {
         };
 
         $scope.publish = function () {
-            Look.save({
-                hash: $scope.hash,
-                image: $scope.img,
-                description: $scope.description,
-                aspect: $scope.aspect,
-                tags: $scope.tags
-            }, function (res) {
-                if (res.code === 0) {
-
+            LookCache.publish($scope.hash, $scope.img, $scope.description,
+                $scope.favorite, $scope.tags,
+                function (newLook) {
+                    if (!newLook) {
+                        return;
+                    }
+                    var replace = false;
+                    for(var idx = 0; idx < $scope.looks.length; idx++) {
+                        if ($scope.looks[idx]._id === newLook._id) {
+                            $scope.looks[idx] = newLook;
+                            replace = true;
+                            break;
+                        }
+                    }
+                    if (!replace) {
+                        $scope.looks.push(newLook);
+                    }
                 }
-            });
+            );
         };
 
-        $scope.looks = [];
-        Look.gets({type: 'trend', page: 0, num: 10}, function (res) {
-            $scope.looks = res.data.looks;
-            var caches = $cacheFactory.get('looks');
-            caches ? caches.destroy() : caches = $cacheFactory('looks');
-            angular.forEach($scope.looks, function(look, key) {
-                caches.put(look._id, look);
-            });
+        LookCache.gets('trend', 0, 5, function (looks) {
+            $scope.looks = looks;
         });
+
         $scope.like = function (lookId) {
             //todo
         };
@@ -94,19 +99,18 @@ define(['angular', 'ngTagsInput'], function (angular) {
             //todo
         };
     })
-    .controller('LookDetailCtrl', function ($scope, $routeParams, $cacheFactory, Look) {
+    .controller('LookDetailCtrl', function ($scope, $routeParams, LookCache) {
+
             $scope.view = 'partials/look/detail.html';
             var lookId = $routeParams.lookId;
-            var caches = $cacheFactory.get('looks');
-            if (caches) {
-                $scope.look = $cacheFactory.get('looks').get(lookId);
-            } else {
-                caches = $cacheFactory('looks');
-                Look.get({lookId: lookId}, function (res) {
-                    $scope.look = res.data.look;
-                    caches.put(lookId, $scope.look);
-                });
-            }
+
+            LookCache.favorites(function (favorites) {
+                $scope.favorites = favorites;
+            });
+
+            LookCache.getById(lookId, function (look) {
+                $scope.look = look;
+            });
 
             $scope.like = function () {
                 //todo

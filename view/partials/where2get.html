@@ -40,12 +40,12 @@
                     <div class="form-group">
                         <div class="dropdown">
                             <button class="btn btn-default dropdown-toggle" type="button" id="aspects" data-toggle="dropdown">
-                                我中意她的这款{{aspect}}
+                                我中意她的这款{{favorite ? favorites[favorite] : "..."}}
                                 <span class="caret"></span>
                             </button>
                             <ul class="dropdown-menu" role="menu" aria-labelledby="aspects">
-                                <li role="presentation" ng-repeat="aspect in aspects">
-                                    <a role="menuitem" tabindex="-1" href="" ng-click="selectedAspect(aspect)">{{aspect}}</a>
+                                <li role="presentation" ng-repeat="(key, value) in favorites">
+                                    <a role="menuitem" tabindex="-1" href="" ng-click="selectedFavorite(key)">{{value}}</a>
                                 </li>
                             </ul>
                         </div>
