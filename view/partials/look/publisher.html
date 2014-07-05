@@ -1,0 +1,17 @@
+<p>
+<div class="media">
+    <a class="pull-left" href="#/users/{{look.publisher._id}}">
+        <img width="50" height="50" class="media-object img-circle img-responsive pull-left" ng-src="{{look.publisher.avatar | formatAvatar}}">
+    </a>
+    <div class="media-body">
+        <h5 class="media-heading">
+            <span class="icon" style="font-size: 16px">{{look.publisher.nick | formatNick}}</span>
+                                    <span class="pull-right">
+                                        <span class="glyphicon glyphicon-time"></span> {{look.time | formatTime}}
+                                    </span>
+        </h5>
+        <span>{{look.publisher.action}}</span>
+        <span ng-show="look.description">#{{look.description}}</span>
+    </div>
+</div>
+</p>

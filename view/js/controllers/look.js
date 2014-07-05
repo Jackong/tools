@@ -110,5 +110,8 @@ define(['angular', 'ngTagsInput'], function (angular) {
             $scope.addTip = function () {
                 //todo
             };
+            $scope.share = function () {
+                //todo
+            };
     });
 });

@@ -1,29 +1,14 @@
 <div class="row">
     <div class="col-sm-12 col-md-12">
         <div class="thumbnail">
-            <p>
-            <div class="media">
-                <a class="pull-left" href="#/users/{{look.publisher._id}}">
-                    <img width="50" height="50" class="media-object img-circle img-responsive pull-left" ng-src="{{look.publisher.avatar | formatAvatar}}">
-                </a>
-                <div class="media-body">
-                    <h5 class="media-heading">
-                        <span class="icon" style="font-size: 16px">{{look.publisher.nick | formatNick}}</span>
-                                <span class="pull-right">
-                                    <span class="glyphicon glyphicon-time"></span> {{look.time | formatTime}}
-                                </span>
-                    </h5>
-                    <span>{{look.publisher.action}}</span>
-                    <span ng-show="look.description">#{{look.description}}</span>
-                </div>
-            </div>
-            </p>
+            <div ng-include="'partials/look/publisher.html'"></div>
             <img ng-src="{{look.image | formatImage}}" class="img-rounded img-responsive" alt="{{look.description}}">
             <div class="caption">
                 <p>
                     <span class="glyphicon glyphicon-heart icon"></span>
                     <span>{{look.likeCount}}人喜欢</span>
                     <button ng-click="like()" class="btn btn-default">喜欢</button>
+                    <button ng-click="share()" class="glyphicon glyphicon-share pull-right btn btn-default">分享</button>
                 </p>
                 <p>
                     <span class="glyphicon glyphicon-tags icon"></span>
@@ -50,6 +35,8 @@
                                 </span>
                                 </h5>
                                 <span>{{tip.content}}</span>
+                                <span class="pull-right">{{tip.likes.length}}人喜欢</span>
+                                <span class="glyphicon glyphicon-heart-empty icon pull-right">喜欢</span>
                             </div>
                         </div>
                         <button ng-click="want(favorite._id)" class="btn btn-default pull-left">我也想要这个</button>
