@@ -17,7 +17,11 @@ define(['angular', 'angularRoute'], function (angular) {
                 })
                 .when('/feed', {
                     templateUrl: 'partials/where2get.html',
-                    controller: 'Where2GetCtrl'
+                    controller: 'TrendCtrl'
+                })
+                .when('/looks/:lookId', {
+                    templateUrl: 'partials/where2get.html',
+                    controller: 'LookDetailCtrl'
                 })
                 .when('/account/forgot', {
                     templateUrl: 'partials/forgot.html',

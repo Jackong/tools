@@ -5,7 +5,8 @@ define(['angular', 'ngTagsInput'], function (angular) {
     angular.module('iWomen.controllers.look', [
         'bootstrap-tagsinput'
     ])
-    .controller('Where2GetCtrl', function ($scope, $http, Look) {
+    .controller('TrendCtrl', function ($scope, $http, $cacheFactory, Look) {
+        $scope.view = 'partials/look/list.html';
         $scope.image = {
             url: 'url(http://www.placehold.it/200x200/EFEFEF/AAAAAA&text=image)',
             width: '200px',
@@ -77,17 +78,37 @@ define(['angular', 'ngTagsInput'], function (angular) {
             });
         };
 
-        var lastScrollY = 0;
-        $scope.showFooter = true;
-        $scope.scroll = function () {
-            $scope.showFooter = lastScrollY > window.pageYOffset;
-            lastScrollY = window.pageYOffset;
-            $scope.$apply();
-        };
-        window.onscroll = $scope.scroll;
         $scope.looks = [];
         Look.get({type: 'trend', page: 0, num: 10}, function (res) {
             $scope.looks = res.data.looks;
+            $cacheFactory.get('looks') ? $cacheFactory.get('looks').destroy() : '';
+            var caches = $cacheFactory('looks');
+            angular.forEach($scope.looks, function(look, key) {
+                caches.put(look._id, look);
+            });
         });
+        $scope.like = function (lookId) {
+            //todo
+        };
+        $scope.want = function (lookId, favoriteId) {
+            //todo
+        };
+    })
+    .controller('LookDetailCtrl', function ($scope, $routeParams, $cacheFactory) {
+            $scope.view = 'partials/look/detail.html';
+            $scope.look = $cacheFactory.get('looks').get($routeParams.lookId);
+            $scope.like = function () {
+                //todo
+            };
+
+            $scope.want = function (favoriteId) {
+                //todo
+            };
+            $scope.onAddTip = function (favoriteId) {
+                $scope.favoriteId = favoriteId;
+            };
+            $scope.addTip = function () {
+                //todo
+            };
     });
 });

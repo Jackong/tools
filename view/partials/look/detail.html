@@ -1,0 +1,88 @@
+<div class="row">
+    <div class="col-sm-12 col-md-12">
+        <div class="thumbnail">
+            <p>
+            <div class="media">
+                <a class="pull-left" href="#/users/{{look.publisher._id}}">
+                    <img width="50" height="50" class="media-object img-circle img-responsive pull-left" ng-src="{{look.publisher.avatar | formatAvatar}}">
+                </a>
+                <div class="media-body">
+                    <h5 class="media-heading">
+                        <span class="icon" style="font-size: 16px">{{look.publisher.nick | formatNick}}</span>
+                                <span class="pull-right">
+                                    <span class="glyphicon glyphicon-time"></span> {{look.time | formatTime}}
+                                </span>
+                    </h5>
+                    <span>{{look.publisher.action}}</span>
+                    <span ng-show="look.description">#{{look.description}}</span>
+                </div>
+            </div>
+            </p>
+            <img ng-src="{{look.image | formatImage}}" class="img-rounded img-responsive" alt="{{look.description}}">
+            <div class="caption">
+                <p>
+                    <span class="glyphicon glyphicon-heart icon"></span>
+                    <span>{{look.likeCount}}人喜欢</span>
+                    <button ng-click="like()" class="btn btn-default">喜欢</button>
+                </p>
+                <p>
+                    <span class="glyphicon glyphicon-tags icon"></span>
+                    <span>标签：</span>
+                    <span ng-repeat="tag in look.tags">
+                        <a href="#/tags/{{tag}}" type="button" class="label label-default" style="background-color: #f48fbe;">{{tag}}</a>
+                    </span>
+                </p>
+
+                <div class="panel panel-default" ng-repeat="favorite in look.favorites">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">哪儿有卖这款{{favorite._id}}？ <a href="#/looks/{{look._id}}/wants" class="pull-right">{{favorite.wants.length}}人想要</a></h3>
+                    </div>
+                    <div class="panel-body">
+                        <div class="media" ng-repeat="tip in favorite.tips">
+                            <a class="pull-left" href="#/users/{{tip.author._id}}">
+                                <img width="50" height="50" class="media-object img-circle img-responsive pull-left" ng-src="{{tip.author.avatar | formatAvatar}}">
+                            </a>
+                            <div class="media-body">
+                                <h5 class="media-heading">
+                                    <span class="icon" style="font-size: 16px">{{tip.author.nick | formatNick}}</span>
+                                <span class="pull-right">
+                                    <span class="glyphicon glyphicon-time"></span> {{tip.created | formatTime}}
+                                </span>
+                                </h5>
+                                <span>{{tip.content}}</span>
+                            </div>
+                        </div>
+                        <button ng-click="want(favorite._id)" class="btn btn-default pull-left">我也想要这个</button>
+                        <button ng-click="onAddTip(favorite._id)" class="btn btn-default pull-right" data-toggle="modal" data-target="#tipModal">我知道哪儿有卖</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="tipModal" tabindex="-1" role="dialog" aria-labelledby="tipModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">取消</span></button>
+                <h4 class="modal-title" id="tipModalLabel">我知道哪儿有卖这款{{favoriteId}}</h4>
+            </div>
+
+            <div class="modal-body">
+                <div class="form-group">
+                    <textarea class="form-control" rows="2" ng-model="content" placeholder="如果有链接，麻烦粘贴个链接进来"></textarea>
+                </div>
+
+                <div ng-if="warning" class="form-group">
+                    <div class="alert alert-warning" role="alert">{{warning}}</div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" ng-click="addTip()" >提交</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+            </div>
+        </div>
+    </div>
+</div>

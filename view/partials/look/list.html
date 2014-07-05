@@ -1,0 +1,42 @@
+<div class="row">
+    <div ng-repeat="look in looks" class="col-sm-6 col-md-4">
+        <div class="thumbnail">
+            <p>
+            <div class="media">
+                <a class="pull-left" href="#/users/{{look.publisher._id}}">
+                    <img width="50" height="50" class="media-object img-circle img-responsive pull-left" ng-src="{{look.publisher.avatar | formatAvatar}}">
+                </a>
+                <div class="media-body">
+                    <h5 class="media-heading">
+                        <span class="icon" style="font-size: 16px">{{look.publisher.nick | formatNick}}</span>
+                                <span class="pull-right">
+                                    <span class="glyphicon glyphicon-time"></span> {{look.time | formatTime}}
+                                </span>
+                    </h5>
+                    <span>{{look.publisher.action}}</span>
+                    <span ng-show="look.description">#{{look.description}}</span>
+                </div>
+            </div>
+            </p>
+            <a href="#/looks/{{look._id}}">
+                <img ng-src="{{look.image | formatImage}}" class="img-rounded img-responsive" alt="{{look.description}}">
+            </a>
+            <div class="caption">
+                <p>
+                    <span class="glyphicon glyphicon-heart icon"></span>
+                    <span>{{look.likeCount}}人喜欢</span>
+                    <button ng-click="like(look._id)" class="btn btn-default">喜欢</button>
+                </p>
+                <p ng-repeat="favorite in look.favorites">
+                    <span class="glyphicon glyphicon-lock icon"></span>
+                    <span>{{favorite._id}}：{{favorite.tips.length}}个小贴士</span>
+                    <a href="#/looks/{{look._id}}/favorites/{{favorite._id}}/buy" type="button" ng-show="favorite.tips.length > 0" class="btn btn-default">购买</a>
+                        <span ng-show="favorite.tips.length <= 0">
+                            - {{favorite.wants.length}}人想要
+                            <button ng-click="want(look._id, favorite._id)" class="btn btn-default">想要</button>
+                        </span>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>

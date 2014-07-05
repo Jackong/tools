@@ -15,5 +15,15 @@ define(['angular', 'controllers/sign', 'controllers/look'], function (angular) {
                 $location.path('/sign');
             }
         });
+    })
+    .controller('RootCtrl', function ($rootScope) {
+        var lastScrollY = 0;
+        $rootScope.showFooter = true;
+        $rootScope.scroll = function () {
+            $rootScope.showFooter = lastScrollY >= window.pageYOffset;
+            lastScrollY = window.pageYOffset;
+            $rootScope.$apply();
+        };
+        window.onscroll = $rootScope.scroll;
     });
 });
