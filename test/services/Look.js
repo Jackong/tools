@@ -13,6 +13,7 @@ var UserPublish = require('../../model/user/Publish');
 var UserWant = require('../../model/user/Want');
 var User = require('../../model/User');
 var Tip = require('../../model/Tip');
+var Favorite = require('../../model/Favorite');
 
 var LookService = require('../../services/Look');
 
@@ -33,10 +34,7 @@ describe('Look', function () {
                 tags: ['nice', 'dress'],
                 description: 'desc',
                 favorites: [
-                    {
-                        _id: 'shirt',
-                        wants: [publisher]
-                    }
+                    'shirt'
                 ]
             }
         );
@@ -44,20 +42,24 @@ describe('Look', function () {
     describe('.firstPublish()', function () {
         it('should be saved and put to tags, publication and want', sinon.test(function (done) {
             var save = this.stub(look, 'save');
-            var putNewLook4Tag = this.stub(TagLook, 'putNewLook');
-            var putNewLook4UserPublish = this.stub(UserPublish, 'putNewLook');
-            var putNewLook4UserWant = this.stub(UserWant, 'putNewLook');
+            this.stub(TagLook, 'putNewLook');
+            this.stub(UserPublish, 'putNewLook');
+            this.stub(UserWant, 'putNewLook');
+            this.stub(Favorite, 'sync');
             LookService.firstPublish(look, function (err, doc) {
                 should.not.exist(err);
                 doc.should.be.equal(look);
-                putNewLook4UserPublish.called.should.be.true;
-                putNewLook4UserWant.called.should.be.true;
+                TagLook.putNewLook.called.should.be.true;
+                UserPublish.putNewLook.called.should.be.true;
+                UserWant.putNewLook.called.should.be.true;
+                Favorite.sync.called.should.be.true;
                 done();
             });
             save.yield(null, null);
-            putNewLook4Tag.yield(null);
-            putNewLook4UserPublish.yield(null, null);
-            putNewLook4UserWant.yield(null, null);
+            TagLook.putNewLook.yield(null);
+            UserPublish.putNewLook.yield(null, null);
+            UserWant.putNewLook.yield(null, null);
+            Favorite.sync.yield(null, null);
         }));
     });
 
@@ -73,78 +75,83 @@ describe('Look', function () {
                     tags: ['nice'],
                     description: 'desc',
                     favorites: [
-                        {
-                            _id: 'glasses',
-                            wants: [publisher]
-                        }
+                        'glasses'
                     ]
                 }
             );
         });
         it('should update favorites, tags and want when they are different', sinon.test(function (done) {
-            var updateLook = this.stub(Look, 'appendTagsAndFavorites');
-            var putNewLook4Tag = this.stub(TagLook, 'putNewLook');
-            var putNewLook4User = this.stub(UserWant, 'putNewLook');
+            this.stub(Look, 'appendTagsAndFavorites');
+            this.stub(TagLook, 'putNewLook');
+            this.stub(UserWant, 'putNewLook');
+            this.stub(Favorite, 'sync');
             LookService.republish(old, look, function (err, doc) {
-                putNewLook4Tag.called.should.be.true;
+                TagLook.putNewLook.called.should.be.true;
+                Favorite.sync.called.should.be.true;
                 should.not.exist(err);
                 doc.tags.should.with.lengthOf(2);
                 doc.favorites.should.with.lengthOf(2);
                 done();
             });
 
-            putNewLook4User.yield(null, null);
-            updateLook.yield(null, 1);
+            UserWant.putNewLook.yield(null, null);
+            Look.appendTagsAndFavorites.yield(null, 1);
         }));
 
         it('should update favorites only when tags are not different', sinon.test(function (done) {
-            var updateLook = this.stub(Look, 'appendTagsAndFavorites');
-            var putNewLook4Tag = this.stub(TagLook, 'putNewLook');
-            var putNewLook4User = this.stub(UserWant, 'putNewLook');
+            this.stub(Look, 'appendTagsAndFavorites');
+            this.stub(TagLook, 'putNewLook');
+            this.stub(UserWant, 'putNewLook');
+            this.stub(Favorite, 'sync');
             look.tags = old.tags;
             LookService.republish(old, look, function (err, doc) {
-                putNewLook4Tag.called.should.be.false;
+                TagLook.putNewLook.called.should.be.false;
+                Favorite.sync.called.should.be.true;
                 should.not.exist(err);
                 doc.tags.should.with.lengthOf(1);
                 doc.favorites.should.with.lengthOf(2);
                 done();
             });
 
-            putNewLook4User.yield(null, null);
-            updateLook.yield(null, 1);
+            UserWant.putNewLook.yield(null, null);
+            Look.appendTagsAndFavorites.yield(null, 1);
         }));
 
         it('should not update when tags and favorites are not different', sinon.test(function (done) {
-            var putNewLook4Tag = this.stub(TagLook, 'putNewLook');
-            var putNewLook4User = this.stub(UserWant, 'putNewLook');
+            this.stub(TagLook, 'putNewLook');
+            this.stub(UserWant, 'putNewLook');
+            this.stub(Favorite, 'sync');
             look.tags = old.tags;
-            look.favorites[0]._id = old.favorites[0]._id;
+            look.favorites[0] = old.favorites[0];
             LookService.republish(old, look, function (err, doc) {
-                putNewLook4Tag.called.should.be.false;
+                TagLook.putNewLook.called.should.be.false;
+                Favorite.sync.called.should.be.false;
                 should.not.exist(err);
                 doc.tags.should.with.lengthOf(1);
                 doc.favorites.should.with.lengthOf(1);
                 done();
             });
 
-            putNewLook4User.yield(null, null);
+            UserWant.putNewLook.yield(null, null);
         }));
 
         it('should not put new look to want when the publisher is the same', sinon.test(function (done) {
-            var updateLook = this.stub(Look, 'appendTagsAndFavorites');
-            var putNewLook4Tag = this.stub(TagLook, 'putNewLook');
-            var putNewLook4User = this.stub(UserWant, 'putNewLook');
+            this.stub(Look, 'appendTagsAndFavorites');
+            this.stub(TagLook, 'putNewLook');
+            this.stub(UserWant, 'putNewLook');
+            this.stub(Favorite, 'sync');
             look.publisher = old.publisher;
             LookService.republish(old, look, function (err, doc) {
-                putNewLook4Tag.called.should.be.true;
-                putNewLook4User.called.should.be.false;
+                TagLook.putNewLook.called.should.be.true;
+                Favorite.sync.called.should.be.true;
+                UserWant.putNewLook.called.should.be.false;
                 should.not.exist(err);
                 doc.tags.should.with.lengthOf(2);
                 doc.favorites.should.with.lengthOf(2);
                 done();
             });
 
-            updateLook.yield(null, 1);
+            Look.appendTagsAndFavorites.yield(null, 1);
         }));
     });
 
@@ -152,8 +159,9 @@ describe('Look', function () {
         afterEach(function () {
             Look.getTrend.restore();
             User.perfect.restore();
+            Favorite.perfect.restore();
         });
-        it('should perfect publishers info when looks is not empty', function (done) {
+        it('should perfect publishers and favorites info when looks is not empty', function (done) {
             sinon.stub(Look, 'getTrend', function (start, num, callback) {
                 callback(null, [look]);
             });
@@ -162,23 +170,29 @@ describe('Look', function () {
                 user[look.publisher] = new User({_id: look.publisher, nick: 'jack', avatar: 'avatar url'});
                 callback(null, user);
             });
+            sinon.stub(Favorite, 'perfect', function (lookId, favoriteKeys, callback) {
+                callback(null, [new Favorite({_id: lookId + ':' + favoriteKeys[0], wants: [], tips: []})]);
+            });
             LookService.getTrend(0, 1, function (err, looks) {
                 should.not.exist(err);
                 looks.should.with.lengthOf(1);
                 User.perfect.called.should.be.true;
+                Favorite.perfect.called.should.be.true;
                 done();
             });
         });
 
-        it('should not perfect publisher info when looks is empty', function (done) {
+        it('should not perfect publisher and favorites info when looks is empty', function (done) {
             sinon.stub(Look, 'getTrend', function (start, num, callback) {
                 callback(null, []);
             });
+            sinon.stub(Favorite, 'perfect');
             sinon.stub(User, 'perfect');
             LookService.getTrend(0, 1, function (err, looks) {
                 should.not.exist(err);
                 looks.should.with.lengthOf(0);
                 User.perfect.called.should.be.false;
+                Favorite.perfect.called.should.be.false;
                 done();
             });
         });
@@ -190,10 +204,14 @@ describe('Look', function () {
             sinon.stub(User, 'perfect', function (uids, callback) {
                 callback(null, []);
             });
+            sinon.stub(Favorite, 'perfect', function (lookId, favoriteKeys, callback) {
+                callback(null, []);
+            });
             LookService.getTrend(0, 1, function (err, looks) {
                 should.not.exist(err);
                 looks.should.with.lengthOf(0);
                 User.perfect.called.should.be.true;
+                Favorite.perfect.called.should.be.false;
                 done();
             });
         });
@@ -253,6 +271,10 @@ describe('Look', function () {
                 should.not.exist(look);
                 done();
             })
-        })
+        });
+    });
+
+    describe('.addTip()', function () {
+
     });
 });

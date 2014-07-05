@@ -66,12 +66,7 @@ module.exports = function (router) {
                             image: req.body.image,
                             tags: req.body.tags,
                             description: req.body.description,
-                            favorites: [
-                                {
-                                    _id: req.body.favoriteId,
-                                    wants: [uid]
-                                }
-                            ]
+                            favorites: [req.body.favoriteId]
                         }
                     );
                     LookService.publish(look,callback);
@@ -100,9 +95,20 @@ module.exports = function (router) {
 
     router.get('/looks/:lookId/favorites',
         router.checker.params('lookId'),
-        router.checker.params('favoriteId'),
         function (req, res) {
             //todo get favorites by look id
+        }
+    );
+
+    router.post('/looks/:lookId/favorites/:favoriteId/tips',
+        router.checker.params('lookId'),
+        router.checker.params('favoriteId'),
+        function (req, res) {
+            var author = UserService.getUid(req, res);
+            LookService.addTip(author, req.params.lookId.toLowerCase(),
+                req.params.favoriteId, req.body.content, function (err, tip) {
+
+            });
         }
     );
 

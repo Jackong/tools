@@ -14,6 +14,7 @@ var UserLike = require('../model/user/Like');
 var UserTip = require('../model/user/Tip');
 var Tip = require('../model/Tip');
 var User = require('../model/User');
+var Favorite = require('../model/Favorite');
 var redis = require('../common/redis');
 
 module.exports = {
@@ -21,6 +22,9 @@ module.exports = {
         async.parallel([
             function saveLook(callback) {
                 look.save(callback);
+            },
+            function syncFavorite(callback) {
+                Favorite.sync(look.publisher, look._id, look.favorites[0], callback)
             },
             function syncTags(callback) {
                 TagLook.putNewLook(look.tags, look._id, callback);
@@ -51,14 +55,10 @@ module.exports = {
                 })
             },
             favorites: function filterFavorite(callback) {
-                async.map(old.favorites, function (favorite, callback) {
-                    callback(null, favorite._id);
-                }, function (err, favoriteIds) {
-                    async.filter(look.favorites, function (favorite, callback) {
-                        callback(favoriteIds.indexOf(favorite._id) < 0);
-                    }, function (favorites) {
-                        callback(null, favorites);
-                    });
+                async.filter(look.favorites, function (favorite, callback) {
+                    callback(old.favorites.indexOf(favorite) < 0);
+                }, function (favorites) {
+                    callback(null, favorites);
                 });
             }
         }, function (err, results) {
@@ -72,8 +72,13 @@ module.exports = {
             }
             if (tags.length > 0) {
                 TagLook.putNewLook(tags, look._id, function (err) {
-
+                    err ? logger.error('TagLook.putNewLook', err) : '';
                 });
+            }
+            if (favorites.length > 0) {
+                Favorite.sync(look.publisher, look._id, favorites[0], function (err) {
+                    err ? logger.error('Favorite.sync', err) : '';
+                })
             }
             var now = helper.now();
             Look.appendTagsAndFavorites(look._id, tags, favorites, now,
@@ -132,6 +137,17 @@ module.exports = {
                     }, function (looks) {
                         callback(null, looks);
                     });
+                },
+                function perfectFavorites(looks, callback) {
+                    async.map(looks, function (look, callback) {
+                        if (look.favorites.length <= 0) {
+                            return callback(null, look);
+                        }
+                        Favorite.perfect(look._id, look.favorites, function (err, favorites) {
+                            look.favorites = favorites;
+                            callback(null, look);
+                        });
+                    }, callback)
                 }
             ], callback);
         });
@@ -200,5 +216,9 @@ module.exports = {
                 callback(err, look);
             })
         });
+    },
+    
+    addTip: function (author, lookId, favoriteId, content, callback) {
+
     }
 };

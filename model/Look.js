@@ -7,12 +7,6 @@ var Schema = mongoose.Schema;
 
 var logger = require('../common/logger');
 
-var Favorite = Schema({
-    _id: String,//aspect
-    wants: [{ type: Schema.Types.ObjectId }],//User:想要的人
-    tips: [{type: Schema.Types.ObjectId}]//Tip:提示信息
-});
-
 var Look = Schema({
     _id: String,//文件MD5
     publisher: Schema.Types.ObjectId,//User:发布者
@@ -23,7 +17,7 @@ var Look = Schema({
     created: {type: Number, default: Date.now},
     updated: {type: Number, default: Date.now},
     likes: [{ type: Schema.Types.ObjectId }],//User:喜欢的人
-    favorites: [Favorite]//Favorite:心仪的东西
+    favorites: [String]//Favorite:心仪的东西
 });
 
 
