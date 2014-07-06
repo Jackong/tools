@@ -8,7 +8,6 @@
                     <span class="glyphicon glyphicon-heart icon"></span>
                     <span>{{look.likeCount}}人喜欢</span>
                     <button ng-click="like()" class="btn btn-default">喜欢</button>
-                    <button class="btn btn-default">问问其它</button>
                     <button ng-click="share()" class="glyphicon glyphicon-share pull-right btn btn-default">分享</button>
                 </p>
                 <p>
@@ -17,8 +16,9 @@
                     <span ng-repeat="tag in look.tags">
                         <a href="#/tags/{{tag}}" type="button" class="label label-default" style="background-color: #f48fbe;">{{tag}}</a>
                     </span>
+                    <button data-toggle="modal" data-target="#favoriteModal" class="btn btn-default pull-right">问其它</button>
                 </p>
-
+                <br/>
                 <div class="panel panel-default" ng-repeat="favorite in look.favorites">
                     <div class="panel-heading">
                         <h3 class="panel-title">哪儿有卖这款{{favorites[favorite._id]}}？ <a href="#/looks/{{look._id}}/wants" class="pull-right">{{favorite.wants.length}}人想要</a></h3>
@@ -31,15 +31,18 @@
                             <div class="media-body">
                                 <h5 class="media-heading">
                                     <span class="icon" style="font-size: 16px">{{tip.author.nick | formatNick}}</span>
-                                <span class="pull-right">
-                                    <span class="glyphicon glyphicon-time"></span> {{tip.created | formatTime}}
-                                </span>
+                                    <span class="pull-right">
+                                        <span class="glyphicon glyphicon-time"></span> {{tip.created | formatTime}}
+                                    </span>
                                 </h5>
                                 <span>{{tip.content}}</span>
-                                <span class="pull-right">{{tip.likes.length}}人喜欢</span>
-                                <span class="glyphicon glyphicon-heart-empty icon pull-right">喜欢</span>
+                                <br/>
+                                <span class="pull-right">{{tip.likes ? tip.likes.length : 0}}人喜欢
+                                    <button ng-click="likeTip()" class="btn btn-default">喜欢</button>
+                                </span>
                             </div>
                         </div>
+                        <br/>
                         <button ng-click="want(favorite._id)" class="btn btn-default pull-left">我也想要这个</button>
                         <button ng-click="onAddTip(favorite._id)" class="btn btn-default pull-right" data-toggle="modal" data-target="#tipModal">我知道哪儿有卖</button>
                     </div>
@@ -49,7 +52,7 @@
     </div>
 </div>
 
-<!-- Modal -->
+<!-- tips Modal -->
 <div class="modal fade" id="tipModal" tabindex="-1" role="dialog" aria-labelledby="tipModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -68,7 +71,44 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-default" ng-click="addTip()" >提交</button>
+                <button type="button" class="btn btn-default" ng-click="addTip(content)" >提交</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- favorite Modal -->
+<div class="modal fade" id="favoriteModal" tabindex="-1" role="dialog" aria-labelledby="favoriteModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">取消</span></button>
+                <h4 class="modal-title" id="favoriteModalLabel">我看中了另一个宝贝</h4>
+            </div>
+
+            <div class="modal-body">
+                <div class="form-group">
+                    <div class="dropdown">
+                        <button class="btn btn-default dropdown-toggle" type="button" id="aspects" data-toggle="dropdown">
+                            我中意她的这款{{favorite ? favorites[favorite] : "..."}}
+                            <span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu" role="menu" aria-labelledby="aspects">
+                            <li role="presentation" ng-repeat="(key, value) in favorites">
+                                <a role="menuitem" tabindex="-1" href="" ng-click="selectedFavorite(key)">{{value}}</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div ng-if="warning" class="form-group">
+                    <div class="alert alert-warning" role="alert">{{warning}}</div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" ng-click="addFavorite(content)" >提交</button>
                 <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
             </div>
         </div>

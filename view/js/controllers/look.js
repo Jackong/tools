@@ -56,7 +56,6 @@ define(['angular', 'ngTagsInput'], function (angular) {
         };
 
         $scope.uploadSuccess = function (res) {
-            console.log(res);
             res = JSON.parse(res);
             if (res.code != 0) {
                 $scope.warning = '图片上传失败，请使用格式及大小正确的图片重试';
@@ -99,9 +98,9 @@ define(['angular', 'ngTagsInput'], function (angular) {
             //todo
         };
     })
-    .controller('LookDetailCtrl', function ($scope, $routeParams, LookCache) {
+    .controller('LookDetailCtrl', function ($scope, $routeParams, LookCache, Tip) {
 
-            $scope.view = 'partials/look/detail.html';
+            $scope.view = 'partials/look/detail.html?v=8';
             var lookId = $routeParams.lookId;
 
             LookCache.favorites(function (favorites) {
@@ -109,6 +108,7 @@ define(['angular', 'ngTagsInput'], function (angular) {
             });
 
             LookCache.getById(lookId, function (look) {
+                look.favorites[0].tips.content = 'ahahah';
                 $scope.look = look;
             });
 
@@ -119,11 +119,35 @@ define(['angular', 'ngTagsInput'], function (angular) {
             $scope.want = function (favoriteId) {
                 //todo
             };
+
+            $scope.likeTip = function (tipId) {
+
+            };
+
+            $scope.addFavorite = function () {
+
+            };
+
             $scope.onAddTip = function (favoriteId) {
                 $scope.favoriteId = favoriteId;
             };
-            $scope.addTip = function () {
-                //todo
+            $scope.addTip = function (content) {
+                Tip.save({
+                    lookId: $scope.look._id,
+                    favoriteId: $scope.favoriteId,
+                    content: content
+                }, function (res) {
+                    if (res.code !== 0) {
+                        return;
+                    }
+                    for(var idx = 0; idx < $scope.look.favorites.length; idx++) {
+                        var favorite = $scope.look.favorites[idx];
+                        if (favorite._id === $scope.favoriteId) {
+                            favorite.tips.push(res.data.tip);
+                            break;
+                        }
+                    }
+                })
             };
             $scope.share = function () {
                 //todo

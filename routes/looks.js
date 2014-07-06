@@ -14,6 +14,9 @@ var helper = require('../common/helper');
 var Look = require('../model/Look');
 var LookService = require('../services/Look');
 var UserService = require('../services/User');
+var Tip = require('../model/Tip');
+var TipService = require('../services/Tip');
+
 var favorites = require('../config/look/favorites');
 
 module.exports = function (router) {
@@ -93,22 +96,37 @@ module.exports = function (router) {
         }
     );
 
-    router.get('/looks/:lookId/favorites',
-        router.checker.params('lookId'),
-        function (req, res) {
-            //todo get favorites by look id
-        }
-    );
-
-    router.post('/looks/:lookId/favorites/:favoriteId/tips',
+    router.get('/looks/:lookId/favorites/:favoriteId/tips/:tipIds',
         router.checker.params('lookId'),
         router.checker.params('favoriteId'),
         function (req, res) {
-            var author = UserService.getUid(req, res);
-            LookService.addTip(author, req.params.lookId.toLowerCase(),
-                req.params.favoriteId, req.body.content, function (err, tip) {
+            TipService.getsByIds(req.params.lookId, req.params.favoriteId, req.params.tipIds.split(','),
+                function (err, tips) {
+                    if (err) {
+                        logger.error('get tips by tips ids', {params: req.params, err: err});
+                        res.ok({tips: []});
+                    }
+                    res.ok({tips: tips});
+                }
+            );
+        }
+    );
 
-            });
+    router.post('/tips',
+        router.checker.body('lookId'),
+        router.checker.body('favoriteId'),
+        function (req, res) {
+            var author = UserService.getUid(req, res);
+            TipService.addTip(req.body.lookId.toLowerCase(),
+                req.body.favoriteId, new Tip({author: author, content: req.body.content}),
+                function (err, tip) {
+                    if (err) {
+                        logger.error('add tips', {err: err, params: req.body});
+                        return res.fail();
+                    }
+                    res.ok({tip: tip});
+                }
+            );
         }
     );
 

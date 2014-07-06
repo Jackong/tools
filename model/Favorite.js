@@ -28,6 +28,19 @@ Favorite.static('sync', function (uid, lookId, favoriteKey, callback) {
     favorite.save(callback);
 });
 
+Favorite.static('putNewTip', function (lookId, favoriteKey, tipId, callback) {
+    this.update(
+        {
+            _id: lookId + ':' + favoriteKey
+        },
+        {
+            $addToSet: {
+                tips: tipId
+            }
+        },
+        callback
+    );
+});
 Favorite.static('perfect', function (lookId, favoriteKeys, callback) {
     if (favoriteKeys.length <= 0) {
         return callback(null, []);

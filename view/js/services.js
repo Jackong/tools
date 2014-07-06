@@ -31,6 +31,9 @@ define(['angular', 'angularResource'], function (angular) {
                 }
             })
         })
+        .factory('Tip', function ($resource) {
+            return $resource('api/tips/:tipIds');
+        })
         .factory('LookCache', function ($cacheFactory, Look) {
             return {
                 publish: function (lookId, image, description, favoriteId, tags, callback) {

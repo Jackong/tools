@@ -40,7 +40,7 @@ define(['angular'], function (angular) {
         }])
         .filter('formatImage', [function () {
             return function (image) {
-                return image.length > 5 ? image : 'http://www.placehold.it/300x200/EFEFEF/AAAAAA&text=iWomen';
+                return (image && image.length > 5) ? image : 'http://www.placehold.it/300x200/EFEFEF/AAAAAA&text=iWomen';
             }
         }]);
 });

@@ -226,9 +226,5 @@ module.exports = {
                 callback(err, look);
             })
         });
-    },
-    
-    addTip: function (author, lookId, favoriteId, content, callback) {
-
     }
 };
