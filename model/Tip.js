@@ -9,7 +9,9 @@ var async = require('async');
 var Tip = Schema({
     author: Schema.Types.ObjectId,//User:作者
     content: String,//内容
-    price: Number,
+    image: String,//抓取的图片
+    price: Number,//抓取的价格
+    brand: String,//品牌
     created: {type: Number, default: Date.now },
     updated: {type: Number, default: Date.now },
     isValid: {type: Boolean, default: true},

@@ -150,5 +150,16 @@ define(['angular', 'ngTagsInput'], function (angular) {
             $scope.share = function () {
                 //todo
             };
+            $scope.addComment = function (tip, content) {
+                Tip.comment({tipId: tip._id, content: content},
+                    function (res) {
+                        if (data.code !== 0) {
+                            return;
+                        }
+                        tip.comments.push(res.comment);
+                    }
+                );
+                return '';
+            }
     });
 });

@@ -24,8 +24,8 @@
                         <h3 class="panel-title">哪儿有卖这款{{favorites[favorite._id]}}？ <a href="#/looks/{{look._id}}/wants" class="pull-right">{{favorite.wants.length}}人想要</a></h3>
                     </div>
                     <div class="panel-body">
-                        <ul class="media-list">
-                            <li class="media" ng-repeat="tip in favorite.tips">
+                        <ul class="media-list" ng-repeat="tip in favorite.tips">
+                            <li class="media">
                                 <a class="pull-left" href="#/users/{{tip.author._id}}">
                                     <img width="50" height="50" class="media-object img-circle img-responsive pull-left" ng-src="{{tip.author.avatar | formatAvatar}}">
                                 </a>
@@ -35,12 +35,13 @@
                                         <span class="pull-right">
                                         <span class="glyphicon glyphicon-time"></span> {{tip.created | formatTime}}</span>
                                     </h6>
-                                    <span>{{tip.content}}</span>
-                                    <span class="pull-right">
-                                        <button ng-click="likeTip()" class="btn btn-default">喜欢({{tip.likes ? tip.likes.length : 0}})</button>
-                                    </span>
-
+                                    <div class="well well-lg">
+                                        {{tip.content}}
+                                    </div>
+                                    <button ng-click="likeTip()" class="btn btn-default btn-sm pull-right">喜欢({{tip.likes ? tip.likes.length : 0}})</button>
+                                    <br/>
                                     <hr/>
+
                                     <div class="media" ng-repeat="comment in tip.comments">
                                         <a class="pull-left" href="#/users/{{comment.commenter._id}}">
                                             <img width="40" height="40" class="media-object img-circle img-responsive pull-left" ng-src="{{comment.commenter.avatar | formatAvatar}}">
@@ -51,18 +52,20 @@
                                                 <span class="pull-right">
                                                 <span class="glyphicon glyphicon-time"></span> {{comment.time | formatTime}}</span>
                                             </h6>
-                                            <span>{{comment.content}}</span>
+                                            <div class="well well-sm">
+                                                {{comment.content}}
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </li>
-                            <li ng-show="favorite.tips.length > 0" class="media">
+                            <li ng-show="tip" class="media">
                                 <a class="pull-left" href="#/users/{{me._id}}" style="opacity:0.5;filter:alpha(opacity=50);">
                                     <img width="40" height="40" class="media-object img-circle img-responsive pull-left" ng-src="{{me.avatar | formatAvatar}}">
                                 </a>
                                 <div class="media-body">
                                 <span class="form-group">
-                                    <textarea class="form-control" rows="2" ng-model="comment" placeholder="评论这条小贴士"></textarea>
+                                    <textarea class="form-control" rows="2" ng-keyup="commentContent = ($event.keyCode === 13 ? addComment(tip, commentContent) : commentContent)" ng-model="commentContent" placeholder="评论这条小贴士"></textarea>
                                 </span>
                                 </div>
                             </li>

@@ -35,6 +35,9 @@ define(['angular', 'angularResource'], function (angular) {
             return $resource('api/tips/:tipIds', {}, {
                 getsByIds: {
                     method: 'GET', url: 'api/looks/:lookId/favorites/:favoriteId/tips/:tipIds'
+                },
+                comment: {
+                    method: 'PUT', url: 'api/tips/comments'
                 }
             });
         })
