@@ -1,8 +1,17 @@
 require.config({
 	paths: {
-		angular: 'libs/angular/angular',
-        angularRoute: 'libs/angular-route/angular-route',
-		angularResource: 'libs/angular-resource/angular-resource',
+		angular: [
+            'http://cdn.bootcss.com/angular.js/1.2.16/angular.min',
+            'libs/angular/angular'
+        ],
+        angularRoute: [
+            'http://cdn.bootcss.com/angular.js/1.2.16/angular-route.min',
+            'libs/angular-route/angular-route'
+        ],
+		angularResource: [
+            'http://cdn.bootcss.com/angular.js/1.2.16/angular-resource.min',
+            'libs/angular-resource/angular-resource'
+        ],
         angularMd5: 'libs/angular-md5/angular-md5',
         ngTagsInput: 'libs/bootstrap-tagsinput/dist/bootstrap-tagsinput-angular',
         ngTagsInputOrigin: 'libs/bootstrap-tagsinput/dist/bootstrap-tagsinput.min',

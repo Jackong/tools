@@ -56,7 +56,7 @@
                                     </div>
                                 </div>
                             </li>
-                            <li class="media">
+                            <li ng-show="favorite.tips.length > 0" class="media">
                                 <a class="pull-left" href="#/users/{{me._id}}" style="opacity:0.5;filter:alpha(opacity=50);">
                                     <img width="40" height="40" class="media-object img-circle img-responsive pull-left" ng-src="{{me.avatar | formatAvatar}}">
                                 </a>
