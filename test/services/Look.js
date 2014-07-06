@@ -48,7 +48,7 @@ describe('Look', function () {
             this.stub(Favorite, 'sync');
             LookService.firstPublish(look, function (err, doc) {
                 should.not.exist(err);
-                doc.should.be.equal(look);
+                should.exist(doc);
                 TagLook.putNewLook.called.should.be.true;
                 UserPublish.putNewLook.called.should.be.true;
                 UserWant.putNewLook.called.should.be.true;
@@ -59,7 +59,7 @@ describe('Look', function () {
             TagLook.putNewLook.yield(null);
             UserPublish.putNewLook.yield(null, null);
             UserWant.putNewLook.yield(null, null);
-            Favorite.sync.yield(null, null);
+            Favorite.sync.yield(null, new Favorite({_id: look._id + ':' + look.favorites[0], wants:[], tips:[]}), 0);
         }));
     });
 
@@ -171,7 +171,7 @@ describe('Look', function () {
                 callback(null, user);
             });
             sinon.stub(Favorite, 'perfect', function (lookId, favoriteKeys, callback) {
-                callback(null, [new Favorite({_id: lookId + ':' + favoriteKeys[0], wants: [], tips: []})]);
+                callback(null, [new Favorite({_id: favoriteKeys[0], wants: [], tips: []})]);
             });
             LookService.getTrend(0, 1, function (err, looks) {
                 should.not.exist(err);
@@ -236,30 +236,36 @@ describe('Look', function () {
             sinon.stub(Tip, 'gets', function (tipIds, callback) {
                 callback(null, []);
             });
+            sinon.stub(Favorite, 'perfect', function (lookId, favoriteKeys, callback) {
+                callback(null, [new Favorite({_id: favoriteKeys[0], wants: [], tips:[]})]);
+            })
         });
         afterEach(function () {
             Look.getOne.restore();
             User.getOne.restore();
             Tip.gets.restore();
+            Favorite.perfect.restore();
         });
-        it('should perfect publisher info and tips info when look is exist', function (done) {
+        it('should perfect publisher, tips and favorites info when look is exist', function (done) {
             LookService.getDetail(look._id, function (err, look) {
                 should.not.exist(err);
                 should.exist(look);
                 Look.getOne.called.should.be.true;
                 User.getOne.called.should.be.true;
+                Favorite.perfect.called.should.be.true;
                 Tip.gets.called.should.be.true;
                 done();
             });
         });
 
-        it('should not perfect user info and tips info when look is not exist', function (done) {
+        it('should not perfect user, tips and favorite info when look is not exist', function (done) {
             LookService.getDetail(new mongoose.Types.ObjectId, function (err, look) {
                 should.not.exist(err);
                 should.not.exist(look);
                 Look.getOne.called.should.be.true;
                 User.getOne.called.should.be.false;
                 Tip.gets.called.should.be.false;
+                Favorite.perfect.called.should.be.false;
                 done();
             });
         });

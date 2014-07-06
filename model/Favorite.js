@@ -4,6 +4,7 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 var async = require('async');
+var logger = require('../common/logger');
 
 var Favorite = Schema({
     _id: String,//lookID:favoriteKey
@@ -11,10 +12,18 @@ var Favorite = Schema({
     tips: [{type: Schema.Types.ObjectId}]//Tips:小贴士
 });
 
+Favorite.set('toObject', { virtuals: true });
+
+Favorite.virtual('aspect').get(function () {
+    return this._id.split(':')[1];
+});
+
 Favorite.static('sync', function (uid, lookId, favoriteKey, callback) {
-    var favorite = new this.model('Favorite')({
+    var Model = this.model('Favorite');
+    var favorite = new Model({
         _id: lookId + ':' + favoriteKey,
-        wants: [uid]
+        wants: [uid],
+        tips:[]
     });
     favorite.save(callback);
 });
@@ -34,9 +43,22 @@ Favorite.static('perfect', function (lookId, favoriteKeys, callback) {
                 }
             },
             {
+                aspect: 1,
+                wants: 1,
+                tips: 1
+            },
+            {
                 lean: true
             },
-            callback
+            function (err, favorites) {
+                if (err || favorites.length <= 0) {
+                    return callback(err, []);
+                }
+                async.map(favorites, function (favorite, callback) {
+                    favorite._id = favorite._id.split(':')[1];
+                    callback(null, favorite);
+                }, callback)
+            }
         );
     })
 });

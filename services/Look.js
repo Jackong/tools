@@ -19,24 +19,27 @@ var redis = require('../common/redis');
 
 module.exports = {
     firstPublish: function (look, callback) {
-        async.parallel([
-            function saveLook(callback) {
+        async.parallel({
+            look: function(callback) {
                 look.save(callback);
             },
-            function syncFavorite(callback) {
+            favorite: function(callback) {
                 Favorite.sync(look.publisher, look._id, look.favorites[0], callback)
             },
-            function syncTags(callback) {
+            tags: function(callback) {
                 TagLook.putNewLook(look.tags, look._id, callback);
             },
-            function syncPublication(callback) {
+            publish: function(callback) {
                 UserPublish.putNewLook(look.publisher, look._id, callback);
             },
-            function syncWant(callback) {
+            want: function(callback) {
                 UserWant.putNewLook(look.publisher, look._id, callback);
             }
-        ], function (err, results) {
-            callback(err, look);
+        }, function (err, results) {
+            var doc = look.toObject();
+            doc.likeCount = 0;//todo
+            doc.favorites = [{_id: doc.favorites[0], wants: [], tips: []}];
+            callback(err, doc);
         });
     },
     republish: function (old, look, callback) {
@@ -187,24 +190,31 @@ module.exports = {
                     if (look.favorites.length <= 0) {
                         return callback(null, []);
                     }
-                    var favorite2tips = {};
-                    async.filter(look.favorites, function (favorite, callback) {
-                        Tip.gets(favorite.tips, function (err, tips) {
-                            if (err) {
-                                return callback(false);
-                            }
-                            favorite2tips[favorite._id] = tips;
-                            callback(true);
-                        })
-                    }, function (favorites) {
-                        if (favorites.length <= 0) {
+                    Favorite.perfect(look._id, look.favorites, function (err, favorites) {
+                        if (err) {
+                            logger.error('perfect favorites', err);
                             return callback(null, []);
                         }
-                        async.map(favorites, function (favorite, callback) {
-                            favorite.tips = favorite2tips[favorite._id];
-                            callback(null, favorite);
-                        }, callback)
+                        var favorite2tips = {};
+                        async.filter(favorites, function (favorite, callback) {
+                            Tip.gets(favorite.tips, function (err, tips) {
+                                if (err) {
+                                    return callback(false);
+                                }
+                                favorite2tips[favorite._id] = tips;
+                                callback(true);
+                            })
+                        }, function (favorites) {
+                            if (favorites.length <= 0) {
+                                return callback(null, []);
+                            }
+                            async.map(favorites, function (favorite, callback) {
+                                favorite.tips = favorite2tips[favorite._id];
+                                callback(null, favorite);
+                            }, callback)
+                        });
                     });
+
                 }
             }, function (err, result) {
                 if (err || !result.publisher) {
