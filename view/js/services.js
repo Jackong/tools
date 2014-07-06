@@ -32,9 +32,13 @@ define(['angular', 'angularResource'], function (angular) {
             })
         })
         .factory('Tip', function ($resource) {
-            return $resource('api/tips/:tipIds');
+            return $resource('api/tips/:tipIds', {}, {
+                getsByIds: {
+                    method: 'GET', url: 'api/looks/:lookId/favorites/:favoriteId/tips/:tipIds'
+                }
+            });
         })
-        .factory('LookCache', function ($cacheFactory, Look) {
+        .factory('LookCache', function ($cacheFactory, Look, Tip) {
             return {
                 publish: function (lookId, image, description, favoriteId, tags, callback) {
                     Look.save({
@@ -68,9 +72,28 @@ define(['angular', 'angularResource'], function (angular) {
                     var cache = $cacheFactory.get('looks');
                     if (cache) {
                         var look = cache.get(lookId);
-                        if (look) {
+                        if (look && look.isPerfect) {
                             return callback(look);
                         }
+                        for (var idx = 0; idx < look.favorites.length; idx++) {
+                            var favorite = look.favorites[idx];
+                            if (favorite.tips.length <= 0) {
+                                continue;
+                            }
+                            var getTips = function (favorite) {
+                                Tip.getsByIds({
+                                    lookId: look._id,
+                                    favoriteId: favorite._id,
+                                    tipIds: favorite.tips.join(',')
+                                }, function (res) {
+                                    favorite.tips = res.data.tips;
+                                });
+                            };
+                            getTips(favorite);
+                        }
+                        look.isPerfect = true;
+                        cache.put(lookId, look);
+                        return callback(look);
                     }
                     cache = $cacheFactory('looks');
                     Look.get({lookId: lookId}, function (res) {
