@@ -127,6 +127,15 @@ describe('mongoose', function () {
             obj.should.have.property('p');
             arr.should.have.lengthOf(1);
         });
-
     });
+    
+    describe('.findByIdAndUpdate()', function () {
+        it('should be get error and null doc when not found', function (done) {
+            Test.findByIdAndUpdate(new mongoose.Types.ObjectId, {test2: 'jack'}, function (err, doc) {
+                should.not.exist(err);
+                should.not.exist(doc);
+                done();
+            })
+        })
+    })
 });

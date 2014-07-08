@@ -10,14 +10,23 @@ var UserService = require('../services/User');
 
 module.exports = function (router) {
     router.put('/tips/comments',
+        router.checker.body('tipId'),
+        router.checker.body('content'),
         function (req, res) {
-            res.fail();
+            var commenter = UserService.getUid(req, res);
+            TipService.addComment(commenter, req.body.tipId, req.body.content, function (err, comment) {
+                if (err) {
+                    return res.fail();
+                }
+                res.ok({comment: comment});
+            });
         }
     );
 
     router.post('/tips',
         router.checker.body('lookId'),
         router.checker.body('favoriteId'),
+        router.checker.body('content'),
         function (req, res) {
             var author = UserService.getUid(req, res);
             TipService.addTip(req.body.lookId.toLowerCase(),

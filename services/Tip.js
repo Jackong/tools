@@ -33,5 +33,8 @@ module.exports = {
                 callback(err, doc.toObject());
             })
         })
+    },
+    addComment: function (commenter, tipId, content, callback) {
+        Tip.comment(tipId, commenter, content, callback);
     }
 };

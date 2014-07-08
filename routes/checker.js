@@ -11,7 +11,8 @@ var map = {
     num: /^[1-9][0-9]?$/,
     image: /^\/tmp\/.*$/,
     lookId: /^[0-9A-Fa-f]{32}$/,
-    favoriteId: require('../config/look/favorites')
+    favoriteId: require('../config/look/favorites'),
+    content: /.+/
 };
 
 var check = function (req, res, next, from, name, defaultValue) {

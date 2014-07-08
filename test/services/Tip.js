@@ -48,4 +48,19 @@ describe('TipService', function () {
             tip.save.yield('save failed', null);
         }))
     });
+
+    describe('.addComment()', function () {
+        var commenter = new mongoose.Types.ObjectId;
+        var tipId = new mongoose.Types.ObjectId;
+        var content = 'good';
+        it('should be failed when the tip is invalid or not exist', sinon.test(function (done) {
+            this.stub(Tip, 'comment');
+            TipService.addComment(commenter, tipId, content, function (err, comment) {
+                should.not.exist(err);
+                should.not.exist(comment);
+                done();
+            });
+            Tip.comment.yield(null, null);
+        }));
+    })
 });

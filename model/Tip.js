@@ -4,7 +4,7 @@
 
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
-var async = require('async');
+var logger = require('../common/logger');
 
 var Tip = Schema({
     author: Schema.Types.ObjectId,//User:作者
@@ -18,7 +18,7 @@ var Tip = Schema({
     likes: [{type: Schema.Types.ObjectId}],//只记录User ID不引用
     comments: [{//评论
         commenter: {type: Schema.Types.ObjectId},//User:评论者
-        time: Date,
+        time: {type: Number, default: Date.now},
         content: String
     }]
 });
@@ -46,6 +46,20 @@ Tip.static('gets', function (tids, callback) {
         },
         callback
     );
+});
+
+Tip.static('comment', function (tid, commenter, content, callback) {
+    this.findByIdAndUpdate(tid,
+        {
+            $push: {
+                comments: {
+                    commenter: commenter,
+                    content: content
+                }
+            }
+        },
+        callback
+    )
 });
 
 module.exports = mongoose.model('Tip', Tip);
