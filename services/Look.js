@@ -15,7 +15,6 @@ var UserTip = require('../model/user/Tip');
 var Tip = require('../model/Tip');
 var User = require('../model/User');
 var Favorite = require('../model/Favorite');
-var redis = require('../common/redis');
 
 module.exports = {
     firstPublish: function (look, callback) {

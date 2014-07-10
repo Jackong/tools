@@ -12,6 +12,7 @@ var map = {
     image: /^\/tmp\/.*$/,
     lookId: /^[0-9A-Fa-f]{32}$/,
     favoriteId: require('../config/look/favorites'),
+    tipId: /^[0-9a-fA-F]{24}$/,
     content: /.+/
 };
 

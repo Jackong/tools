@@ -4,13 +4,13 @@ var methodOverride = require('method-override');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var system = require('./common/config')('system');
-
 var logger = require('./common/logger');
 require('./common/mongo');
 
 logger.info('starting app');
 
 var app = express();
+app.use(express.static(__dirname + '/view'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded());
 app.use(cookieParser(system.salt));
@@ -27,6 +27,7 @@ app.use(function notFoundHandler(req, res, next) {
 });
 
 app.use(function serverErrorHandler(err, req, res, next) {
+    console.log(err);
     logger.error("request error", {error: err.stack, path: req.path, method: req.method, ip:req.ip, userAgent: req.headers['user-agent']});
     if (err.status) {
         res.send(err.status, err.message);

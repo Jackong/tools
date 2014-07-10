@@ -8,7 +8,6 @@ var helper = require('../common/helper');
 var UserTip = require('../model/user/Tip');
 var Tip = require('../model/Tip');
 var Favorite = require('../model/Favorite');
-var redis = require('../common/redis');
 
 module.exports = {
     getsByIds: function (lookId, favoriteId, tids, callback) {

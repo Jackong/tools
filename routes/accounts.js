@@ -1,6 +1,7 @@
 /**
  * Created by daisy on 14-5-30.
  */
+require('../common/mongo');
 
 var User = require('../model/User');
 var UserService = require('../services/User');
