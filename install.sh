@@ -1,7 +1,7 @@
 #!/bin/sh
 container="jackong/node"
 cont=/usr/src/app
-vm=/home/docker/
+vm=/home/docker/app
 host=/Users/daisy/Project/node/test
 
 echo "destroy env"
@@ -14,16 +14,16 @@ echo "build $container"
 docker build -t $container .
 
 echo "init container-vm-host mount dir"
-boot2docker ssh "[ ! -d $vm/app ] && mkdir $vm/app && touch $vm/app/server.js"
+boot2docker ssh "[ ! -d $vm ] && mkdir $vm && touch $vm/server.js"
 
 echo "run $container"
-ps=$(docker run -p 80:18080 --name iwomen-web -d -v $vm/app:$cont $container)
+ps=$(docker run -p 80:18080 --name iwomen-web -d -v $vm:$cont $container)
 
 echo "cp app from container to vm"
-boot2docker ssh "docker cp $ps:$cont $vm"
+boot2docker ssh "docker cp $ps:$cont /home/docker/"
 
 echo "mount contanier-vm-host"
-sshfs -p 2022 docker@localhost:$vm/app $host
+echo "tcuser" | sshfs -p 2022 docker@localhost:$vm $host -o password_stdin
 
-docker logs $ps
+docker logs $ps | tail
 docker ps
