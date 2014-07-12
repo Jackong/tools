@@ -2,7 +2,7 @@
 container="jackong/node"
 cont=/usr/src/app
 vm=/home/docker/app
-host=/Users/daisy/Project/node/test
+host=/Users/daisy/Project/node/iwomen
 
 echo "destroy env"
 umount $host
