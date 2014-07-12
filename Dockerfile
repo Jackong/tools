@@ -4,18 +4,20 @@ FROM node:0.10.28
 ADD . /usr/src/app
 WORKDIR /usr/src/app
 
-# install your application's dependencies
 RUN npm install
-RUN npm install -g supervisor
 
-RUN mkdir -p /usr/log
+RUN mkdir -p /var/log/node
 
-RUN chmod -R 0777 /usr/log/
+RUN chmod -R 0777 /var/log/node/
 
 # replace this with your application's default port
 EXPOSE 18080
 
 ENV MODE dev
 
-# replace this with your main "server" script file
-CMD [ "supervisor", "server.js" ]
+# for prod
+#CMD [ "node", "server.js" ]
+
+# for dev
+COPY ./node_modules/supervisor /usr/src/supervisor
+CMD [ "/usr/src/supervisor/lib/cli-wrapper.js", "server.js"]

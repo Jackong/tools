@@ -1,4 +1,4 @@
 {
     "level": "debug",
-    "file": "/home/bae/log/user.log"
+    "file": "/var/log/node/iwomen.log"
 }
