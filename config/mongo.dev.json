@@ -1,7 +1,7 @@
 {
     "username":"",
     "password":"",
-    "host":"172.17.0.2",
+    "host":"192.168.59.103",
     "name":"iwomen",
     "port":27017,
     "poolSize":5

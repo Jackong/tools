@@ -35,3 +35,6 @@ nodejs_build()
 
 ##bae app publish --local升级后不可用，则使用：
 bae_build nodejs /home/vagrant/iwomen iwomen.duapp.com
+
+#docker开发环境
+参考（For Mac）：https://www.dockboard.org/boot2docker-together-with-virtualbox-guest-additions/
