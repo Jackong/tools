@@ -13,6 +13,9 @@ docker images -a | grep "<none>" | awk '{print $3}' | xargs docker rmi >/dev/nul
 echo "build $container"
 docker build -t $container .
 
+echo "build mongo container"
+docker run --name iwomen-mongo -d mongo:2.6.1 -p 172.17.0.2:27017
+
 echo "init container-vm-host mount dir"
 boot2docker ssh "[ ! -d $vm ] && mkdir $vm && touch $vm/server.js"
 
