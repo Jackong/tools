@@ -7,7 +7,6 @@ WORKDIR /usr/src/app
 RUN npm install
 
 RUN mkdir -p /var/log/node
-
 RUN chmod -R 0777 /var/log/node/
 
 # replace this with your application's default port

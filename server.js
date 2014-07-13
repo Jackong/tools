@@ -1,4 +1,6 @@
 var port = 18080;
+global.APP_DIR = __dirname;
+
 var express = require('express');
 var methodOverride = require('method-override');
 var cookieParser = require('cookie-parser');
@@ -10,7 +12,7 @@ require('./common/mongo');
 logger.info('starting app');
 
 var app = express();
-app.use(express.static(__dirname + '/view'));
+app.use(express.static(APP_DIR + '/view'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded());
 app.use(cookieParser(system.salt));

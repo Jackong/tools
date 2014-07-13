@@ -4,7 +4,8 @@
 var multipart = require('connect-multiparty');
 var multipartMiddleware = multipart({
     maxFilesSize: 4 * 1024 * 1024,
-    hash: 'md5'
+    hash: 'md5',
+    uploadDir: APP_DIR + '/view/tmp'
 });
 var async = require('async');
 
@@ -38,7 +39,7 @@ module.exports = function (router) {
 
     router.post('/looks/image', multipartMiddleware, function (req, res) {
         res.ok({
-            image: req.files.file.path,
+            image: req.files.file.path.replace(APP_DIR + '/view', ''),
             hash: req.files.file.hash
         });
     });

@@ -1,15 +1,24 @@
 #!/bin/sh
 container="jackong/node"
 cont=/usr/src/app
-host=/Users/daisy/Project/node/iwomen
+host=/Users/iwomen
 
 echo "destroy env"
-docker ps -a | grep 'iwomen' | awk '{print $1}' | xargs docker stop >/dev/null 2>&1
-docker ps -a | grep "Exited" | awk '{print $1}' | xargs docker rm >/dev/null 2>&1
-docker images -a | grep "<none>" | awk '{print $3}' | xargs docker rmi >/dev/null 2>&1
+~/clean_docker.sh 'iwomen'
+
+echo "make dir for upload"
+uploadDir=$(pwd)/view/tmp
+if [ ! -d $uploadDir ]
+then
+    mkdir $uploadDir
+    chmod 0700 $uploadDir
+fi
 
 echo "build $container"
 docker build -t $container .
+
+echo "set shared folder"
+VBoxManage sharedfolder add boot2docker-vm -name home -hostpath $(pwd | sed 's/\/iwomen//g') >/dev/null 2>&1
 
 echo "build mongo container"
 docker run --name iwomen-mongo -d -p 27017:27017 mongo:2.6.1
