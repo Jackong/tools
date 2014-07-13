@@ -1,5 +1,6 @@
 var port = 18080;
 global.APP_DIR = __dirname;
+global.APP_VIEW_DIR = __dirname + '/view';
 
 var express = require('express');
 var methodOverride = require('method-override');
