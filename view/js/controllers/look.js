@@ -7,11 +7,6 @@ define(['angular', 'ngTagsInput'], function (angular) {
     ])
     .controller('TrendCtrl', function ($scope, $http, LookCache) {
         $scope.view = 'partials/look/list.html';
-        $scope.image = {
-            url: 'url(http://www.placehold.it/200x200/EFEFEF/AAAAAA&text=image)',
-            width: '200px',
-            height: '200px'
-        };
         $scope.tags = [];
 
         LookCache.favorites(function (favorites) {
@@ -41,14 +36,7 @@ define(['angular', 'ngTagsInput'], function (angular) {
                 }
                 $scope.img = res.data.image;
                 $scope.hash = res.data.hash;
-                $scope.image.url = 'url(' + $scope.img + ')';
-                var img = new Image();
-                img.onload = function () {
-                    $scope.image.width = this.width + 'px';
-                    $scope.image.height = this.height + 'px';
-                    $scope.$apply();
-                };
-                img.src = $scope.img;
+                $('#publishModal').modal('show');
             })
             .error(function (res) {
                 alert('上传失败！（如果你是使用的是Chrome，请关闭 设置=>宽带管理=>减少流量消耗）');

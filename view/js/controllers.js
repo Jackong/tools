@@ -19,6 +19,7 @@ define(['angular', 'controllers/sign', 'controllers/look'], function (angular) {
     .controller('RootCtrl', function ($rootScope) {
         var lastScrollY = 0;
         $rootScope.showFooter = true;
+        $rootScope.listenScroll = true;
         $rootScope.scroll = function () {
             $rootScope.showFooter = lastScrollY >= window.pageYOffset;
             lastScrollY = window.pageYOffset;
