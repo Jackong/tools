@@ -7,18 +7,26 @@ var Schema = mongoose.Schema;
 
 var logger = require('../common/logger');
 
-var Look = Schema({
-    _id: String,//文件MD5
-    publisher: Schema.Types.ObjectId,//User:发布者
-    image: String,//图片
-    isValid: {type: Boolean, default: true},
-    tags: [{type: String, lowercase: true, trim: true}],//标签
-    description: String,//描述
-    created: {type: Number, default: Date.now},
-    updated: {type: Number, default: Date.now},
-    likes: [{ type: Schema.Types.ObjectId }],//User:喜欢的人
-    favorites: [String]//Favorite:心仪的东西
-});
+var Look = Schema(
+    {
+        _id: String,//文件MD5
+        publisher: String,//User:发布者
+        image: String,//图片
+        isValid: {type: Boolean, default: true},
+        tags: [{type: String, lowercase: true, trim: true}],//标签
+        description: String,//描述
+        created: {type: Number, default: Date.now},
+        updated: {type: Number, default: Date.now},
+        likes: [{ type: String }],//User:喜欢的人
+        favorites: [String]//Favorite:心仪的东西
+    },
+    {
+        shardKey:
+        {
+            _id: 1
+        }
+    }
+);
 
 
 Look.static('appendTagsAndFavorites', function (lookId, tags, favorites, time, callback) {

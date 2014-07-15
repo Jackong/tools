@@ -2,10 +2,15 @@
  * Created by daisy on 14-5-30.
  */
 
+var sinon = require('sinon');
+
+require('../../common/mongo');
+
 var should = require("should");
 
 var UserService = require('../../services/User');
 var helper = require('../../common/helper');
+var USER_PLATFORM = require('../../common/const').USER_PLATFORM;
 
 describe('UserService', function () {
     var existAccount = 'exists@account.com';
@@ -50,6 +55,17 @@ describe('UserService', function () {
         });
     });
 
+    describe('.logout()', function() {
+    	it('should call cleanCookie when logout', sinon.test(function(){
+		var req = {};
+		var res = {
+			clearCookie: this.stub()
+		};
+		UserService.logout(req, res);
+		res.clearCookie.called.should.be.true;
+	}));
+    });
+
     describe('.getUid()', function () {
         it('should be get account when signed-cookie is valid', function () {
             var req = {
@@ -71,4 +87,31 @@ describe('UserService', function () {
             (null === UserService.getUid(req, res)).should.be.true;
         });
     });
+
+    describe('.register()', function () {
+        beforeEach(function () {
+            var user = new User({_id: USER_PLATFORM.EMAIL + '|' + existAccount, account:existAccount, password: password});
+            user.save().exec();
+        });
+
+        afterEach(function () {
+            User.remove({_id: USER_PLATFORM.EMAIL + '|' + existAccount}).exec();
+            User.remove({_id: USER_PLATFORM.EMAIL + '|' + notExistAccount}).exec();
+        });
+
+        it('should register successfully when uid is not exists', function (done) {
+            UserService.register(USER_PLATFORM.EMAIL, notExistAccount, password, function (err, user) {
+                should.not.exist(err);
+                should.exist(user);
+                done();
+            });
+        });
+
+        it('should fail to register when uid is exists', function (done) {
+            UserService.register(USER_PLATFORM.EMAIL, existAccount, password, function (err, user) {
+                should.exist(err);
+                done();
+            });
+        });
+    })
 });

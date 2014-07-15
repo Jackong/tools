@@ -7,8 +7,17 @@ var Schema = mongoose.Schema;
 /**
  * user._id as _id
  */
-var UserTag = Schema({
-    tags: [{type: String, lowercase: true, trim: true}]
-});
+var UserTag = Schema(
+    {
+        _id: String,
+        tags: [{type: String, lowercase: true, trim: true}]
+    },
+    {
+        shardKey:
+        {
+            _id: 1
+        }
+    }
+);
 
 module.exports = mongoose.model('UserTag', UserTag);

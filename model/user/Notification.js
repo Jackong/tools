@@ -7,16 +7,25 @@ var Schema = mongoose.Schema;
 /**
  * user._id as _id
  */
-var UserNotification = Schema({
-    notifications: [
+var UserNotification = Schema(
+    {
+        _id: String,
+        notifications: [
+            {
+                category: Number,//见User settings
+                from: String, //主语
+                isRead: {type: Boolean, default: false},//已读
+                created: {type: Number, default: Date.now },
+                updated: {type: Number, default: Date.now }
+            }
+        ]
+    },
+    {
+        shardKey:
         {
-            category: Number,//见User settings
-            from: Schema.Types.ObjectId, //主语
-            isRead: {type: Boolean, default: false},//已读
-            created: {type: Number, default: Date.now },
-            updated: {type: Number, default: Date.now }
+            _id: 1
         }
-    ]
-});
+    }
+);
 
 module.exports = mongoose.model('UserNotification', UserNotification);

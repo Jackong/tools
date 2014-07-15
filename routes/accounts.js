@@ -1,6 +1,7 @@
 /**
  * Created by daisy on 14-5-30.
  */
+var async = require('async');
 require('../common/mongo');
 
 var User = require('../model/User');
@@ -8,45 +9,51 @@ var UserService = require('../services/User');
 
 var logger = require('../common/logger');
 var helper = require('../common/helper');
+var USER_PLATFORM = require('../common/const').USER_PLATFORM;
 
 module.exports = function (router) {
-    router.route('/accounts')
-        .post(router.checker.body('account', 'password'))
-        .post(function register(req, res) {
-            var user = new User({account: req.body.account, password: req.body.password});
-            user.save(function (err, user) {
+    router.post('/accounts',
+        router.checker.body('account', 'password'),
+        function register(req, res) {
+            UserService.register(USER_PLATFORM.EMAIL, req.body.account, req.body.password, function (err, user) {
                 if (null !== err) {
                     logger.error('create account', req.body.account, err.message);
                     return res.fail();
                 }
                 UserService.login(user._id, req, res);
                 res.ok();
-            });
+            })
         });
 
-    router.route('/accounts')
-        .put(router.checker.body('oldPassword'))
-        .put(router.checker.body('password'))
-        .put(function updatePassword(req, res) {
+    router.put('/accounts',
+        router.checker.body('oldPassword', 'password'),
+        function updatePassword(req, res) {
             var uid = UserService.getUid(req, res);
             if (!uid) {
                 return res.fail('登录状态已经过期', res.CODE.UN_LOGIN);
             }
-            User.update({_id: uid, password: req.body.oldPassword }, {password: req.body.password}, function (err, num) {
-                if (null !== err) {
-                    logger.error('update password', uid, num, err.message);
+            async.waterfall([
+                function (callback) {
+                    UserService.getPasswordById(uid, callback);
+                },
+                function (user, callback) {
+                    if (user.password === req.body.oldPassword) {
+                        return callback('invalid old password');
+                    }
+                    UserService.resetPasswordById(uid, req.body.password, callback)
+                }
+            ], function (err, num) {
+                if (null !== err || num !== 1) {
+                    logger.error('update password', uid, num, err);
                     return res.fail('修改密码失败，请重试');
                 }
-                if (1 === num) {
-                    return res.ok();
-                }
-                logger.error('update password', uid, num);
-                return res.fail('原密码错误');
+                UserService.logout(uid, req, res);
+                res.ok();
             });
         });
 
-    router.route('/accounts/check')
-        .get(function checkLogin(req, res) {
+    router.get('/accounts/check',
+        function checkLogin(req, res) {
             var uid = UserService.getUid(req, res);
             if (uid) {
                 return res.ok();
@@ -54,9 +61,9 @@ module.exports = function (router) {
             return res.fail();
         });
 
-    router.route('/accounts/forgot/:account')
-        .get(router.checker.params('account'))
-        .get(function forget(req, res) {
+    router.get('/accounts/forgot/:account',
+        router.checker.params('account'),
+        function forget(req, res) {
             var sign = UserService.forgotSign(req.params.account);
             var url = req.protocol + '://' + req.host
                 + '/account/reset/' + req.params.account + '?sign=' + sign;
@@ -64,33 +71,33 @@ module.exports = function (router) {
             res.ok();
         });
 
-    router.route('/accounts/reset/:account')
-        .put(router.checker.params('account'))
-        .put(router.checker.body('password'))
-        .put(router.checker.body('sign'))
-        .put(function reset(req, res) {
+    router.put('/accounts/reset/:account',
+        router.checker.params('account'),
+        router.checker.body('password', 'sign'),
+        function reset(req, res) {
             var canReset = UserService.canReset(req.params.account, req.body.sign);
             if (!canReset) {
                 return res.fail('链接无效或已过期');
             }
-            User.update({account: req.params.account }, {password: req.body.password}, function (err, num) {
+            UserService.resetPassword(USER_PLATFORM.EMAIL, req.params.account, req.body.password, function (err, num) {
                 if (null !== err) {
-                    logger.error('update password', account, num, err.message);
+                    logger.error('update password', req.params.account, num, err.message);
                     return res.fail('修改密码失败，请重试');
                 }
-                if (1 === num) {
-                    return res.ok();
+                if (1 !== num) {
+                    logger.error('update password', req.params.account, num);
+                    return res.fail('原密码错误');
                 }
-                logger.error('update password', account, num);
-                return res.fail('原密码错误');
-            });
+                UserService.logout(uid, req, res);
+                return res.ok();
+            })
         });
 
-    router.route('/accounts/:account')
-        .get(router.checker.params('account'))
-        .get(router.checker.query('password'))
-        .get(function login(req, res) {
-            User.findOne({account: req.params.account}, 'password', {lean: true}, function (err, user) {
+    router.get('/accounts/:account',
+        router.checker.params('account'),
+        router.checker.query('password'),
+        function login(req, res) {
+            UserService.getPassword(USER_PLATFORM.EMAIL, req.params.account, function (err, user) {
                 if (null === user || req.query.password !== user.password) {
                     logger.error('login', user);
                     return res.fail();
@@ -99,7 +106,4 @@ module.exports = function (router) {
                 return res.ok();
             });
         });
-
-
-
 };

@@ -8,10 +8,18 @@ var Schema = mongoose.Schema;
 /**
  * tag._id as _id
  */
-var TagLook = Schema({
-    _id: {type: String, lowercase: true, trim: true},
-    looks: [{type: String}]
-});
+var TagLook = Schema(
+    {
+        _id: {type: String, lowercase: true, trim: true},
+        looks: [{type: String}]
+    },
+    {
+        shardKey:
+        {
+            _id: 1
+        }
+    }
+);
 
 TagLook.static('putNewLook', function (tags, lookId, callback) {
     if (tags.length <= 0) {

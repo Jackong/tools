@@ -6,22 +6,30 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 var logger = require('../common/logger');
 
-var Tip = Schema({
-    author: Schema.Types.ObjectId,//User:作者
-    content: String,//内容
-    image: String,//抓取的图片
-    price: Number,//抓取的价格
-    brand: String,//品牌
-    created: {type: Number, default: Date.now },
-    updated: {type: Number, default: Date.now },
-    isValid: {type: Boolean, default: true},
-    likes: [{type: Schema.Types.ObjectId}],//只记录User ID不引用
-    comments: [{//评论
-        commenter: {type: Schema.Types.ObjectId},//User:评论者
-        time: {type: Number, default: Date.now},
-        content: String
-    }]
-});
+var Tip = Schema(
+    {
+        author: String,//User:作者
+        content: String,//内容
+        image: String,//抓取的图片
+        price: Number,//抓取的价格
+        brand: String,//品牌
+        created: {type: Number, default: Date.now },
+        updated: {type: Number, default: Date.now },
+        isValid: {type: Boolean, default: true},
+        likes: [{type: String}],//只记录User ID不引用
+        comments: [{//评论
+            commenter: {type: String},//User:评论者
+            time: {type: Number, default: Date.now},
+            content: String
+        }]
+    },
+    {
+        shardKey:
+        {
+            _id: 1
+        }
+    }
+);
 
 Tip.static('gets', function (tids, callback) {
     if (tids.length <= 0) {

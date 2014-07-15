@@ -9,9 +9,18 @@ var TagFollower = require('../tag/Follower');
 /**
  * user._id as _id
  */
-var UserFeed = Schema({
-    feeds: [{type: String}]
-});
+var UserFeed = Schema(
+    {
+        _id: String,
+        feeds: [{type: String}]
+    },
+    {
+        shardKey:
+        {
+            _id: 1
+        }
+    }
+);
 
 UserFeed.static('update4user', function (publisher, lookId) {
     var self = this;

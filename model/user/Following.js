@@ -7,8 +7,17 @@ var Schema = mongoose.Schema;
 /**
  * user._id as _id
  */
-var UserFollowing = Schema({
-    followings: [{type: Schema.Types.ObjectId}]
-});
+var UserFollowing = Schema(
+    {
+        _id: String,
+        followings: [{type: String}]
+    },
+    {
+        shardKey:
+        {
+            _id: 1
+        }
+    }
+);
 
 module.exports = mongoose.model('UserFollowing', UserFollowing);

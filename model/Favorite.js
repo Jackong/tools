@@ -6,11 +6,19 @@ var Schema = mongoose.Schema;
 var async = require('async');
 var logger = require('../common/logger');
 
-var Favorite = Schema({
-    _id: String,//lookID:favoriteKey
-    wants: [{ type: Schema.Types.ObjectId }],//User:想要的人
-    tips: [{type: Schema.Types.ObjectId}]//Tips:小贴士
-});
+var Favorite = Schema(
+    {
+        _id: String,//lookID:favoriteKey
+        wants: [{ type: String}],//User:想要的人
+        tips: [{type: String}]//Tips:小贴士
+    },
+    {
+        shardKey:
+        {
+            _id: 1
+        }
+    }
+);
 
 Favorite.set('toObject', { virtuals: true });
 

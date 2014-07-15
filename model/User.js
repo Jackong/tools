@@ -5,21 +5,33 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 var async = require('async');
 
-var User = Schema({
-    account: {type: String, unique: true, lowercase: true, trim: true},
-    password: String,
-    nick: String,
-    avatar: String,
-    sex: {type: Boolean, default: true},
-    birthday: Date,
-    city: String,
-    webSite: String,
-    intro: String,
-    points: {type: Number, default: 0},
-    isValid: {type: Boolean, default: true},
-    created: {type: Number, default: Date.now },
-    updated: {type: Number, default: Date.now }
-});
+var USER_PLATFORM = require('../common/const').USER_PLATFORM;
+
+var User = Schema(
+    {
+        _id: {type: String},//'platform|account'
+        account: {type: String, lowercase: true, trim: true},
+        password: String,
+        platform: {type: Number, default: USER_PLATFORM.EMAIL},
+        nick: String,
+        avatar: String,
+        sex: {type: Boolean, default: true},
+        birthday: Date,
+        city: String,
+        webSite: String,
+        intro: String,
+        points: {type: Number, default: 0},
+        isValid: {type: Boolean, default: true},
+        created: {type: Number, default: Date.now },
+        updated: {type: Number, default: Date.now }
+    },
+    {
+        shardKey:
+        {
+            _id: 1
+        }
+    }
+);
 
 User.static('perfect', function (uids, callback) {
     if (uids.length <= 0) {

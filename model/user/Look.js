@@ -5,11 +5,20 @@ var mongoose = require('mongoose');
 /**
  * user._id as _id
  */
-var UserLook = mongoose.Schema({
-    looks: [{
-        type: String
-    }]
-});
+var UserLook = mongoose.Schema(
+    {
+        _id: String,
+        looks: [{
+            type: String
+        }]
+    },
+    {
+        shardKey:
+        {
+            _id: 1
+        }
+    }
+);
 
 UserLook.static('putNewLook', function (uid, lookId, callback) {
     return this.update(
