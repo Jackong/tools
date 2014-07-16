@@ -13,15 +13,13 @@ var TipService = require('../../services/Tip');
 
 describe('TipService', function () {
     describe('.addTip()', function () {
-        var lookId = 'look id';
-        var favoriteId = 'shirt';
-        var tip = new Tip({author: new mongoose.Types.ObjectId});
+        var tip = new Tip({author: new mongoose.Types.ObjectId, look: 'look-id', favorite: 'shirt'});
 
         it('should sync to user tips and the favorite after saving succeed', sinon.test(function (done) {
             this.stub(UserTip, 'putNewLook');
             this.stub(Favorite, 'putNewTip');
             this.stub(tip, 'save');
-            TipService.addTip(lookId, favoriteId, tip, function (err, doc) {
+            TipService.addTip(tip, function (err, doc) {
                 should.not.exist(err);
                 should.exist(doc);
                 tip.save.called.should.be.true;
@@ -38,7 +36,7 @@ describe('TipService', function () {
             this.stub(UserTip, 'putNewLook');
             this.stub(Favorite, 'putNewTip');
             this.stub(tip, 'save');
-            TipService.addTip(lookId, favoriteId, tip, function (err, doc) {
+            TipService.addTip(tip, function (err, doc) {
                 should.exist(err);
                 tip.save.called.should.be.true;
                 UserTip.putNewLook.called.should.be.false;
@@ -52,10 +50,12 @@ describe('TipService', function () {
     describe('.addComment()', function () {
         var commenter = new mongoose.Types.ObjectId;
         var tipId = new mongoose.Types.ObjectId;
+        var lookId = 'look-id';
+        var favoriteId = 'shirt';
         var content = 'good';
         it('should be failed when the tip is invalid or not exist', sinon.test(function (done) {
             this.stub(Tip, 'comment');
-            TipService.addComment(commenter, tipId, content, function (err, comment) {
+            TipService.addComment(commenter, tipId, lookId, favoriteId, content, function (err, comment) {
                 should.not.exist(err);
                 should.not.exist(comment);
                 done();

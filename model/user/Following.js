@@ -9,8 +9,8 @@ var Schema = mongoose.Schema;
  */
 var UserFollowing = Schema(
     {
-        _id: String,
-        followings: [{type: String}]
+        _id: {type: String, ref: 'User'},
+        followings: [{type: String, ref: 'User'}]
     },
     {
         shardKey:

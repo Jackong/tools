@@ -8,7 +8,9 @@ var logger = require('../common/logger');
 
 var Tip = Schema(
     {
-        author: String,//User:作者
+        look: {type: String, ref: 'Look'},
+        favorite: {type: String, ref: 'Favorite'},
+        author: {type: String, ref: 'User'},//User:作者
         content: String,//内容
         image: String,//抓取的图片
         price: Number,//抓取的价格
@@ -16,9 +18,9 @@ var Tip = Schema(
         created: {type: Number, default: Date.now },
         updated: {type: Number, default: Date.now },
         isValid: {type: Boolean, default: true},
-        likes: [{type: String}],//只记录User ID不引用
+        likes: [{type: String, ref: 'User'}],//只记录User ID不引用
         comments: [{//评论
-            commenter: {type: String},//User:评论者
+            commenter: {type: String, ref: 'User'},//User:评论者
             time: {type: Number, default: Date.now},
             content: String
         }]
@@ -26,12 +28,14 @@ var Tip = Schema(
     {
         shardKey:
         {
-            _id: 1
+            _id: 1,
+            look: 1,
+            favorite: 1
         }
     }
 );
 
-Tip.static('gets', function (tids, callback) {
+Tip.static('gets', function (tids, lookId, favoriteId, callback) {
     if (tids.length <= 0) {
         return callback(null, []);
     }
@@ -40,6 +44,8 @@ Tip.static('gets', function (tids, callback) {
             _id: {
                 $in: tids
             },
+            look: lookId,
+            favorite: favoriteId,
             isValid: true
         },
         {
@@ -56,8 +62,14 @@ Tip.static('gets', function (tids, callback) {
     );
 });
 
-Tip.static('comment', function (tid, commenter, content, callback) {
-    this.findByIdAndUpdate(tid,
+Tip.static('comment', function (tid, lookId, favoriteId, commenter, content, callback) {
+    this.findOneAndUpdate(
+        {
+            _id: tid,
+            look: lookId,
+            favorite: favoriteId,
+            isValid: true
+        },
         {
             $push: {
                 comments: {

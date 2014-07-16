@@ -7,9 +7,9 @@ var mongoose = require('mongoose');
  */
 var UserLook = mongoose.Schema(
     {
-        _id: String,
+        _id: {type: String, ref: 'User'},
         looks: [{
-            type: String
+            type: String, ref: 'Look'
         }]
     },
     {

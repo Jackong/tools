@@ -11,19 +11,19 @@ var Favorite = require('../model/Favorite');
 
 module.exports = {
     getsByIds: function (lookId, favoriteId, tids, callback) {
-        Tip.gets(tids, callback);
+        Tip.gets(tids, lookId, favoriteId, callback);
     },
-    addTip: function (lookId, favoriteId, tip, callback) {
+    addTip: function (tip, callback) {
         tip.save(function (err, doc) {
             if (err) {
                 return callback(err, null);
             }
             async.parallel({
                 userTip: function (callback) {
-                    UserTip.putNewLook(tip.author, lookId, callback);
+                    UserTip.putNewLook(tip.author, tip.look, callback);
                 },
                 favorite: function (callback) {
-                    Favorite.putNewTip(lookId, favoriteId, doc._id, callback);
+                    Favorite.putNewTip(tip.look, tip.favorite, doc._id, callback);
                 }
             }, function (err, result) {
                 if (err) {
@@ -33,7 +33,7 @@ module.exports = {
             })
         })
     },
-    addComment: function (commenter, tipId, content, callback) {
-        Tip.comment(tipId, commenter, content, callback);
+    addComment: function (commenter, tipId, lookId, favoriteId, content, callback) {
+        Tip.comment(tipId, lookId, favoriteId, commenter, content, callback);
     }
 };

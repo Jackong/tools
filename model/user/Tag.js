@@ -9,8 +9,8 @@ var Schema = mongoose.Schema;
  */
 var UserTag = Schema(
     {
-        _id: String,
-        tags: [{type: String, lowercase: true, trim: true}]
+        _id: {type: String, ref: 'User'},
+        tags: [{type: String}]
     },
     {
         shardKey:

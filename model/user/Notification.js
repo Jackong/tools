@@ -9,11 +9,11 @@ var Schema = mongoose.Schema;
  */
 var UserNotification = Schema(
     {
-        _id: String,
+        _id: {type: String, ref: 'User'},
         notifications: [
             {
                 category: Number,//见User settings
-                from: String, //主语
+                from: {type: String, ref: 'User'}, //主语
                 isRead: {type: Boolean, default: false},//已读
                 created: {type: Number, default: Date.now },
                 updated: {type: Number, default: Date.now }

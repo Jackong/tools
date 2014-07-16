@@ -7,7 +7,7 @@ var Schema = mongoose.Schema;
 
 var UserSetting = Schema(
     {
-        _id: String,
+        _id: {type: String, ref: 'User'},
         notification: {
             enableNotify: {type: Boolean, default: true},
             enableMail: {type: Boolean, default: true},

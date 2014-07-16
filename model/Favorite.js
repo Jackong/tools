@@ -9,8 +9,8 @@ var logger = require('../common/logger');
 var Favorite = Schema(
     {
         _id: String,//lookID:favoriteKey
-        wants: [{ type: String}],//User:想要的人
-        tips: [{type: String}]//Tips:小贴士
+        wants: [{ type: String, ref: 'User'}],//User:想要的人
+        tips: [{type: String, ref: 'Tip'}]//Tips:小贴士
     },
     {
         shardKey:

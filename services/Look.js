@@ -7,7 +7,7 @@ var async = require('async');
 var logger = require('../common/logger');
 var helper = require('../common/helper');
 var Look = require('../model/Look');
-var TagLook = require('../model/tag/Look');
+var Tag = require('../model/Tag');
 var UserPublish = require('../model/user/Publish');
 var UserWant = require('../model/user/Want');
 var UserLike = require('../model/user/Like');
@@ -26,7 +26,7 @@ module.exports = {
                 Favorite.sync(look.publisher, look._id, look.favorites[0], callback)
             },
             tags: function(callback) {
-                TagLook.putNewLook(look.tags, look._id, callback);
+                Tag.putNewLook(look.tags, look._id, callback);
             },
             publish: function(callback) {
                 UserPublish.putNewLook(look.publisher, look._id, callback);
@@ -73,8 +73,8 @@ module.exports = {
                 return callback(err, old);
             }
             if (tags.length > 0) {
-                TagLook.putNewLook(tags, look._id, function (err) {
-                    err ? logger.error('TagLook.putNewLook', err) : '';
+                Tag.putNewLook(tags, look._id, function (err) {
+                    err ? logger.error('Tag.putNewLook', err) : '';
                 });
             }
             if (favorites.length > 0) {

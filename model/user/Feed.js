@@ -11,8 +11,8 @@ var TagFollower = require('../tag/Follower');
  */
 var UserFeed = Schema(
     {
-        _id: String,
-        feeds: [{type: String}]
+        _id: {type: String, ref: 'User'},
+        feeds: [{type: String, ref: 'Look'}]
     },
     {
         shardKey:

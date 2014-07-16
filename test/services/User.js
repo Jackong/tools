@@ -8,6 +8,7 @@ require('../../common/mongo');
 
 var should = require("should");
 
+var User = require('../../model/User');
 var UserService = require('../../services/User');
 var helper = require('../../common/helper');
 var USER_PLATFORM = require('../../common/const').USER_PLATFORM;
@@ -91,7 +92,7 @@ describe('UserService', function () {
     describe('.register()', function () {
         beforeEach(function () {
             var user = new User({_id: USER_PLATFORM.EMAIL + '|' + existAccount, account:existAccount, password: password});
-            user.save().exec();
+            user.save();
         });
 
         afterEach(function () {

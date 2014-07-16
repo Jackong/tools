@@ -8,7 +8,7 @@ var async = require('async');
 
 require('../../common/mongo');
 var Look = require('../../model/Look');
-var TagLook = require('../../model/tag/Look');
+var Tag = require('../../model/Tag');
 var UserPublish = require('../../model/user/Publish');
 var UserWant = require('../../model/user/Want');
 var User = require('../../model/User');
@@ -42,21 +42,21 @@ describe('Look', function () {
     describe('.firstPublish()', function () {
         it('should be saved and put to tags, publication and want', sinon.test(function (done) {
             var save = this.stub(look, 'save');
-            this.stub(TagLook, 'putNewLook');
+            this.stub(Tag, 'putNewLook');
             this.stub(UserPublish, 'putNewLook');
             this.stub(UserWant, 'putNewLook');
             this.stub(Favorite, 'sync');
             LookService.firstPublish(look, function (err, doc) {
                 should.not.exist(err);
                 should.exist(doc);
-                TagLook.putNewLook.called.should.be.true;
+                Tag.putNewLook.called.should.be.true;
                 UserPublish.putNewLook.called.should.be.true;
                 UserWant.putNewLook.called.should.be.true;
                 Favorite.sync.called.should.be.true;
                 done();
             });
             save.yield(null, null);
-            TagLook.putNewLook.yield(null);
+            Tag.putNewLook.yield(null);
             UserPublish.putNewLook.yield(null, null);
             UserWant.putNewLook.yield(null, null);
             Favorite.sync.yield(null, new Favorite({_id: look._id + ':' + look.favorites[0], wants:[], tips:[]}), 0);
@@ -82,11 +82,11 @@ describe('Look', function () {
         });
         it('should update favorites, tags and want when they are different', sinon.test(function (done) {
             this.stub(Look, 'appendTagsAndFavorites');
-            this.stub(TagLook, 'putNewLook');
+            this.stub(Tag, 'putNewLook');
             this.stub(UserWant, 'putNewLook');
             this.stub(Favorite, 'sync');
             LookService.republish(old, look, function (err, doc) {
-                TagLook.putNewLook.called.should.be.true;
+                Tag.putNewLook.called.should.be.true;
                 Favorite.sync.called.should.be.true;
                 should.not.exist(err);
                 doc.tags.should.with.lengthOf(2);
@@ -100,12 +100,12 @@ describe('Look', function () {
 
         it('should update favorites only when tags are not different', sinon.test(function (done) {
             this.stub(Look, 'appendTagsAndFavorites');
-            this.stub(TagLook, 'putNewLook');
+            this.stub(Tag, 'putNewLook');
             this.stub(UserWant, 'putNewLook');
             this.stub(Favorite, 'sync');
             look.tags = old.tags;
             LookService.republish(old, look, function (err, doc) {
-                TagLook.putNewLook.called.should.be.false;
+                Tag.putNewLook.called.should.be.false;
                 Favorite.sync.called.should.be.true;
                 should.not.exist(err);
                 doc.tags.should.with.lengthOf(1);
@@ -118,13 +118,13 @@ describe('Look', function () {
         }));
 
         it('should not update when tags and favorites are not different', sinon.test(function (done) {
-            this.stub(TagLook, 'putNewLook');
+            this.stub(Tag, 'putNewLook');
             this.stub(UserWant, 'putNewLook');
             this.stub(Favorite, 'sync');
             look.tags = old.tags;
             look.favorites[0] = old.favorites[0];
             LookService.republish(old, look, function (err, doc) {
-                TagLook.putNewLook.called.should.be.false;
+                Tag.putNewLook.called.should.be.false;
                 Favorite.sync.called.should.be.false;
                 should.not.exist(err);
                 doc.tags.should.with.lengthOf(1);
@@ -137,12 +137,12 @@ describe('Look', function () {
 
         it('should not put new look to want when the publisher is the same', sinon.test(function (done) {
             this.stub(Look, 'appendTagsAndFavorites');
-            this.stub(TagLook, 'putNewLook');
+            this.stub(Tag, 'putNewLook');
             this.stub(UserWant, 'putNewLook');
             this.stub(Favorite, 'sync');
             look.publisher = old.publisher;
             LookService.republish(old, look, function (err, doc) {
-                TagLook.putNewLook.called.should.be.true;
+                Tag.putNewLook.called.should.be.true;
                 Favorite.sync.called.should.be.true;
                 UserWant.putNewLook.called.should.be.false;
                 should.not.exist(err);
