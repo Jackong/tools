@@ -5,10 +5,10 @@ var should = require('should');
 var mongoose = require('mongoose');
 var async = require('async');
 
-require('../../../common/mongo');
-var TagLook = require('../../../model/tag/Look');
+require('../../common/mongo');
+var Tag = require('../../model/Tag');
 
-describe('TagLook', function () {
+describe('Tag', function () {
     describe('.putNewLook()', function () {
         var tags = null;
         var lookId = null;
@@ -19,7 +19,7 @@ describe('TagLook', function () {
 
         it('should be successful when only 1 tag', function (done) {
             tags.push('jack');
-            TagLook.putNewLook(tags, lookId, function (err) {
+            Tag.putNewLook(tags, lookId, function (err) {
                 should.not.exist(err);
                 done();
             }); 
@@ -28,21 +28,21 @@ describe('TagLook', function () {
         it('should successful when more than 1 tags', function (done) {
             tags.push('jack');
             tags.push('daisy');
-            TagLook.putNewLook(tags, lookId, function (err) {
+            Tag.putNewLook(tags, lookId, function (err) {
                 should.not.exist(err);
                 done();
             });
         });
 
         it('should be failure with empty tags', function (done) {
-            TagLook.putNewLook(tags, lookId, function (err) {
+            Tag.putNewLook(tags, lookId, function (err) {
                 should.exist(err);
                 done();
             })
         });
 
         afterEach(function () {
-            TagLook.remove({
+            Tag.remove({
                 _id: {
                     $in: tags
                 }
@@ -54,7 +54,7 @@ describe('TagLook', function () {
         var tag1 = 'jack';
         var tag2 = 'daisy';
         before(function () {
-            TagLook.putNewLook([tag2], new mongoose.Types.ObjectId, function (err) {
+            Tag.putNewLook([tag2], new mongoose.Types.ObjectId, function (err) {
                 should.not.exist(err);
             })
         });
@@ -62,13 +62,13 @@ describe('TagLook', function () {
         it('should be 1 when only look be put', function (done) {
             async.waterfall([
                 function (callback) {
-                    TagLook.putNewLook([tag1], new mongoose.Types.ObjectId, function (err) {
+                    Tag.putNewLook([tag1], new mongoose.Types.ObjectId, function (err) {
                         should.not.exist(err);
                         callback(null, 1);
                     })
                 }
             ], function (err, count) {
-                TagLook.calLookCount(tag1, function (err, res) {
+                Tag.calLookCount(tag1, function (err, res) {
                     should.not.exist(err);
                     res[0].count.should.be.exactly(count);
                     done();
@@ -79,13 +79,13 @@ describe('TagLook', function () {
         it('should be 2 when 2 look be put', function (done) {
             async.waterfall([
                 function (callback) {
-                    TagLook.putNewLook([tag1], new mongoose.Types.ObjectId, function (err) {
+                    Tag.putNewLook([tag1], new mongoose.Types.ObjectId, function (err) {
                         should.not.exist(err);
                         callback(null, 1);
                     })
                 }
             ], function (err, count) {
-                TagLook.calLookCount(tag1, function (err, res) {
+                Tag.calLookCount(tag1, function (err, res) {
                     should.not.exist(err);
                     res[0].count.should.be.exactly(count + 1);
                     done();
@@ -94,7 +94,7 @@ describe('TagLook', function () {
         });
 
         after(function () {
-            TagLook.remove({
+            Tag.remove({
                 _id: {
                     $in: [tag1, tag2]
                 }

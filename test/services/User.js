@@ -90,9 +90,11 @@ describe('UserService', function () {
     });
 
     describe('.register()', function () {
-        beforeEach(function () {
+        beforeEach(function (done) {
             var user = new User({_id: USER_PLATFORM.EMAIL + '|' + existAccount, account:existAccount, password: password});
-            user.save();
+            user.save(function() {
+                done();
+            });
         });
 
         afterEach(function () {
@@ -111,6 +113,7 @@ describe('UserService', function () {
         it('should fail to register when uid is exists', function (done) {
             UserService.register(USER_PLATFORM.EMAIL, existAccount, password, function (err, user) {
                 should.exist(err);
+                should.not.exist(user);
                 done();
             });
         });

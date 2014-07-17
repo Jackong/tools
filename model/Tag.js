@@ -3,6 +3,7 @@
  */
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
+var async = require('async');
 
 var Tag = Schema(
     {
