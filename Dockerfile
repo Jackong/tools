@@ -5,6 +5,8 @@ ADD . /usr/src/app
 WORKDIR /usr/src/app
 
 RUN npm install
+RUN npm install -g supervisor
+RUN npm install -g mocha
 
 RUN mkdir -p /var/log/node
 RUN chmod -R 0777 /var/log/node/
@@ -18,5 +20,4 @@ ENV MODE dev
 #CMD [ "node", "server.js" ]
 
 # for dev
-COPY ./node_modules/supervisor /usr/src/supervisor
-CMD [ "/usr/src/supervisor/lib/cli-wrapper.js", "server.js"]
+CMD [ "supervisor", "server.js"]

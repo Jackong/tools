@@ -5,7 +5,7 @@ var multipart = require('connect-multiparty');
 var multipartMiddleware = multipart({
     maxFilesSize: 4 * 1024 * 1024,
     hash: 'md5',
-    uploadDir: APP_VIEW_DIR + '/tmp'
+    uploadDir: APP_VIEW_DIR + '/images/looks'
 });
 var async = require('async');
 

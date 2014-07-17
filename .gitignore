@@ -5,4 +5,4 @@ bae_app_conf.lua
 local.sh
 log
 build
-view/tmp
+view/images/looks
