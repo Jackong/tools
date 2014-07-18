@@ -11,6 +11,7 @@ var Look = require('../../model/Look');
 var Tag = require('../../model/Tag');
 var UserPublish = require('../../model/user/Publish');
 var UserWant = require('../../model/user/Want');
+var UserLike = require('../../model/user/Like');
 var User = require('../../model/User');
 var Tip = require('../../model/Tip');
 var Favorite = require('../../model/Favorite');
@@ -25,10 +26,10 @@ sinon.config = {
 describe('Look', function () {
     var look = null;
     beforeEach(function () {
-        var publisher = new mongoose.Types.ObjectId;
+        var publisher = 'publisherId';
         look = new Look(
             {
-                _id: new mongoose.Types.ObjectId,
+               	_id: 'look-id',
                 publisher: publisher,
                 image: 'image',
                 tags: ['nice', 'dress'],
@@ -282,5 +283,42 @@ describe('Look', function () {
 
     describe('.addTip()', function () {
 
+    });
+
+    describe.only('.like()', function() {
+	var lookId = 'lookId';
+	var uid = 'uid';
+	afterEach(function() {
+		Look.like.restore();
+		UserLike.putNewLook.restore();
+	});
+
+    	it('should update the look likes and the user likes when the look is valid', function(done) {
+		sinon.stub(Look, 'like', function(lookId, uid, callback) {
+			callback(null, 1);
+		});
+		sinon.stub(UserLike, 'putNewLook', function(uid, lookId, callback) {
+			callback(null, 1);
+		});
+		LookService.like(lookId, uid, function(err) {
+			should.not.exist(err);
+			Look.like.called.should.be.true;
+			UserLike.putNewLook.called.should.be.true;
+			done();
+		});
+	});
+
+	it('should not update the look likes and the user likes when the look is invalid or not exist', function(done) {
+		sinon.stub(Look, 'like', function(lookId, uid, callback) {
+			callback(null, 0);
+		});
+		sinon.stub(UserLike, 'putNewLook');
+		LookService.like(lookId, uid, function(err) {
+			should.exist(err);
+			Look.like.called.should.be.true;
+			UserLike.putNewLook.called.should.be.false;
+			done();
+		});
+	});
     });
 });

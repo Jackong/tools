@@ -225,5 +225,19 @@ module.exports = {
                 callback(err, look);
             })
         });
+    },
+
+    like: function(lookId, uid, callback) {
+	async.waterfall([
+		function update2Look(callback) {
+			Look.like(lookId, uid, callback);
+		},
+		function update2user(num, callback) {
+			if (num === 0) {
+				return callback(uid + ' try to update invalid look ' + lookId);
+			}
+			UserLike.putNewLook(uid, lookId, callback);
+		}	
+	], callback);	  
     }
 };

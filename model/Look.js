@@ -123,4 +123,18 @@ Look.static('getOne', function (lookId, callback) {
     );
 });
 
+Look.static('like', function(lookId, uid, callback) {
+	this.update(
+		{
+			_id: lookId,
+			isValid: true
+		},
+		{
+			likes: {
+				$addToSet: uid        
+			}
+		},
+		callback
+	);
+});
 module.exports = mongoose.model('Look', Look);
