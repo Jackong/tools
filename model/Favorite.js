@@ -22,8 +22,6 @@ var Favorite = Schema(
     }
 );
 
-Favorite.set('toObject', { virtuals: true });
-
 Favorite.static('sync', function (uid, lookId, aspect, callback) {
     var Model = this.model('Favorite');
     var favorite = new Model({
@@ -68,6 +66,21 @@ Favorite.static('perfect', function (lookId, aspects, callback) {
         },
         {
             lean: true
+        },
+        callback
+    );
+});
+
+Favorite.static('want', function (lookId, aspect, uid, callback) {
+    this.update(
+        {
+            look: lookId,
+            aspect: aspect
+        },
+        {
+            wants: {
+                $addToSet: uid
+            }
         },
         callback
     );
