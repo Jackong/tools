@@ -10,10 +10,10 @@ var UserService = require('../services/User');
 
 module.exports = function (router) {
     router.put('/tips/comments',
-        router.checker.body('lookId', 'favoriteId', 'tipId', 'content'),
+        router.checker.body('lookId', 'aspect', 'tipId', 'content'),
         function (req, res) {
             var commenter = UserService.getUid(req, res);
-            TipService.addComment(commenter, req.body.tipId, req.body.lookId, req.body.favoriteId, req.body.content, function (err, comment) {
+            TipService.addComment(commenter, req.body.tipId, req.body.lookId, req.body.aspect, req.body.content, function (err, comment) {
                 if (err) {
                     return res.fail();
                 }
@@ -23,14 +23,14 @@ module.exports = function (router) {
     );
 
     router.post('/tips',
-        router.checker.body('lookId', 'favoriteId', 'content'),
+        router.checker.body('lookId', 'aspect', 'content'),
         function (req, res) {
             var author = UserService.getUid(req, res);
             TipService.addTip(new Tip(
                     {
                         author: author,
                         look: req.body.lookId.toLowerCase(),
-                        favorite: req.body.favoriteId,
+                        favorite: req.body.aspect,
                         content: req.body.content
                     }),
                     function (err, tip) {

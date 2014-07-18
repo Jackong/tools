@@ -21,7 +21,7 @@
                 <br/>
                 <div class="panel panel-default" ng-repeat="favorite in look.favorites">
                     <div class="panel-heading">
-                        <h3 class="panel-title">哪儿有卖这款{{favorites[favorite._id]}}？ <a href="#/looks/{{look._id}}/wants" class="pull-right">{{favorite.wants.length}}人想要</a></h3>
+                        <h3 class="panel-title">哪儿有卖这款{{favorites[favorite.aspect]}}？ <a href="#/looks/{{look._id}}/wants" class="pull-right">{{favorite.wants.length}}人想要</a></h3>
                     </div>
                     <div class="panel-body">
                         <ul class="media-list" ng-repeat="tip in favorite.tips">
@@ -71,9 +71,9 @@
                             </li>
                         </ul>
                         <br/>
-                        <button ng-show="favorite.tips.length <= 0" ng-click="want(favorite._id)" class="btn btn-default pull-left">想要</button>
-                        <button ng-show="favorite.tips.length > 0" ng-click="buy(favorite._id)" class="btn btn-default pull-left">购买</button>
-                        <button ng-click="onAddTip(favorite._id)" class="btn btn-default pull-right" data-toggle="modal" data-target="#tipModal">+小贴士</button>
+                        <button ng-show="favorite.tips.length <= 0" ng-click="want(favorite.aspect)" class="btn btn-default pull-left">想要</button>
+                        <button ng-show="favorite.tips.length > 0" ng-click="buy(favorite.aspect)" class="btn btn-default pull-left">购买</button>
+                        <button ng-click="onAddTip(favorite.aspect)" class="btn btn-default pull-right" data-toggle="modal" data-target="#tipModal">+小贴士</button>
                     </div>
                 </div>
             </div>
@@ -87,7 +87,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">取消</span></button>
-                <h4 class="modal-title" id="tipModalLabel">我知道哪儿有卖这款{{favorites[favoriteId]}}</h4>
+                <h4 class="modal-title" id="tipModalLabel">我知道哪儿有卖这款{{favorites[aspect]}}</h4>
             </div>
 
             <div class="modal-body">
@@ -121,7 +121,7 @@
                 <div class="form-group">
                     <div class="dropdown">
                         <button class="btn btn-default dropdown-toggle" type="button" id="aspects" data-toggle="dropdown">
-                            我中意她的这款{{favorite ? favorites[favorite] : "..."}}
+                            我中意她的这款{{aspect ? favorites[aspect] : "..."}}
                             <span class="caret"></span>
                         </button>
                         <ul class="dropdown-menu" role="menu" aria-labelledby="aspects">

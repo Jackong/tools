@@ -13,11 +13,11 @@
                 </p>
                 <p ng-repeat="favorite in look.favorites">
                     <span class="glyphicon glyphicon-lock icon"></span>
-                    <span>{{favorites[favorite._id]}}：{{favorite.tips.length}}个小贴士</span>
-                    <a href="#/looks/{{look._id}}/favorites/{{favorite._id}}/buy" type="button" ng-show="favorite.tips.length > 0" class="btn btn-default">购买</a>
+                    <span>{{favorites[favorite.aspect]}}：{{favorite.tips.length}}个小贴士</span>
+                    <a href="#/looks/{{look._id}}/favorites/{{favorite.aspect}}/buy" type="button" ng-show="favorite.tips.length > 0" class="btn btn-default">购买</a>
                         <span ng-show="favorite.tips.length <= 0">
                             - {{favorite.wants.length}}人想要
-                            <button ng-click="want(look._id, favorite._id)" class="btn btn-default">想要</button>
+                            <button ng-click="want(look._id, favorite.aspect)" class="btn btn-default">想要</button>
                         </span>
                 </p>
             </div>

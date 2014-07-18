@@ -24,7 +24,6 @@ describe('Look', function() {
 					Look.remove({_id: notExistLookId}, callback);
 				}
 			], function(err) {
-				should.not.exist(err);
 				done();
 			});
 		});

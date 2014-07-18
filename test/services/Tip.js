@@ -51,11 +51,11 @@ describe('TipService', function () {
         var commenter = new mongoose.Types.ObjectId;
         var tipId = new mongoose.Types.ObjectId;
         var lookId = 'look-id';
-        var favoriteId = 'shirt';
+        var aspect = 'shirt';
         var content = 'good';
         it('should be failed when the tip is invalid or not exist', sinon.test(function (done) {
             this.stub(Tip, 'comment');
-            TipService.addComment(commenter, tipId, lookId, favoriteId, content, function (err, comment) {
+            TipService.addComment(commenter, tipId, lookId, aspect, content, function (err, comment) {
                 should.not.exist(err);
                 should.not.exist(comment);
                 done();

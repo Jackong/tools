@@ -35,7 +35,7 @@ var Tip = Schema(
     }
 );
 
-Tip.static('gets', function (tids, lookId, favoriteId, callback) {
+Tip.static('gets', function (tids, lookId, aspect, callback) {
     if (tids.length <= 0) {
         return callback(null, []);
     }
@@ -45,7 +45,7 @@ Tip.static('gets', function (tids, lookId, favoriteId, callback) {
                 $in: tids
             },
             look: lookId,
-            favorite: favoriteId,
+            favorite: aspect,
             isValid: true
         },
         {
@@ -62,12 +62,12 @@ Tip.static('gets', function (tids, lookId, favoriteId, callback) {
     );
 });
 
-Tip.static('comment', function (tid, lookId, favoriteId, commenter, content, callback) {
+Tip.static('comment', function (tid, lookId, aspect, commenter, content, callback) {
     this.findOneAndUpdate(
         {
             _id: tid,
             look: lookId,
-            favorite: favoriteId,
+            favorite: aspect,
             isValid: true
         },
         {

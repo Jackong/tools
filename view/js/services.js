@@ -34,7 +34,7 @@ define(['angular', 'angularResource'], function (angular) {
         .factory('Tip', function ($resource) {
             return $resource('api/tips/:tipIds', {}, {
                 getsByIds: {
-                    method: 'GET', url: 'api/looks/:lookId/favorites/:favoriteId/tips/:tipIds'
+                    method: 'GET', url: 'api/looks/:lookId/favorites/:aspect/tips/:tipIds'
                 },
                 comment: {
                     method: 'PUT', url: 'api/tips/comments'
@@ -43,12 +43,12 @@ define(['angular', 'angularResource'], function (angular) {
         })
         .factory('LookCache', function ($cacheFactory, Look, Tip) {
             return {
-                publish: function (lookId, image, description, favoriteId, tags, callback) {
+                publish: function (lookId, image, description, aspect, tags, callback) {
                     Look.save({
                         lookId: lookId,
                         image: image,
                         description: description,
-                        favoriteId: favoriteId,
+                        aspect: aspect,
                         tags: tags
                     }, function (res) {
                         if (res.code !== 0) {
@@ -86,7 +86,7 @@ define(['angular', 'angularResource'], function (angular) {
                             var getTips = function (favorite) {
                                 Tip.getsByIds({
                                     lookId: look._id,
-                                    favoriteId: favorite._id,
+                                    aspect: favorite.aspect,
                                     tipIds: favorite.tips.join(',')
                                 }, function (res) {
                                     favorite.tips = res.data.tips;
@@ -117,6 +117,6 @@ define(['angular', 'angularResource'], function (angular) {
                         callback(favorites);
                     });
                 }
-            }
+            };
         });
 });

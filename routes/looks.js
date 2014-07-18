@@ -60,7 +60,7 @@ module.exports = function (router) {
 
     router.post('/looks',
         router.checker.body('lookId'),
-        router.checker.body('favoriteId'),
+        router.checker.body('aspect'),
         function (req, res) {
             var uid = UserService.getUid(req, res);
             async.waterfall([
@@ -84,7 +84,7 @@ module.exports = function (router) {
                             image: req.body.image,
                             tags: req.body.tags,
                             description: req.body.description,
-                            favorites: [req.body.favoriteId]
+                            favorites: [req.body.aspect]
                         }
                     );
                     LookService.publish(look,callback);
@@ -111,11 +111,11 @@ module.exports = function (router) {
         }
     );
 
-    router.get('/looks/:lookId/favorites/:favoriteId/tips/:tipIds',
+    router.get('/looks/:lookId/favorites/:aspect/tips/:tipIds',
         router.checker.params('lookId'),
-        router.checker.params('favoriteId'),
+        router.checker.params('aspect'),
         function (req, res) {
-            TipService.getsByIds(req.params.lookId, req.params.favoriteId, req.params.tipIds.split(','),
+            TipService.getsByIds(req.params.lookId, req.params.aspect, req.params.tipIds.split(','),
                 function (err, tips) {
                     if (err) {
                         logger.error('get tips by tips ids', {params: req.params, err: err});

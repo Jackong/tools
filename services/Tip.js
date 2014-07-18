@@ -10,8 +10,8 @@ var Tip = require('../model/Tip');
 var Favorite = require('../model/Favorite');
 
 module.exports = {
-    getsByIds: function (lookId, favoriteId, tids, callback) {
-        Tip.gets(tids, lookId, favoriteId, callback);
+    getsByIds: function (lookId, aspect, tids, callback) {
+        Tip.gets(tids, lookId, aspect, callback);
     },
     addTip: function (tip, callback) {
         tip.save(function (err, doc) {
@@ -33,7 +33,7 @@ module.exports = {
             })
         })
     },
-    addComment: function (commenter, tipId, lookId, favoriteId, content, callback) {
-        Tip.comment(tipId, lookId, favoriteId, commenter, content, callback);
+    addComment: function (commenter, tipId, lookId, aspect, content, callback) {
+        Tip.comment(tipId, lookId, aspect, commenter, content, callback);
     }
 };

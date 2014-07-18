@@ -82,12 +82,12 @@ define(['angular', 'ngTagsInput'], function (angular) {
         $scope.like = function (lookId) {
             //todo
         };
-        $scope.want = function (lookId, favoriteId) {
+        $scope.want = function (lookId, aspect) {
             //todo
         };
     })
     .controller('LookDetailCtrl', function ($scope, $routeParams, LookCache, Tip) {
-            $scope.view = 'partials/look/detail.html?v=8';
+            $scope.view = 'partials/look/detail.html';
             var lookId = $routeParams.lookId;
 
             LookCache.favorites(function (favorites) {
@@ -102,7 +102,11 @@ define(['angular', 'ngTagsInput'], function (angular) {
                 //todo
             };
 
-            $scope.want = function (favoriteId) {
+            $scope.want = function (aspect) {
+                //todo
+            };
+
+            $scope.buy = function (aspect) {
                 //todo
             };
 
@@ -114,13 +118,13 @@ define(['angular', 'ngTagsInput'], function (angular) {
 
             };
 
-            $scope.onAddTip = function (favoriteId) {
-                $scope.favoriteId = favoriteId;
+            $scope.onAddTip = function (aspect) {
+                $scope.aspect = aspect;
             };
             $scope.addTip = function (content) {
                 Tip.save({
                     lookId: $scope.look._id,
-                    favoriteId: $scope.favoriteId,
+                    aspect: $scope.aspect,
                     content: content
                 }, function (res) {
                     if (res.code !== 0) {
@@ -128,7 +132,7 @@ define(['angular', 'ngTagsInput'], function (angular) {
                     }
                     for(var idx = 0; idx < $scope.look.favorites.length; idx++) {
                         var favorite = $scope.look.favorites[idx];
-                        if (favorite._id === $scope.favoriteId) {
+                        if (favorite.aspect === $scope.aspect) {
                             favorite.tips.push(res.data.tip);
                             break;
                         }
@@ -148,6 +152,6 @@ define(['angular', 'ngTagsInput'], function (angular) {
                     }
                 );
                 return '';
-            }
+            };
     });
 });

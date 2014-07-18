@@ -60,7 +60,7 @@ describe('Look', function () {
             Tag.putNewLook.yield(null);
             UserPublish.putNewLook.yield(null, null);
             UserWant.putNewLook.yield(null, null);
-            Favorite.sync.yield(null, new Favorite({_id: look._id + ':' + look.favorites[0], wants:[], tips:[]}), 0);
+            Favorite.sync.yield(null, new Favorite({look: look._id, aspect: look.favorites[0], wants:[], tips:[]}), 0);
         }));
     });
 
@@ -171,8 +171,8 @@ describe('Look', function () {
                 user[look.publisher] = new User({_id: look.publisher, nick: 'jack', avatar: 'avatar url'});
                 callback(null, user);
             });
-            sinon.stub(Favorite, 'perfect', function (lookId, favoriteKeys, callback) {
-                callback(null, [new Favorite({_id: favoriteKeys[0], wants: [], tips: []})]);
+            sinon.stub(Favorite, 'perfect', function (lookId, aspects, callback) {
+                callback(null, [new Favorite({look: lookId, aspect: aspects[0], wants: [], tips: []})]);
             });
             LookService.getTrend(0, 1, function (err, looks) {
                 should.not.exist(err);
@@ -205,7 +205,7 @@ describe('Look', function () {
             sinon.stub(User, 'perfect', function (uids, callback) {
                 callback(null, []);
             });
-            sinon.stub(Favorite, 'perfect', function (lookId, favoriteKeys, callback) {
+            sinon.stub(Favorite, 'perfect', function (lookId, aspects, callback) {
                 callback(null, []);
             });
             LookService.getTrend(0, 1, function (err, looks) {
@@ -237,8 +237,8 @@ describe('Look', function () {
             sinon.stub(Tip, 'gets', function (tipIds, callback) {
                 callback(null, []);
             });
-            sinon.stub(Favorite, 'perfect', function (lookId, favoriteKeys, callback) {
-                callback(null, [new Favorite({_id: favoriteKeys[0], wants: [], tips:[]})]);
+            sinon.stub(Favorite, 'perfect', function (lookId, aspects, callback) {
+                callback(null, [new Favorite({look:lookId, aspect: aspects[0], wants: [], tips:[]})]);
             })
         });
         afterEach(function () {

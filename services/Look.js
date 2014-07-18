@@ -146,6 +146,10 @@ module.exports = {
                             return callback(null, look);
                         }
                         Favorite.perfect(look._id, look.favorites, function (err, favorites) {
+                            if (err) {
+                                logger.error('perfect favorites', err);
+                                favorites = [];
+                            }
                             look.favorites = favorites;
                             callback(null, look);
                         });
@@ -196,11 +200,11 @@ module.exports = {
                         }
                         var favorite2tips = {};
                         async.filter(favorites, function (favorite, callback) {
-                            Tip.gets(favorite.tips, function (err, tips) {
+                            Tip.gets(favorite.tips, look._id, favorite.aspect, function (err, tips) {
                                 if (err) {
                                     return callback(false);
                                 }
-                                favorite2tips[favorite._id] = tips;
+                                favorite2tips[favorite.aspect] = tips;
                                 callback(true);
                             })
                         }, function (favorites) {
@@ -208,7 +212,7 @@ module.exports = {
                                 return callback(null, []);
                             }
                             async.map(favorites, function (favorite, callback) {
-                                favorite.tips = favorite2tips[favorite._id];
+                                favorite.tips = favorite2tips[favorite.aspect];
                                 callback(null, favorite);
                             }, callback)
                         });
@@ -228,16 +232,16 @@ module.exports = {
     },
 
     like: function(lookId, uid, callback) {
-	async.waterfall([
-		function update2Look(callback) {
-			Look.like(lookId, uid, callback);
-		},
-		function update2user(num, callback) {
-			if (num === 0) {
-				return callback(uid + ' try to update invalid look ' + lookId);
-			}
-			UserLike.putNewLook(uid, lookId, callback);
-		}	
-	], callback);	  
+        async.waterfall([
+            function update2Look(callback) {
+                Look.like(lookId, uid, callback);
+            },
+            function update2user(num, callback) {
+                if (num === 0) {
+                    return callback(uid + ' try to update invalid look ' + lookId);
+                }
+                UserLike.putNewLook(uid, lookId, callback);
+            }
+        ], callback);
     }
 };
