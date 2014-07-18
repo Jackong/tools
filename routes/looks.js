@@ -44,6 +44,20 @@ module.exports = function (router) {
         });
     });
 
+    router.put('/looks/like',
+	router.checker.body('lookId'),
+	function(req, res) {
+    		var uid = UserService.getUid(req, res);			
+		var lookId = req.body.lookId;
+		LookService.like(lookId, uid, function(err) {
+			if (err) {
+				logger.error('like look failed', err);
+				return res.fail();
+			}
+			res.ok();
+		});
+    	});
+
     router.post('/looks',
         router.checker.body('lookId'),
         router.checker.body('favoriteId'),
