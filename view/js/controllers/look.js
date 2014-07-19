@@ -87,7 +87,7 @@ define(['angular', 'ngTagsInput'], function (angular) {
         };
     })
     .controller('LookDetailCtrl', function ($scope, $routeParams, LookCache, Tip) {
-            $scope.view = 'partials/look/detail.html';
+            $scope.view = 'partials/look/detail.html?v=3';
             var lookId = $routeParams.lookId;
 
             LookCache.favorites(function (favorites) {

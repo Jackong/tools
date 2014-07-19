@@ -13,7 +13,7 @@ require('./common/mongo');
 logger.info('starting app');
 
 var app = express();
-//app.use(express.static(APP_DIR + '/view'));
+app.use(express.static(APP_DIR + '/view'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded());
 app.use(cookieParser(system.salt));
