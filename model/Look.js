@@ -13,7 +13,7 @@ var Look = Schema(
         publisher: {type: String, ref: 'User'},//User:发布者
         image: String,//图片
         isValid: {type: Boolean, default: true},
-        tags: [{type: String, lowercase: true, trim: true}],//标签
+        tags: [{type: String, lowercase: true, trim: true, ref: 'Tag'}],//标签
         description: String,//描述
         created: {type: Number, default: Date.now},
         updated: {type: Number, default: Date.now},

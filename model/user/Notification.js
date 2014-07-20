@@ -12,11 +12,11 @@ var UserNotification = Schema(
         _id: {type: String, ref: 'User'},
         notifications: [
             {
-                category: Number,//见User settings
                 from: {type: String, ref: 'User'}, //主语
+                action: Number,//见User settings
+                look: {type: String, ref: 'Look'},
                 isRead: {type: Boolean, default: false},//已读
-                created: {type: Number, default: Date.now },
-                updated: {type: Number, default: Date.now }
+                created: {type: Number, default: Date.now }
             }
         ]
     },
