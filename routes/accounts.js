@@ -2,7 +2,11 @@
  * Created by daisy on 14-5-30.
  */
 var async = require('async');
+var request = require('request');
+
 require('../common/mongo');
+
+var oauth = require('../common/config')('oauth');
 
 var User = require('../model/User');
 var UserService = require('../services/User');
@@ -12,6 +16,27 @@ var helper = require('../common/helper');
 var USER_PLATFORM = require('../common/const').USER_PLATFORM;
 
 module.exports = function (router) {
+    router.get('/social/oauth/callback', function (req, res) {
+        var options = {
+            url: oauth.tokenUrl,
+            method: 'POST',
+            form: {
+                grant_type: oauth.grantType,
+                client_id: oauth.apiKey,
+                client_secret: oauth.secretKey,
+                redirect_uri: 'http://192.168.59.103/api/social/oauth/callback',
+                code: req.query.code
+            }
+        };
+        request(options, function (err, response, body) {
+            if (err || response.statusCode != 200 || body.error_code) {
+                logger.error('social callback', err, body);
+                return res.redirect('/');
+            }
+            res.send(body)
+        })
+    });
+
     router.post('/accounts',
         router.checker.body('account', 'password'),
         function register(req, res) {

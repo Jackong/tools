@@ -1,11 +1,14 @@
 /**
  * Created by daisy on 14-7-5.
  */
+
 define(['angular', 'angularMd5'], function (angular) {
     angular.module('iWomen.controllers.sign', [
         'angular-md5'
     ])
-    .controller('SignCtrl', function ($scope, $location, md5, Account) {
+    .controller('SignCtrl', function ($scope, $location, md5, Account, SOCIAL_LOGIN_CALLBACK) {
+        var src = "http://openapi.baidu.com/social/oauth/2.0/connect/login?redirect_uri=" + SOCIAL_LOGIN_CALLBACK + "&domid=social-login&client_type=web&response_type=code&media_types=qqdenglu%2Csinaweibo%2Cbaidu&size=-1&button_type=4&client_id=2o6HoeD4IBHsXTQWd023VLTh&view=embedded&t=" + new Date().getTime();
+        require([src], function () {});
         var isValid = function () {
             $scope.warning = false;
             if ($scope.sign.$valid) {

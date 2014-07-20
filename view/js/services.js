@@ -5,6 +5,7 @@ define(['angular', 'angularResource'], function (angular) {
     'use strict';
 
     return angular.module('iWomen.services', ['ngResource'])
+        .value('SOCIAL_LOGIN_CALLBACK', encodeURIComponent("http://192.168.59.103/api/social/oauth/callback"))
         .factory('Account', function ($resource) {
             return $resource('api/accounts/:account', {}, {
                 signUp: {

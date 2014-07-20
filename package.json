@@ -19,6 +19,7 @@
         "redis": "~0.10.3",
         "bae-message": "~0.1.4",
         "sinon": "~1.10.2",
-        "connect-multiparty": "~1.0.5"
+        "connect-multiparty": "~1.0.5",
+        "request":"2.37.0"
     }
 }

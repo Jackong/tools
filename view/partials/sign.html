@@ -1,11 +1,5 @@
 <link href="css/sign.css" rel="stylesheet">
 
-<div class="col-xs-12 navbar-default navbar-fixed-top">
-    <div class="row iNav">
-        <div class="col-xs-12 text-center"><a href="#" style="color: #f489a5;">众里寻她</a></div>
-    </div>
-</div>
-
 <div class="container">
 
     <form class="form-sign" role="form" name="sign">
@@ -16,6 +10,9 @@
             <a href="#/account/forgot">忘记密码</a>
         </label>
 
+        <label class="pull-left">
+            <div id="social-login"></div>
+        </label>
         <button class="btn btn-lg btn-default btn-block" ng-click="signIn()">登录</button>
         <button class="btn btn-lg btn-default btn-block" ng-click="signUp()">注册</button>
     </form>
