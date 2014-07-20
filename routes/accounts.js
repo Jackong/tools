@@ -49,21 +49,22 @@ module.exports = function (router) {
                 logger.error('media type not support', body);
                 return res.redirect('/');
             }
-            UserService.login4Platform(platform, body.media_uid, body.social_uid, body.access_token, body.session_key, body.session_secret, function (err) {
+            UserService.login4Platform(platform, body.media_uid, body.social_uid, body.name, body.access_token, body.session_key, body.session_secret, function (err) {
                 if (err) {
                     logger.error('sync platform info fail', body);
                 }
-                res.redirect('/');
             });
+            res.redirect('/');
         })
     });
 
     router.post('/accounts',
         router.checker.body('account', 'password'),
         function register(req, res) {
-            UserService.register(USER_PLATFORM.EMAIL, req.body.account, req.body.password, function (err, user) {
+            var account = req.body.account;
+            UserService.register(USER_PLATFORM.EMAIL, account, req.body.password, account.split('@')[0], function (err, user) {
                 if (null !== err) {
-                    logger.error('create account', req.body.account, err.message);
+                    logger.error('create account', account, err.message);
                     return res.fail();
                 }
                 UserService.login(user._id, req, res);

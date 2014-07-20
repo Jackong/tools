@@ -2,7 +2,11 @@
  * Created by daisy on 14-6-25.
  */
 
+var async = require('async');
+
 var User = require('../model/User');
+var UserPlatform = require('../model/user/Platform');
+
 var helper = require('../common/helper');
 var system = require('../common/config')('system');
 
@@ -30,11 +34,12 @@ module.exports = {
     getUid: function (req, res) {
         return req.signedCookies.uid;
     },
-    register: function (platform, account, password, callback) {
+    register: function (platform, account, password, nick, callback) {
         var user = new User({
             _id: this.createUid(platform, account),
             account: account,
             password: password,
+            nick: nick,
             platform: platform
         });
         user.save(callback);
@@ -51,8 +56,23 @@ module.exports = {
     getPasswordById: function (uid, callback) {
         User.findOne({_id: uid}, 'password', {lean: true}, callback);
     },
-    login4Platform: function (platform, mediaUid, socialUid, accessToken, sessionKey, sessionSecret, callback) {
-        
+    login4Platform: function (req, res, platform, mediaUid, socialUid, name, accessToken, sessionKey, sessionSecret, callback) {
+        var uid = this.createUid(platform, mediaUid);
+        var self = this;
+        async.parallel({
+            user: function (callback)
+            {
+                self.register(platform, mediaUid, undefined, name, callback);
+            },
+            platform: function (callback) {
+                UserPlatform.sync(uid, accessToken, sessionKey, sessionSecret, mediaUid, socialUid, callback);
+            }
+        }, function (err, result) {
+            if (!err) {
+                self.login(uid, req, res);
+            }
+            callback(err);
+        });
     },
     createUid: function (platform, account) {
         return helper.md5(platform + '|' + account, system.salt);
