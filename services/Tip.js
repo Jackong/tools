@@ -35,5 +35,8 @@ module.exports = {
     },
     addComment: function (commenter, tipId, lookId, aspect, content, callback) {
         Tip.comment(tipId, lookId, aspect, commenter, content, callback);
+    },
+    addLike: function (uid, lookId, aspect, tipId, callback) {
+        Tip.like(tipId, lookId, aspect, uid, callback);
     }
 };
