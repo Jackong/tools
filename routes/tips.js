@@ -43,4 +43,22 @@ module.exports = function (router) {
             );
         }
     );
+
+    router.put('/tips/likes',
+        router.checker.body('lookId', 'aspect', 'tipId'),
+        function (req, res) {
+            var uid = UserService.getUid(req, res);
+            var lookId = req.body.lookId;
+            var aspect = req.body.aspect;
+            var tipId = req.body.tipId;
+
+            TipService.addLike(uid, lookId, aspect, tipId, function (err, num) {
+                if (err || 1 !== num) {
+                    logger.error('like tips', uid, lookId, aspect, tipId, num, err);
+                    return res.fail();
+                }
+                res.ok();
+            });
+        }
+    );
 };

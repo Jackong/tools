@@ -82,4 +82,21 @@ Tip.static('comment', function (tid, lookId, aspect, commenter, content, callbac
     )
 });
 
+Tip.static('like', function (tid, lookId, aspect, uid, callback) {
+    this.update(
+        {
+            _id: tid,
+            look: lookId,
+            favorite: aspect,
+            isValid: true
+        },
+        {
+            likes: {
+                $addToSet: uid
+            }
+        },
+        callback
+    )
+});
+
 module.exports = mongoose.model('Tip', Tip);
