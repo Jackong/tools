@@ -4,6 +4,7 @@
 
 var User = require('../model/User');
 var helper = require('../common/helper');
+var system = require('../common/config')('system');
 
 module.exports = {
     forgotSign: function (account) {
@@ -31,7 +32,7 @@ module.exports = {
     },
     register: function (platform, account, password, callback) {
         var user = new User({
-            _id: platform + '|' + account,
+            _id: this.createUid(platform, account),
             account: account,
             password: password,
             platform: platform
@@ -39,15 +40,21 @@ module.exports = {
         user.save(callback);
     },
     resetPassword: function (platform, account, password, callback) {
-        this.resetPasswordById(platform + '|' + account, password, callback);
+        this.resetPasswordById(this.createUid(platform, account), password, callback);
     },
     resetPasswordById: function (uid, password, callback) {
         User.update({_id: uid}, {password: password}, callback);
     },
     getPassword: function (platform, account, callback) {
-        this.getPasswordById(platform + '|' + account, callback);
+        this.getPasswordById(this.createUid(platform, account), callback);
     },
     getPasswordById: function (uid, callback) {
         User.findOne({_id: uid}, 'password', {lean: true}, callback);
+    },
+    login4Platform: function (platform, mediaUid, socialUid, accessToken, sessionKey, sessionSecret, callback) {
+        
+    },
+    createUid: function (platform, account) {
+        return helper.md5(platform + '|' + account, system.salt);
     }
 };

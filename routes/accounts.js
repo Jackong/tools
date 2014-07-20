@@ -33,7 +33,28 @@ module.exports = function (router) {
                 logger.error('social callback', err, body);
                 return res.redirect('/');
             }
-            res.send(body)
+            var platform = null;
+            switch (body.media_type) {
+                case 'qqdenglu':
+                    platform = USER_PLATFORM.QQ;
+                    break;
+                case 'sinaweibo':
+                    platform = USER_PLATFORM.SINA;
+                    break;
+                case 'baidu':
+                    platform = USER_PLATFORM.BAIDU;
+                    break;
+            }
+            if (platform === null) {
+                logger.error('media type not support', body);
+                return res.redirect('/');
+            }
+            UserService.login4Platform(platform, body.media_uid, body.social_uid, body.access_token, body.session_key, body.session_secret, function (err) {
+                if (err) {
+                    logger.error('sync platform info fail', body);
+                }
+                res.redirect('/');
+            });
         })
     });
 

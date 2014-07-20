@@ -3,5 +3,8 @@
  */
 
 exports.USER_PLATFORM = {
-    EMAIL: 0
+    EMAIL: 0,
+    QQ: 1,
+    SINA: 2,
+    BAIDU: 3
 };
