@@ -9,6 +9,7 @@ var UserWant = require('../model/user/Want');
 var Favorite = require('../model/Favorite');
 
 module.exports = {
+    //userWant可能同步过
     want: function (lookId, aspect, uid, callback) {
         async.parallel(
             [
@@ -21,5 +22,18 @@ module.exports = {
             ],
             callback
         );
+    },
+    sync: function (uid, lookId, aspect, callback) {
+        async.waterfall([
+            function sync(callback) {
+                Favorite.sync(uid, lookId, aspect, callback);
+            },
+            function add2Want(favorite, num, callback) {
+                if (num === 0) {
+                    return callback('add new favorite fail');
+                }
+                UserWant.putNewLook(uid, lookId, callback);
+            }
+        ], callback);
     }
 };

@@ -37,6 +37,22 @@ module.exports = function (router) {
         res.ok({favorites: favorites});
     });
 
+    router.post('/looks/favorites',
+        router.checker.body('lookId', 'aspect'),
+        function (req, res) {
+            var uid = UserService.getUid(req, res);
+            var aspect = req.body.aspect;
+            var lookId = req.body.lookId;
+            LookService.addFavorite(lookId, uid, aspect, function (err, num) {
+                if (err || num !== 1) {
+                    logger.error('add favorite', uid, lookId, aspect, num, err)
+                    return res.fail();
+                }
+                return res.ok();
+            })
+        }
+    );
+
     router.post('/looks/image', multipartMiddleware, function (req, res) {
         res.ok({
             image: req.files.file.path.replace(APP_VIEW_DIR, ''),

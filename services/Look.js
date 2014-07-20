@@ -15,6 +15,7 @@ var UserTip = require('../model/user/Tip');
 var Tip = require('../model/Tip');
 var User = require('../model/User');
 var Favorite = require('../model/Favorite');
+var FavoriteService = require('../services/Favorite');
 
 module.exports = {
     firstPublish: function (look, callback) {
@@ -234,13 +235,27 @@ module.exports = {
     like: function(lookId, uid, callback) {
         async.waterfall([
             function update2Look(callback) {
-                Look.like(lookId, uid, callback);
+                Look.like(lookId, uid, helper.now(), callback);
             },
-            function update2user(num, callback) {
+            function update2user(num, raw, callback) {
                 if (num === 0) {
                     return callback(uid + ' try to update invalid look ' + lookId);
                 }
                 UserLike.putNewLook(uid, lookId, callback);
+            }
+        ], callback);
+    },
+
+    addFavorite: function (lookId, uid, aspect, callback) {
+        async.waterfall([
+            function addFavorite2Look(callback) {
+                Look.addFavorite(lookId, aspect, helper.now(), callback);
+            },
+            function sync2Favorite(num, raw, callback) {
+                if (num === 0) {
+                    return callback('add favorite to look fail');
+                }
+                FavoriteService.sync(uid, lookId, aspect, callback);
             }
         ], callback);
     }

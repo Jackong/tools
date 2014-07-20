@@ -7,6 +7,7 @@ var mongoose = require('mongoose');
 var async = require('async');
 
 require('../../common/mongo');
+
 var Look = require('../../model/Look');
 var Tag = require('../../model/Tag');
 var UserPublish = require('../../model/user/Publish');
@@ -17,6 +18,7 @@ var Tip = require('../../model/Tip');
 var Favorite = require('../../model/Favorite');
 
 var LookService = require('../../services/Look');
+var FavoriteService = require('../../services/Favorite');
 
 sinon.config = {
     useFakeTimers: false,
@@ -234,7 +236,7 @@ describe('Look', function () {
                 }
                 callback(null, new User({_id: uid, nick: 'jack', avatar: 'avatar url'}));
             });
-            sinon.stub(Tip, 'gets', function (tipIds, callback) {
+            sinon.stub(Tip, 'gets', function (tipIds, lookId, aspect, callback) {
                 callback(null, []);
             });
             sinon.stub(Favorite, 'perfect', function (lookId, aspects, callback) {
@@ -281,44 +283,82 @@ describe('Look', function () {
         });
     });
 
-    describe('.addTip()', function () {
+    describe('.like()', function() {
+        var lookId = 'lookId';
+        var uid = 'uid';
+        afterEach(function() {
+            Look.like.restore();
+            UserLike.putNewLook.restore();
+        });
 
+        it('should update the look likes and the user likes when the look is valid', function(done) {
+            sinon.stub(Look, 'like', function(lookId, uid, updated, callback) {
+                callback(null, 1, '');
+            });
+            sinon.stub(UserLike, 'putNewLook', function(uid, lookId, callback) {
+                callback(null, 1, '');
+            });
+            LookService.like(lookId, uid, function(err) {
+                should.not.exist(err);
+                Look.like.called.should.be.true;
+                UserLike.putNewLook.called.should.be.true;
+                done();
+            });
+        });
+
+        it('should not update the look likes and the user likes when the look is invalid or not exist', function(done) {
+            sinon.stub(Look, 'like', function(lookId, uid, updated, callback) {
+                callback(null, 0, '');
+            });
+            sinon.stub(UserLike, 'putNewLook');
+            LookService.like(lookId, uid, function(err) {
+                should.exist(err);
+                Look.like.called.should.be.true;
+                UserLike.putNewLook.called.should.be.false;
+                done();
+            });
+        });
     });
 
-    describe.only('.like()', function() {
-	var lookId = 'lookId';
-	var uid = 'uid';
-	afterEach(function() {
-		Look.like.restore();
-		UserLike.putNewLook.restore();
-	});
+    describe('.addFavorite', function () {
+        var lookId = 'look-id';
+        var uid = 'uid';
+        var aspect = 'shirt';
 
-    	it('should update the look likes and the user likes when the look is valid', function(done) {
-		sinon.stub(Look, 'like', function(lookId, uid, callback) {
-			callback(null, 1);
-		});
-		sinon.stub(UserLike, 'putNewLook', function(uid, lookId, callback) {
-			callback(null, 1);
-		});
-		LookService.like(lookId, uid, function(err) {
-			should.not.exist(err);
-			Look.like.called.should.be.true;
-			UserLike.putNewLook.called.should.be.true;
-			done();
-		});
-	});
+        afterEach(function () {
+            Look.addFavorite.restore();
+            FavoriteService.sync.restore();
+        });
 
-	it('should not update the look likes and the user likes when the look is invalid or not exist', function(done) {
-		sinon.stub(Look, 'like', function(lookId, uid, callback) {
-			callback(null, 0);
-		});
-		sinon.stub(UserLike, 'putNewLook');
-		LookService.like(lookId, uid, function(err) {
-			should.exist(err);
-			Look.like.called.should.be.true;
-			UserLike.putNewLook.called.should.be.false;
-			done();
-		});
-	});
-    });
+        it('should sync to Favorite and UserWant when the favorite is successfully added to look', function (done) {
+            sinon.stub(Look, 'addFavorite', function (lookId, aspect, updated, callback) {
+                callback(null, 1, '');
+            });
+            sinon.stub(FavoriteService, 'sync', function (uid, lookId, aspect, callback) {
+                callback(null, 1, '')
+            });
+
+            LookService.addFavorite(lookId, uid, aspect, function (err, num) {
+                should.not.exist(err);
+                num.should.be.exactly(1);
+                Look.addFavorite.called.should.be.true;
+                FavoriteService.sync.called.should.be.true;
+                done();
+            });
+        });
+
+        it('should not sync to Favorite and UserWant when fail to add favorite', function (done) {
+            sinon.stub(Look, 'addFavorite', function (lookId, aspect, updated, callback) {
+                callback(null, 0, '');
+            });
+            sinon.stub(FavoriteService, 'sync');
+
+            LookService.addFavorite(lookId, uid, aspect, function (err, result) {
+                should.exist(err);
+                Look.addFavorite.called.should.be.true;
+                FavoriteService.sync.called.should.be.false;
+                done();
+            });
+        })
+    })
 });

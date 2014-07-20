@@ -5,6 +5,7 @@ var should = require('should');
 var async = require('async');
 require('../../common/mongo');
 var Look = require('../../model/Look');
+var helper = require('../../common/helper');
 
 describe('Look', function() {
 	describe('.like()', function() {
@@ -12,6 +13,7 @@ describe('Look', function() {
 		var validLookId = 'valid-lookId';
 		var invalidLookId = 'invalid-lookId';
 		var notExistLookId = 'not-exist-lookId';
+        var now = helper.now();
 		beforeEach(function(done) {
 			async.parallel([
 				function(callback) {
@@ -34,7 +36,7 @@ describe('Look', function() {
 		});
 
 		it('should be fail when the look is not exist', function(done) {
-			Look.like(notExistLookId, uid, function(err, num) {
+			Look.like(notExistLookId, uid, now, function(err, num) {
 				should.not.exist(err);
 				num.should.be.exactly(0);
 				done();	
@@ -42,7 +44,7 @@ describe('Look', function() {
 		});
 
 		it('should be fail when the look is invalid', function(done) {
-			Look.like(invalidLookId, uid, function(err, num) {
+			Look.like(invalidLookId, uid, now, function(err, num) {
 				should.not.exist(err);
 				num.should.be.exactly(0);
 				done();
@@ -50,7 +52,7 @@ describe('Look', function() {
 		});	
 
 		it('should be success when the look is valid', function(done) {
-			Look.like(validLookId, uid, function(err, num) {
+			Look.like(validLookId, uid, now, function(err, num) {
 				should.not.exist(err);
 				num.should.be.exactly(1);
 				done();

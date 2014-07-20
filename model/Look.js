@@ -123,7 +123,7 @@ Look.static('getOne', function (lookId, callback) {
     );
 });
 
-Look.static('like', function(lookId, uid, callback) {
+Look.static('like', function(lookId, uid, updated, callback) {
 	this.update(
 		{
 			_id: lookId,
@@ -132,9 +132,27 @@ Look.static('like', function(lookId, uid, callback) {
 		{
 			likes: {
 				$addToSet: uid        
-			}
+			},
+            updated: updated
 		},
 		callback
 	);
 });
+
+Look.static('addFavorite', function (lookId, aspect, updated, callback) {
+    this.update(
+        {
+            _id: lookId,
+            isValid: true
+        },
+        {
+            favorites: {
+                $addToSet: aspect
+            },
+            updated: updated
+        },
+        callback
+    );
+});
+
 module.exports = mongoose.model('Look', Look);
