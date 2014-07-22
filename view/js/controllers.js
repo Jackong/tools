@@ -7,6 +7,7 @@ define(['angular', 'controllers/sign', 'controllers/look'], function (angular) {
         ['iWomen.controllers.sign', 'iWomen.controllers.look']
     )
     .controller('AppCtrl', function ($scope, $location, Account) {
+        $('.bdshare-slide-button-box').hide();
         $scope.aria = 10;
         Account.checkLogin(function (data) {
             if (data.code === 0) {
