@@ -28,4 +28,25 @@ var UserNotification = Schema(
     }
 );
 
+UserNotification.static('add', function(from, to, action, look, callback) {
+	this.update(
+		{
+			_id: to
+		},
+		{
+			_id: to,
+			$push: { 
+				notifications: {
+					from: from,
+					action: action,
+					look: look
+				}
+			}
+		},
+		{
+			upsert: true
+		},
+		callback
+	);
+});
 module.exports = mongoose.model('UserNotification', UserNotification);
