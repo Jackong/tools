@@ -15,14 +15,19 @@ var system = require('../common/config')('system');
 
 module.exports = {
     MAX_AGE: 86400 * 1000 * 90,
-    login: function (uid, req, res) {
+    login: function (authId, uid, req, res) {
         res.cookie('uid', uid, { signed: true, httpOnly: true, maxAge: this.MAX_AGE, path: '/' })
+        res.cookie('authId', authId, { signed: true, httpOnly: true, maxAge: this.MAX_AGE, path: '/' })
     },
     logout: function (req, res) {
         res.clearCookie('uid', { path: '/' });
+        res.clearCookie('authId', { path: '/' });
     },
     getUid: function (req, res) {
         return req.signedCookies.uid;
+    },
+    getAuthId: function(req) {
+    	return req.signedCookies.authId;
     },
     sync: function (platform, authId, accessToken, name, expires, callback) {
         var now = helper.now();
@@ -40,7 +45,7 @@ module.exports = {
                 });
             },
             function getUserInfo(callback) {
-                self.getUserInfo(accessToken, function (err, response, body) {
+                self.getUserInfoFromPlatform(accessToken, function (err, response, body) {
                     var obj = null;
                     if (err || response.statusCode != 200 || body.error_code) {
                         logger.error('get user info from platform fail', authId, accessToken, name, platform, err, response, body);
@@ -73,7 +78,7 @@ module.exports = {
     createUid: function (platform, authId) {
         return platform + '' + authId;
     },
-    getUserInfo: function (accessToken, callback) {
+    getUserInfoFromPlatform: function (accessToken, callback) {
         request(
             {
                 url: oauth.userInfoUrl + '?access_token=' + accessToken,
@@ -81,5 +86,11 @@ module.exports = {
             },
             callback
         );
+    },
+    getUserInfo: function(uid, callback) {
+	if (!uid) {
+		return callback('auth id or uid is valid');
+	}
+	User.getOne(uid, callback);
     }
 };

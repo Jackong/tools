@@ -4,37 +4,16 @@
 
 var logger = require('../common/logger');
 require('../common/mongo');
-var mongoose = require('mongoose');
-
-var TestSchema = mongoose.Schema({
-    test: {type: String, lowercase: true, trim: true},
-    test2: String,
-    test3: [
-        {
-            a: String,
-            b: Number,
-            c: [{type: Number}]
-        }
-    ]
-});
-var Test = mongoose.model('Test', TestSchema);
-
+var UserService = require('../services/User');
 module.exports = function users(router) {
-    router.get('/users', function users(req, res) {
-        console.log('mongo');
-        var test = new Test({test: 'jack'});
-        console.log(test);
-        test.save(function (err, doc) {
-            console.log(err);
-            console.log(doc);
-            res.send({name:'jack', sex:'male'});
-        });
-        console.log('ok');
+    router.get('/users', function getUser(req, res) {
+	    var uid = UserService.getUid(req, res);
+	    UserService.getUserInfo(uid, function(err, user) {
+	    	if (err || !user) {
+			logger.error('get user info fail', err);
+			return res.fail();
+		}
+		res.ok();
+	    });
     });
-
-    router.get('/tests', function (req, res) {
-        Test.find({test: 'jack'}, function (err, docs) {
-            res.send({err: err, docs: docs, some: 'some2'});
-        });
-    })
 };

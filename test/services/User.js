@@ -23,21 +23,6 @@ describe('UserService', function () {
     var password = 'password';
     var newPassword = 'newPassword';
 
-    describe('.login()', function () {
-        it('should set the account as token on cookie', function (done) {
-            var req = {};
-            var res = {
-                cookie: function (uid, value, options) {
-                    uid.should.be.equal('uid');
-                    value.should.be.equal(existAccount);
-                    options.should.be.eql({ signed: true, httpOnly: true, maxAge: UserService.MAX_AGE, path: '/' });
-                    done();
-                }
-            };
-            UserService.login(existAccount, req, res);
-        });
-    });
-
     describe('.logout()', function() {
     	it('should call cleanCookie when logout', sinon.test(function(){
 		var req = {};
@@ -96,13 +81,13 @@ describe('UserService', function () {
             this.stub(Auth, 'createOrUpdate', function (authId, token, platform, uid, updated, expires, callback) {
                 callback(null, 1, 'raw');
             });
-            this.stub(UserService, 'getUserInfo', function (accessToken, callback) {
+            this.stub(UserService, 'getUserInfoFromPlatform', function (accessToken, callback) {
                 callback(null, {statusCode: 200}, userInfo);
             });
             this.stub(User, 'createOrUpdate', function (uid, obj, callback) {
                 callback(null, 1, 'raw');
                 Auth.createOrUpdate.called.should.be.true;
-                UserService.getUserInfo.called.should.be.true;
+                UserService.getUserInfoFromPlatform.called.should.be.true;
                 User.createOrUpdate.called.should.be.true;
                 done();
             });
