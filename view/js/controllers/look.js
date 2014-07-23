@@ -88,6 +88,8 @@ define(['angular', 'ngTagsInput'], function (angular) {
     })
     .controller('LookDetailCtrl', function ($scope, $routeParams, LookCache, Tip) {
             $scope.view = 'partials/look/detail.html?v=3';
+
+
             var lookId = $routeParams.lookId;
 
             LookCache.favorites(function (favorites) {
@@ -96,6 +98,27 @@ define(['angular', 'ngTagsInput'], function (angular) {
 
             LookCache.getById(lookId, function (look) {
                 $scope.look = look;
+
+                window._bd_share_config = {
+                    "common":{
+                        "bdSnsKey":{},
+                        "bdText":"我在《众里寻她》上看到这款，非常的喜欢～",
+                        "bdMini":"2",
+                        "bdMiniList":["weixin","douban","sqq","tsina","tqq","tieba","meilishuo","mogujie","huaban","qzone","bdysc","youdao","twi","fbook","mail","taobao","copy","print"],
+                        "bdPic": location.host + $scope.look.image,
+                        "bdStyle":"0",
+                        "bdSize":"32"
+                    },
+                    "slide":{
+                        "type":"slide",
+                        "bdImg":"4",
+                        "bdPos":"right",
+                        "bdTop":"100"
+                    }
+                };
+                require(['http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)], function () {
+                    $('.bdshare-slide-button-box').show();
+                });
             });
 
             $scope.like = function () {

@@ -8,7 +8,7 @@
                     <span class="glyphicon glyphicon-heart icon"></span>
                     <span>{{look.likeCount}}人喜欢</span>
                     <button ng-click="like()" class="btn btn-default">喜欢</button>
-                    <button ng-click="share()" class="glyphicon glyphicon-share pull-right btn btn-default">分享</button>
+                    <button data-toggle="modal" data-target="#favoriteModal" class="btn btn-default pull-right">问其它</button>
                 </p>
                 <p>
                     <span class="glyphicon glyphicon-tags icon"></span>
@@ -16,7 +16,6 @@
                     <span ng-repeat="tag in look.tags">
                         <a href="#/tags/{{tag}}" type="button" class="label label-default" style="background-color: #f48fbe;">{{tag}}</a>
                     </span>
-                    <button data-toggle="modal" data-target="#favoriteModal" class="btn btn-default pull-right">问其它</button>
                 </p>
                 <br/>
                 <div class="panel panel-default" ng-repeat="favorite in look.favorites">
