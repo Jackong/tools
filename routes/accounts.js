@@ -31,7 +31,7 @@ module.exports = function (router) {
         };
         request(options, function (err, response, body) {
             if (err || response.statusCode != 200 || body.error_code) {
-                logger.error('social callback', err, body);
+                logger.error('social callback', {err: err, body: body});
                 return res.redirect('/');
             }
             var platform = null;
@@ -50,11 +50,11 @@ module.exports = function (router) {
                 logger.error('media type not support', body);
                 return res.redirect('/');
             }
-            UserService.sync(platform, body.media_uid, body.access_token, body.name, body.expires_in, function (err, uid) {
+            UserService.sync(platform, body.media_uid, body.access_token, body.name, body.expires_in, function (err, authId, uid) {
                 if (err) {
                     logger.error('sync platform info fail', body);
                 } else {
-                    UserService.login(uid, req, res);
+                    UserService.login(authId, uid, req, res);
                 }
                 res.redirect('/');
             });

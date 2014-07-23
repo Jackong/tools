@@ -5,23 +5,10 @@ define(['angular', 'angularResource'], function (angular) {
     'use strict';
 
     return angular.module('iWomen.services', ['ngResource'])
-        .value('SOCIAL_LOGIN_CALLBACK', encodeURIComponent("http://192.168.59.103/api/social/oauth/callback"))
         .factory('Account', function ($resource) {
-            return $resource('api/accounts/:account', {}, {
-                signUp: {
-                    method: 'POST'
-                },
-                signIn: {
+            return $resource('api/users', {}, {
+                getMyInfo: {
                     method: 'GET'
-                },
-                checkLogin: {
-                    method: 'GET', url: 'api/accounts/check'
-                },
-                updatePassword: {
-                    method: 'PUT'
-                },
-                forgot: {
-                    method: 'GET', url: 'api/accounts/forgot/:account'
                 }
             })
         })

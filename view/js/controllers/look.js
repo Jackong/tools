@@ -5,7 +5,7 @@ define(['angular', 'ngTagsInput'], function (angular) {
     angular.module('iWomen.controllers.look', [
         'bootstrap-tagsinput'
     ])
-    .controller('TrendCtrl', function ($scope, $http, LookCache) {
+    .controller('TrendCtrl', function ($scope, $http, Account, LookCache) {
         $scope.view = 'partials/look/list.html';
         $scope.tags = [];
 
@@ -18,8 +18,15 @@ define(['angular', 'ngTagsInput'], function (angular) {
             $scope.favorite = favorite;
         };
 
-        $scope.changeImage = function (elem) {
+        $scope.beforeUpload = function () {
+            Account.getMyInfo({}, function (res) {
+                if (res.code !== 0) {
+                    $('#loginModal').modal('show');
+                }
+            });
+        };
 
+        $scope.changeImage = function (elem) {
             var fd = new FormData();
             angular.forEach(elem.files, function (file) {
                 fd.append('file', file);

@@ -11,7 +11,7 @@ var User = Schema(
         nick: String,
         avatar: String,
         sex: {type: Boolean, default: null},//true:男，false:女
-        birthday: {type: Number, default: Date.now },
+        birthday: {type: Number},
         city: String,
         webSite: String,
         intro: String,
@@ -80,6 +80,10 @@ User.static('getOne', function (uid, callback) {
 
 User.static('createOrUpdate', function (uid, obj, callback) {
     obj['_id'] = uid;
+    obj['points'] = 0;
+    obj['isValid'] = true;
+    obj['created'] = Date.now();
+    obj['updated'] = Date.now();
     this.update(
         {
             _id: uid

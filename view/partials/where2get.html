@@ -12,11 +12,11 @@
         </div>
         <div class="col-xs-3 text-center">
             <a href="#/notifications" class="iMenu">
-                <li class="glyphicon glyphicon-bell"><span class="badge">42</span></li>
+                <li class="glyphicon glyphicon-bell"><span class="badge">2</span></li>
             </a>
         </div>
         <div class="col-xs-3 text-center">
-            <a class='glyphicon glyphicon-picture' href='javascript:;' style="color: #838383;">
+            <a class='glyphicon glyphicon-picture' ng-click="beforeUpload()" href='javascript:;' style="color: #838383;">
                 <input type="file" style='position:absolute;z-index:2;top:0;left:0;filter: alpha(opacity=0);-ms-filter:"progid:DXImageTransform.Microsoft.Alpha(Opacity=0)";opacity:0;background-color:transparent;color:transparent;' name="image" onchange="angular.element(this).scope().changeImage(this)"  size="40"/>
             </a>
         </div>
@@ -66,6 +66,24 @@
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" ng-click="publish()" >发布</button>
                     <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="loginModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">取消</span></button>
+                    <h4 class="modal-title" id="loginModalLabel">登录（使用以下合作网站账号）</h4>
+                </div>
+
+                <div class="modal-body">
+                        <div id="social-login"></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
                 </div>
             </div>
         </div>

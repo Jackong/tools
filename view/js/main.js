@@ -22,7 +22,10 @@ require.config({
         bootstrap: [
             'http://cdn.bootcss.com/twitter-bootstrap/3.0.3/js/bootstrap.min',
             'libs/bootstrap/dist/js/bootstrap.min'
-        ]
+        ],
+        socialLogin: "http://openapi.baidu.com/social/oauth/2.0/connect/login?redirect_uri="
+            + encodeURIComponent("http://192.168.59.103/api/social/oauth/callback")
+            + "&domid=social-login&client_type=web&response_type=code&media_types=sinaweibo%2Cqqdenglu%2Cbaidu%2Cqqweibo%2Ckaixin%2Crenren&size=-1&button_type=1&client_id=2o6HoeD4IBHsXTQWd023VLTh&view=embedded&t=" + new Date().getTime()
     },
 	shim: {
         angular : {exports : 'angular'},

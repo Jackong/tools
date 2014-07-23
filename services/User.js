@@ -26,9 +26,6 @@ module.exports = {
     getUid: function (req, res) {
         return req.signedCookies.uid;
     },
-    getAuthId: function(req) {
-    	return req.signedCookies.authId;
-    },
     sync: function (platform, authId, accessToken, name, expires, callback) {
         var now = helper.now();
         var uid = this.createUid(platform, authId);
@@ -40,7 +37,7 @@ module.exports = {
                         logger.error('create or update auth fail', authId, accessToken, uid, platform, num, err);
                         return callback('create or update auth fail');
                     }
-                    callback(null, uid);
+                    callback(null, authId, uid);
                     callback1();
                 });
             },
@@ -87,10 +84,10 @@ module.exports = {
             callback
         );
     },
-    getUserInfo: function(uid, callback) {
-	if (!uid) {
-		return callback('auth id or uid is valid');
-	}
-	User.getOne(uid, callback);
+    getUserInfo: function (uid, callback) {
+        if (!uid) {
+            return callback('auth id or uid is valid');
+        }
+        User.getOne(uid, callback);
     }
 };
