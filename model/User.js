@@ -5,17 +5,12 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 var async = require('async');
 
-var USER_PLATFORM = require('../common/const').USER_PLATFORM;
-
 var User = Schema(
     {
-        _id: {type: String},//'platform|account'
-        account: {type: String, lowercase: true, trim: true},
-        password: String,
-        platform: {type: Number, default: USER_PLATFORM.EMAIL},
+        _id: {type: String},
         nick: String,
         avatar: String,
-        sex: {type: Boolean, default: null},
+        sex: {type: Boolean, default: null},//true:男，false:女
         birthday: {type: Number, default: Date.now },
         city: String,
         webSite: String,
@@ -78,6 +73,20 @@ User.static('getOne', function (uid, callback) {
         },
         {
             lean: true
+        },
+        callback
+    );
+});
+
+User.static('createOrUpdate', function (uid, obj, callback) {
+    obj['_id'] = uid;
+    this.update(
+        {
+            _id: uid
+        },
+        obj,
+        {
+            upsert: true
         },
         callback
     );
