@@ -12,6 +12,7 @@ var NotificationService = require('../services/Notification');
 
 Tip.onTip(NotificationService.onTip);
 Tip.onComment(NotificationService.onComment);
+Tip.onLike(NotificationService.onLikeTip);
 
 module.exports = {
     getsByIds: function (lookId, aspect, tids, callback) {

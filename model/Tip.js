@@ -35,6 +35,28 @@ var Tip = Schema(
     }
 );
 
+Tip.static('getOne', function (tid, lookId, aspect, callback) {
+    this.findOne(
+        {
+            _id: tid,
+            look: lookId,
+            favorite: aspect,
+            isValid: true
+        },
+        {
+            author: 1,
+            content: 1,
+            price: 1,
+            created: 1,
+            comments: 1
+        },
+        {
+            lean: true
+        },
+        callback
+    );
+});
+
 Tip.static('gets', function (tids, lookId, aspect, callback) {
     if (tids.length <= 0) {
         return callback(null, []);
@@ -105,7 +127,12 @@ Tip.static('like', function (tid, lookId, aspect, uid, callback) {
             }
         },
         callback
-    )
+    );
+    Tip.emit('like', tid, lookId, aspect, uid);
+});
+
+Tip.static('onLike', function (callback) {
+    Tip.on('like', callback);
 });
 
 Tip.static('onTip', function (callback) {
