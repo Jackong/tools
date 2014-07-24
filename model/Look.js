@@ -137,6 +137,16 @@ Look.static('like', function(lookId, uid, updated, callback) {
 		},
 		callback
 	);
+    Look.emit('like', lookId, uid, function (err) {
+        if (!err) {
+            return;
+        }
+        logger.error('emit like look event', err);
+    })
+});
+
+Look.static('onLike', function (callback) {
+    Look.on('like', callback);
 });
 
 Look.static('addFavorite', function (lookId, aspect, updated, callback) {

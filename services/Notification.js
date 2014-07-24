@@ -13,8 +13,16 @@ module.exports = {
 				return;
 			}	
 			UserNotification.add(uid, look.publisher, ACTION.WANT_MY_LOOK, lookId, callback);
-		});	
-	}
+		});
+	},
+    onLike: function (lookId, uid, callback) {
+        Look.getOne(lookId, function(err, look) {
+            if (err || !look) {
+                return;
+            }
+            UserNotification.add(uid, look.publisher, ACTION.LIKE_MY_LOOK, lookId, callback);
+        });
+    }
 };
 
 

@@ -16,6 +16,9 @@ var Tip = require('../model/Tip');
 var User = require('../model/User');
 var Favorite = require('../model/Favorite');
 var FavoriteService = require('../services/Favorite');
+var NotificationService = require('../services/Notification');
+
+Look.onLike(NotificationService.onLike);
 
 module.exports = {
     firstPublish: function (look, callback) {
