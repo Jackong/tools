@@ -49,4 +49,22 @@ UserNotification.static('add', function(from, to, action, look, callback) {
 		callback
 	);
 });
+
+UserNotification.static('gets', function(uid, start, num) {
+	if (start < 0 || num <= 0) {
+		return callback(null, null);
+	}
+	this.findOne(
+		{
+			_id: uid
+		},
+		{
+			notifications: 
+			{
+				$slice: [start, num]
+			}
+		},
+		callback
+	);
+});
 module.exports = mongoose.model('UserNotification', UserNotification);

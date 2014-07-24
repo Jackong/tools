@@ -7,6 +7,9 @@ var logger = require('../common/logger');
 
 var UserWant = require('../model/user/Want');
 var Favorite = require('../model/Favorite');
+var NotificationService = require('../services/Notification');
+
+Favorite.onWant(NotificationService.onWant);
 
 module.exports = {
     //userWant可能同步过

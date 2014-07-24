@@ -84,6 +84,15 @@ Favorite.static('want', function (lookId, aspect, uid, callback) {
         },
         callback
     );
+    Favorite.emit('want', lookId, uid, function(err) {
+	    if (err) {
+	    	logger.error('emit want event', err);
+	    }
+    });
+});
+
+Favorite.static('onWant', function(callback) {
+	Favorite.on('want', callback);
 });
 
 module.exports = mongoose.model('Favorite', Favorite);
