@@ -29,6 +29,24 @@ define(['angular', 'angularResource'], function (angular) {
                 }
             });
         })
+        .factory('AccountCache', function ($cacheFactory, Account) {
+            return {
+                getMyInfo: function (callback) {
+                    var cache = $cacheFactory.get('users');
+                    if (cache) {
+                        callback(cache.get('myInfo'));
+                    }
+                    cache = $cacheFactory('users');
+                    Account.getMyInfo({}, function (res) {
+                        callback(res.user);
+                        if (res.code !== 0) {
+                            return;
+                        }
+                        cache.put('myInfo', res.user);
+                    });
+                }
+            };
+        })
         .factory('LookCache', function ($cacheFactory, Look, Tip) {
             return {
                 publish: function (lookId, image, description, aspect, tags, callback) {

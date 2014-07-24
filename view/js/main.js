@@ -25,7 +25,7 @@ require.config({
         ],
         socialLogin: "http://openapi.baidu.com/social/oauth/2.0/connect/login?redirect_uri="
             + encodeURIComponent("http://192.168.59.103/api/social/oauth/callback")
-            + "&domid=social-login&client_type=web&response_type=code&media_types=sinaweibo%2Cqqdenglu%2Cbaidu%2Cqqweibo%2Ckaixin%2Crenren&size=-1&button_type=1&client_id=2o6HoeD4IBHsXTQWd023VLTh&view=embedded&t=" + new Date().getTime()
+            + "&domid=social-login&client_type=web&response_type=code&media_types=qqdenglu%2Csinaweibo%2Cbaidu&size=-1&button_type=1&client_id=2o6HoeD4IBHsXTQWd023VLTh&view=embedded&t=" + new Date().getTime()
     },
 	shim: {
         angular : {exports : 'angular'},

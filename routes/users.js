@@ -13,7 +13,7 @@ module.exports = function users(router) {
                 logger.error('get user info fail', uid, {err: err, user: user});
                 return res.fail();
             }
-            res.ok();
+            res.ok({user: user});
         });
     });
 };

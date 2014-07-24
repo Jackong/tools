@@ -6,8 +6,15 @@ define(['angular', 'controllers/look'], function (angular) {
     return angular.module('iWomen.controllers',
         ['iWomen.controllers.look']
     )
-    .controller('RootCtrl', function ($rootScope) {
-        require(['socialLogin'], function () {});
+    .controller('RootCtrl', function ($rootScope, AccountCache) {
+        AccountCache.getMyInfo(function (user) {
+            $rootScope.isLogin = (user !== null && typeof user !== 'undefined');
+        });
+        $rootScope.showLoginModal = function () {
+            require(['socialLogin'], function () {
+                $('#loginModal').modal('show');
+            });
+        };
         var lastScrollY = 0;
         $rootScope.showFooter = true;
         $rootScope.listenScroll = true;

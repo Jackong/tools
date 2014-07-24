@@ -5,7 +5,7 @@ define(['angular', 'ngTagsInput'], function (angular) {
     angular.module('iWomen.controllers.look', [
         'bootstrap-tagsinput'
     ])
-    .controller('TrendCtrl', function ($scope, $http, Account, LookCache) {
+    .controller('TrendCtrl', function ($scope, $http, LookCache) {
         $scope.view = 'partials/look/list.html';
         $scope.tags = [];
 
@@ -16,14 +16,6 @@ define(['angular', 'ngTagsInput'], function (angular) {
         $scope.selectedFavorite = function (favorite) {
             $scope.tags.splice(0, 1, $scope.favorites[favorite]);
             $scope.favorite = favorite;
-        };
-
-        $scope.beforeUpload = function () {
-            Account.getMyInfo({}, function (res) {
-                if (res.code !== 0) {
-                    $('#loginModal').modal('show');
-                }
-            });
         };
 
         $scope.changeImage = function (elem) {
