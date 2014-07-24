@@ -34,15 +34,15 @@ define(['angular', 'angularResource'], function (angular) {
                 getMyInfo: function (callback) {
                     var cache = $cacheFactory.get('users');
                     if (cache) {
-                        callback(cache.get('myInfo'));
+                        return callback(cache.get('myInfo'));
                     }
                     cache = $cacheFactory('users');
                     Account.getMyInfo({}, function (res) {
-                        callback(res.user);
-                        if (res.code !== 0) {
-                            return;
+                        if (res.code !== 0 || !res.data) {
+                            return callback(null);
                         }
-                        cache.put('myInfo', res.user);
+                        callback(res.data.user);
+                        cache.put('myInfo', res.data.user);
                     });
                 }
             };

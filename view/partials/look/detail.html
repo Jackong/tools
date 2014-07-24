@@ -7,9 +7,10 @@
                 <p>
                     <span class="glyphicon glyphicon-heart icon"></span>
                     <span>{{look.likeCount}}人喜欢</span>
-                    <button ng-click="like()" class="btn btn-default">喜欢</button>
-                    <button data-toggle="modal" data-target="#favoriteModal" class="btn btn-default pull-right">问其它</button>
+                    <button ng-click="requireLogin() && like()" class="btn btn-default">喜欢</button>
+                    <button data-toggle="modal" ng-click="requireLogin()" data-target="#{{isLogin? 'favoriteModal': ''}}" class="btn btn-default pull-right">问其它</button>
                 </p>
+                <br/>
                 <p>
                     <span class="glyphicon glyphicon-tags icon"></span>
                     <span>标签：</span>
@@ -37,7 +38,7 @@
                                     <div class="well well-lg">
                                         {{tip.content}}
                                     </div>
-                                    <button ng-click="likeTip()" class="btn btn-default btn-sm pull-right">喜欢({{tip.likes ? tip.likes.length : 0}})</button>
+                                    <button ng-click="requireLogin() && likeTip()" class="btn btn-default btn-sm pull-right">喜欢({{tip.likes ? tip.likes.length : 0}})</button>
                                     <br/>
                                     <hr/>
 
@@ -64,7 +65,7 @@
                                 </a>
                                 <div class="media-body">
                                 <span class="form-group">
-                                    <textarea class="form-control" rows="2" ng-keyup="commentContent = ($event.keyCode === 13 ? addComment(tip, commentContent) : commentContent)" ng-model="commentContent" placeholder="评论这条小贴士"></textarea>
+                                    <textarea class="form-control" rows="2" ng-keyup="commentContent = ($event.keyCode === 13 ? (requireLogin() && addComment(tip, commentContent)) : commentContent)" ng-model="commentContent" placeholder="评论这条小贴士"></textarea>
                                 </span>
                                 </div>
                             </li>
@@ -72,8 +73,8 @@
                             <hr/>
                         </ul>
                         <br/>
-                        <button ng-show="favorite.tips.length <= 0" ng-click="want(favorite.aspect)" class="btn btn-default pull-left">想要</button>
-                        <button ng-click="onAddTip(favorite.aspect)" class="btn btn-default pull-right" data-toggle="modal" data-target="#tipModal">+小贴士</button>
+                        <button ng-show="favorite.tips.length <= 0" ng-click="requireLogin() && want(favorite.aspect)" class="btn btn-default pull-left">想要</button>
+                        <button ng-click="requireLogin() && onAddTip(favorite.aspect)" class="btn btn-default pull-right" data-toggle="modal" data-target="#{{isLogin? 'tipModal': ''}}">+小贴士</button>
                     </div>
                 </div>
             </div>

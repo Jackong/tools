@@ -10,10 +10,14 @@ define(['angular', 'controllers/look'], function (angular) {
         AccountCache.getMyInfo(function (user) {
             $rootScope.isLogin = (user !== null && typeof user !== 'undefined');
         });
-        $rootScope.showLoginModal = function () {
+        $rootScope.requireLogin = function () {
+            if ($rootScope.isLogin) {
+                return true;
+            }
             require(['socialLogin'], function () {
                 $('#loginModal').modal('show');
             });
+            return false;
         };
         var lastScrollY = 0;
         $rootScope.showFooter = true;
