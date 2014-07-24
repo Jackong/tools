@@ -99,4 +99,8 @@ Tip.static('like', function (tid, lookId, aspect, uid, callback) {
     )
 });
 
+Tip.static('onTip', function (callback) {
+    Tip.post('save', callback);
+});
+
 module.exports = mongoose.model('Tip', Tip);

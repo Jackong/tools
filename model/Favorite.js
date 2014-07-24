@@ -48,6 +48,23 @@ Favorite.static('putNewTip', function (lookId, aspect, tipId, callback) {
     );
 });
 
+Favorite.static('getOne', function (lookId, aspect, callback) {
+    this.findOne(
+        {
+            look: lookId,
+            aspect: aspect
+        },
+        {
+            wants: 1,
+            tips: 1
+        },
+        {
+            lean: true
+        },
+        callback
+    );
+});
+
 Favorite.static('perfect', function (lookId, aspects, callback) {
     if (aspects.length <= 0) {
         return callback(null, []);

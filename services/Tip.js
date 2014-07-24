@@ -8,6 +8,9 @@ var helper = require('../common/helper');
 var UserTip = require('../model/user/Tip');
 var Tip = require('../model/Tip');
 var Favorite = require('../model/Favorite');
+var NotificationService = require('../services/Notification');
+
+Tip.onTip(NotificationService.onTip);
 
 module.exports = {
     getsByIds: function (lookId, aspect, tids, callback) {
