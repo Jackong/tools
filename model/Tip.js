@@ -78,8 +78,17 @@ Tip.static('comment', function (tid, lookId, aspect, commenter, content, callbac
                 }
             }
         },
-        callback
+        function (err, tip) {
+            callback(err, tip);
+            if (!err && !tip) {
+                Tip.emit('comment', tip, commenter);
+            }
+        }
     )
+});
+
+Tip.static('onComment', function (callback) {
+    Tip.on('comment', callback);
 });
 
 Tip.static('like', function (tid, lookId, aspect, uid, callback) {

@@ -55,12 +55,12 @@ describe('TipService', function () {
         var content = 'good';
         it('should be failed when the tip is invalid or not exist', sinon.test(function (done) {
             this.stub(Tip, 'comment');
-            TipService.addComment(commenter, tipId, lookId, aspect, content, function (err, comment) {
+            TipService.addComment(commenter, tipId, lookId, aspect, content, function (err, num) {
                 should.not.exist(err);
-                should.not.exist(comment);
+                num.should.be.exactly(1);
                 done();
             });
-            Tip.comment.yield(null, null);
+            Tip.comment.yield(null, 1);
         }));
     })
 });

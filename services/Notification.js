@@ -38,6 +38,13 @@ module.exports = {
                 }
             });
         });
+    },
+    onComment: function (tip, commenter) {
+        Notification.add(commenter, tip.author, ACTION.COMMENT_MY_TIP, tip.look, function (err, num) {
+            if (err || !num) {
+                logger.error('add notification for', ACTION.COMMENT_MY_TIP, {tip: tip, commenter: commenter});
+            }
+        })
     }
 };
 

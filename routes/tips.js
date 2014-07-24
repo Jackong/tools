@@ -13,11 +13,11 @@ module.exports = function (router) {
         router.checker.body('lookId', 'aspect', 'tipId', 'content'),
         function (req, res) {
             var commenter = UserService.getUid(req, res);
-            TipService.addComment(commenter, req.body.tipId, req.body.lookId, req.body.aspect, req.body.content, function (err, comment) {
-                if (err) {
+            TipService.addComment(commenter, req.body.tipId, req.body.lookId, req.body.aspect, req.body.content, function (err, tip) {
+                if (err || !tip) {
                     return res.fail();
                 }
-                res.ok({comment: comment});
+                res.ok();
             });
         }
     );
