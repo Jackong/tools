@@ -12,9 +12,9 @@ var system = require('../common/config')('system');
 
 var User = require('../model/User');
 var Auth = require('../model/Auth');
-var SettingSevice = require('../model/services/Setting');
+var SettingService = require('./Setting');
 
-User.onSave(SettingSevice.onUserSave);
+User.onSave(SettingService.onUserSave);
 
 module.exports = {
     MAX_AGE: 86400 * 1000 * 90,
