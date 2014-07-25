@@ -29,7 +29,7 @@ describe('Setting', function () {
             UserSetting.change(uid, TYPE.NOTIFY, false, function (err, num) {
                 should.not.exist(err);
                 num.should.be.exactly(1);
-                UserSetting.get(uid, function (err, setting) {
+                UserSetting.retrieve(uid, function (err, setting) {
                     should.not.exist(err);
                     setting.should.have.property(TYPE.NOTIFY, false);
                     done();

@@ -43,7 +43,7 @@ UserSetting.static('change', function (uid, type, status, callback) {
     );
 });
 
-UserSetting.static('get', function (uid, callback) {
+UserSetting.static('retrieve', function (uid, callback) {
     this.findById(uid, callback);
 });
 
