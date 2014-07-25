@@ -80,20 +80,30 @@ User.static('getOne', function (uid, callback) {
 
 User.static('createOrUpdate', function (uid, obj, callback) {
     obj['_id'] = uid;
-    obj['points'] = 0;
-    obj['isValid'] = true;
-    obj['created'] = Date.now();
-    obj['updated'] = Date.now();
-    this.update(
-        {
-            _id: uid
-        },
-        obj,
-        {
-            upsert: true
-        },
-        callback
-    );
+    var UserModel = this.model('User');
+    var self = this;
+    this.getOne(uid, function (err, user) {
+        if (err || !user) {
+            user = new UserModel(obj);
+            return user.save(callback)
+        }
+        obj['updated'] = Date.now();
+        self.update(
+            {
+                _id: uid
+            },
+            obj,
+            {
+                upsert: true
+            },
+            callback
+        );
+    });
 });
+
+User.static('onSave', function (callback) {
+   User.post('save', callback);
+});
+
 
 module.exports = mongoose.model('User', User);

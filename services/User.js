@@ -5,13 +5,16 @@
 var async = require('async');
 var request = require('request');
 
-var User = require('../model/User');
-var Auth = require('../model/Auth');
-
 var oauth = require('../common/config')('oauth');
 var helper = require('../common/helper');
 var logger = require('../common/logger');
 var system = require('../common/config')('system');
+
+var User = require('../model/User');
+var Auth = require('../model/Auth');
+var SettingSevice = require('../model/services/Setting');
+
+User.onSave(SettingSevice.onUserSave);
 
 module.exports = {
     MAX_AGE: 86400 * 1000 * 90,
@@ -57,8 +60,8 @@ module.exports = {
                         birthday: Date.parse(body.birthday),
                         city: body.city
                     };
-                    User.createOrUpdate(uid, obj, function (err, num) {
-                        if (err || 1 !== num) {
+                    User.createOrUpdate(uid, obj, function (err) {
+                        if (err) {
                             logger.error('upsert user info fail', uid, obj);
                         }
                         callback(err);

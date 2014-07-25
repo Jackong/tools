@@ -7,6 +7,7 @@ require('./response');
 require('./accounts')(router);
 require('./looks')(router);
 require('./favorites')(router);
+require('./notifications')(router);
 require('./tips')(router);
 require('./users')(router);
 
