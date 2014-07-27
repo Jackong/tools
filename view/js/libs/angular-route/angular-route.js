@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.2.17
+ * @license AngularJS v1.2.21
  * (c) 2010-2014 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -80,8 +80,8 @@ function $RouteProvider(){
    *      controller} if passed as a string.
    *    - `controllerAs` – `{string=}` – A controller alias name. If present the controller will be
    *      published to scope under the `controllerAs` name.
-   *    - `template` – `{string=|function()=}` – partials template as a string or a function that
-   *      returns an partials template as a string which should be used by {@link
+   *    - `template` – `{string=|function()=}` – html template as a string or a function that
+   *      returns an html template as a string which should be used by {@link
    *      ngRoute.directive:ngView ngView} or {@link ng.directive:ngInclude ngInclude} directives.
    *      This property takes precedence over `templateUrl`.
    *
@@ -90,7 +90,7 @@ function $RouteProvider(){
    *      - `{Array.<Object>}` - route parameters extracted from the current
    *        `$location.path()` by applying the current route
    *
-   *    - `templateUrl` – `{string=|function()=}` – path or function that returns a path to an partials
+   *    - `templateUrl` – `{string=|function()=}` – path or function that returns a path to an html
    *      template that should be used by {@link ngRoute.directive:ngView ngView}.
    *
    *      If `templateUrl` is a function, it will be called with the following parameters:
@@ -275,7 +275,7 @@ function $RouteProvider(){
      *
      * <example name="$route-service" module="ngRouteExample"
      *          deps="angular-route.js" fixBase="true">
-     *   <file name="index.partials">
+     *   <file name="index.html">
      *     <div ng-controller="MainController">
      *       Choose:
      *       <a href="Book/Moby">Moby</a> |
@@ -296,12 +296,12 @@ function $RouteProvider(){
      *     </div>
      *   </file>
      *
-     *   <file name="book.partials">
+     *   <file name="book.html">
      *     controller: {{name}}<br />
      *     Book Id: {{params.bookId}}<br />
      *   </file>
      *
-     *   <file name="chapter.partials">
+     *   <file name="chapter.html">
      *     controller: {{name}}<br />
      *     Book Id: {{params.bookId}}<br />
      *     Chapter Id: {{params.chapterId}}
@@ -329,7 +329,7 @@ function $RouteProvider(){
      *     .config(function($routeProvider, $locationProvider) {
      *       $routeProvider
      *        .when('/Book/:bookId', {
-     *         templateUrl: 'book.partials',
+     *         templateUrl: 'book.html',
      *         controller: 'BookController',
      *         resolve: {
      *           // I will cause a 1 second delay
@@ -341,7 +341,7 @@ function $RouteProvider(){
      *         }
      *       })
      *       .when('/Book/:bookId/ch/:chapterId', {
-     *         templateUrl: 'chapter.partials',
+     *         templateUrl: 'chapter.html',
      *         controller: 'ChapterController'
      *       });
      *
@@ -473,9 +473,7 @@ function $RouteProvider(){
       for (var i = 1, len = m.length; i < len; ++i) {
         var key = keys[i - 1];
 
-        var val = 'string' == typeof m[i]
-              ? decodeURIComponent(m[i])
-              : m[i];
+        var val = m[i];
 
         if (key && val) {
           params[key.name] = val;
@@ -628,7 +626,7 @@ ngRouteModule.provider('$routeParams', $RouteParamsProvider);
  * @example
  * ```js
  *  // Given:
- *  // URL: http://server.com/index.partials#/Chapter/1/Section/2?search=moby
+ *  // URL: http://server.com/index.html#/Chapter/1/Section/2?search=moby
  *  // Route: /Chapter/:chapterId/Section/:sectionId
  *  //
  *  // Then
@@ -651,7 +649,7 @@ ngRouteModule.directive('ngView', ngViewFillContentFactory);
  * @description
  * # Overview
  * `ngView` is a directive that complements the {@link ngRoute.$route $route} service by
- * including the rendered template of the current route into the main layout (`index.partials`) file.
+ * including the rendered template of the current route into the main layout (`index.html`) file.
  * Every time the current route changes, the included view changes with it according to the
  * configuration of the `$route` service.
  *
@@ -678,7 +676,7 @@ ngRouteModule.directive('ngView', ngViewFillContentFactory);
     <example name="ngView-directive" module="ngViewExample"
              deps="angular-route.js;angular-animate.js"
              animations="true" fixBase="true">
-      <file name="index.partials">
+      <file name="index.html">
         <div ng-controller="MainCtrl as main">
           Choose:
           <a href="Book/Moby">Moby</a> |
@@ -700,14 +698,14 @@ ngRouteModule.directive('ngView', ngViewFillContentFactory);
         </div>
       </file>
 
-      <file name="book.partials">
+      <file name="book.html">
         <div>
           controller: {{book.name}}<br />
           Book Id: {{book.params.bookId}}<br />
         </div>
       </file>
 
-      <file name="chapter.partials">
+      <file name="chapter.html">
         <div>
           controller: {{chapter.name}}<br />
           Book Id: {{chapter.params.bookId}}<br />
@@ -763,12 +761,12 @@ ngRouteModule.directive('ngView', ngViewFillContentFactory);
             function($routeProvider, $locationProvider) {
               $routeProvider
                 .when('/Book/:bookId', {
-                  templateUrl: 'book.partials',
+                  templateUrl: 'book.html',
                   controller: 'BookCtrl',
                   controllerAs: 'book'
                 })
                 .when('/Book/:bookId/ch/:chapterId', {
-                  templateUrl: 'chapter.partials',
+                  templateUrl: 'chapter.html',
                   controller: 'ChapterCtrl',
                   controllerAs: 'chapter'
                 });
@@ -863,7 +861,7 @@ function ngViewFactory(   $route,   $anchorScroll,   $animate) {
             var current = $route.current;
 
             // Note: This will also link all children of ng-view that were contained in the original
-            // partials. If that content contains controllers, ... they could pollute/change the scope.
+            // html. If that content contains controllers, ... they could pollute/change the scope.
             // However, using ng-view on an element with additional content does not make sense...
             // Note: We can't remove them in the cloneAttchFn of $transclude as that
             // function is called before linking the content, which would apply child

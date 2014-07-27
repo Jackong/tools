@@ -12,7 +12,6 @@ require.config({
             'http://cdn.bootcss.com/angular.js/1.2.16/angular-resource.min',
             'libs/angular-resource/angular-resource'
         ],
-        angularMd5: 'libs/angular-md5/angular-md5',
         ngTagsInput: 'libs/bootstrap-tagsinput/dist/bootstrap-tagsinput-angular',
         ngTagsInputOrigin: 'libs/bootstrap-tagsinput/dist/bootstrap-tagsinput.min',
         jquery: [
@@ -31,9 +30,6 @@ require.config({
         angular : {exports : 'angular'},
         angularRoute: ['angular'],
         angularResource: ['angular'],
-        angularMd5: {
-            deps: ['angular']
-        },
         ngTagsInput: {
             deps: [
                 'angular',

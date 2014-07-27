@@ -5,19 +5,22 @@
     "description": "women",
     "private": true,
     "scripts": {
-        "start": "node server.js"
+        "start": "supervisor server.js"
+    },
+    "devDependencies": {
+        "should": "~3.3.2",
+        "supervisor": "~0.6.0",
+        "mocha": "~1.21.0"
     },
     "dependencies": {
         "express": "~4.2.0",
         "cookie-parser": "~1.0.1",
         "body-parser": "~1.0.0",
         "method-override": "~1.0.2",
-        "should": "~3.3.2",
         "winston": "~0.7.3",
         "async": "~0.9.0",
         "mongoose": "~3.8.11",
         "redis": "~0.10.3",
-        "bae-message": "~0.1.4",
         "sinon": "~1.10.2",
         "connect-multiparty": "~1.0.5",
         "request":"2.37.0"

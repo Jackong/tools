@@ -6,3 +6,4 @@ local.sh
 log
 build
 view/images/looks
+view/js/libs/*
