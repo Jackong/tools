@@ -4,7 +4,8 @@
 
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
-var types = require('../../common/const').SETTING_TYPE;
+var types = require('../../common/config')('settings');
+
 
 var UserSetting = Schema(
     {
@@ -28,14 +29,17 @@ var UserSetting = Schema(
     }
 );
 
-UserSetting.static('change', function (uid, type, status, callback) {
-    var obj = {};
-    obj[type] = status;
+UserSetting.static('change', function (uid, settings, callback) {
+    var filter = {};
+    for(var setting in types) {
+        filter[setting] = (typeof settings[setting] === 'undefined' ? true : settings[setting]);
+    }
+    settings['_id'] = uid;
     this.update(
         {
             _id: uid
         },
-        obj,
+        filter,
         {
             upsert: true
         },

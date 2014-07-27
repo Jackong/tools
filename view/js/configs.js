@@ -8,15 +8,15 @@ define(['angular', 'angularRoute', 'controllers'], function (angular) {
         .config(['$routeProvider', function ($routeProvider) {
             $routeProvider
                 .when('/fashion', {
-                    templateUrl: 'partials/where2get.html',
+                    templateUrl: 'partials/look/list.html',
                     controller: 'FashionCtrl'
                 })
                 .when('/newest', {
-                    templateUrl: 'partials/where2get.html',
+                    templateUrl: 'partials/look/list.html',
                     controller: 'NewestCtrl'
                 })
                 .when('/looks/:lookId', {
-                    templateUrl: 'partials/where2get.html',
+                    templateUrl: 'partials/look/detail.html',
                     controller: 'LookDetailCtrl'
                 })
                 .otherwise({redirectTo: '/fashion'});

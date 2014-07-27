@@ -4,7 +4,6 @@
 
 var should = require('should');
 require('../../../common/mongo');
-var TYPE = require('../../../common/const').SETTING_TYPE;
 var UserSetting = require('../../../model/user/Setting');
 
 describe('Setting', function () {
@@ -16,7 +15,7 @@ describe('Setting', function () {
             var setting = new UserSetting({_id: uid});
             setting.save(function (err, doc) {
                 should.not.exist(err);
-                doc.should.have.property(TYPE.NOTIFY, true);
+                doc.should.have.property('notify', true);
                 done();
             })
         });
@@ -26,21 +25,21 @@ describe('Setting', function () {
         });
 
         it('should be success when the switch is exist', function (done) {
-            UserSetting.change(uid, TYPE.NOTIFY, false, function (err, num) {
+            UserSetting.change(uid, {notify: false}, function (err, num) {
                 should.not.exist(err);
                 num.should.be.exactly(1);
                 UserSetting.retrieve(uid, function (err, setting) {
                     should.not.exist(err);
-                    setting.should.have.property(TYPE.NOTIFY, false);
+                    setting.should.have.property('notify', false);
                     done();
                 });
             });
         });
 
-        it('should be fail when the switch is not exist', function (done) {
-            UserSetting.change(uid, TYPE.NOTIFY + 'xxoo', false, function (err, num) {
+        it('should be success when the switch is not exist', function (done) {
+            UserSetting.change(uid, {notExist: false}, function (err, num) {
                 should.not.exist(err);
-                num.should.be.exactly(0);
+                num.should.be.exactly(1);
                 done();
             });
         });

@@ -38,9 +38,16 @@ define(['angular', 'angularResource'], function (angular) {
                 }
             );
         })
-        .factory('LookService', function ($http, LookResource, $cacheFactory, Response) {
+        .factory('ImageUploaded', function () {
             return {
-                getImage: function (elem, callback) {
+                image: null,
+                hash: null
+            };
+        })
+        .factory('LookService', function ($http, LookResource, $cacheFactory, Response) {
+            var onUpload = null;
+            return {
+                uploadImage: function (elem) {
                     var fd = new FormData();
                     angular.forEach(elem.files, function (file) {
                         fd.append('file', file);
@@ -51,17 +58,19 @@ define(['angular', 'angularResource'], function (angular) {
                         headers: {'Content-Type': undefined}
                     })
                     .success(function (res) {
-                        if (res.code != 0) {
-                            callback(null);
+                        if (res.code !== 0) {
                             return;
                         }
-                        callback(res.data);
+                        onUpload(res.data);
                         $('#publishModal').modal('show');
                         $('.bootstrap-tagsinput input')[0].removeAttribute('size');
                     })
                     .error(function (res) {
                         alert('上传失败！（如果你是使用的是Chrome，请关闭 设置=>宽带管理=>减少流量消耗）');
                     });
+                },
+                getImage: function (callback) {
+                    onUpload = callback;
                 },
                 addTip: function (scope, params, callback) {
                     LookResource.addTip(params, Response.handle(scope, callback));

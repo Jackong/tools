@@ -13,8 +13,7 @@ var map = {
     lookId: /^[0-9A-Fa-f]{32}$/,
     aspect: require('../config/look/favorites'),
     tipId: /^[0-9a-fA-F]{24}$/,
-    content: /.+/,
-    settingType: require('../common/const').SETTING_TYPE
+    content: /.+/
 };
 
 var check = function (req, res, next, from, name, defaultValue) {

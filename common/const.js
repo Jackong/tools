@@ -17,15 +17,3 @@ exports.NOTIFICATION_ACTION = {
 	WANT_MY_LOOK: 5,
 	FOLLOW_ME: 6	
 };
-
-
-exports.SETTING_TYPE = {
-    NOTIFY: 'notify',
-    MAIL: 'mail',
-    LIKE_MY_TIP: 'likeMyTip',
-    COMMENT_MY_TIP: 'commentMyTip',
-    LIKE_MY_LOOK: 'likeMyLook',
-    TIP_MY_WANT: 'tipMyWant',
-    WANT_MY_LOOK: 'wantMyLook',
-    FOLLOW_ME: 'followMe'
-};

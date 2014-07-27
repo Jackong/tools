@@ -1,10 +1,10 @@
 /**
  * Created by daisy on 14-7-5.
  */
-define(['angular', 'controllers/look', 'services'], function (angular) {
+define(['angular', 'controllers/look', 'controllers/header', 'services'], function (angular) {
     'use strict';
     return angular.module('iWomen.controllers',
-        ['iWomen.services', 'iWomen.controllers.look']
+        ['iWomen.services', 'iWomen.controllers.look', 'iWomen.controllers.header']
     )
     .controller('RootCtrl', function ($rootScope, UserService) {
         UserService.getMyInfo(function (user) {

@@ -1,0 +1,29 @@
+<div ng-controller="SettingCtrl" class="modal fade" id="settingModal" tabindex="-1" role="dialog" aria-labelledby="settingModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">取消</span></button>
+                <h4 class="modal-title" id="settingModalLabel">设置</h4>
+            </div>
+
+            <div class="modal-body">
+                <div class="form-group" ng-repeat="(key, value) in settings">
+                    <div class="checkbox">
+                        <label>
+                            <input type="checkbox" ng-click="settings[key].enable=!value.enable" ng-checked="value.enable">
+                            {{value.label}}
+                        </label>
+                    </div>
+                </div>
+                <button type="button" ng-click="logout()" class="btn btn-danger">退出登录</button>
+                <div ng-if="warning" class="form-group">
+                    <div class="alert alert-warning" role="alert">{{warning}}</div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" ng-click="save()" >保存</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+            </div>
+        </div>
+    </div>
+</div>

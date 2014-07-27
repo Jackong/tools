@@ -61,12 +61,8 @@ module.exports = function (router) {
         })
     });
 
-    router.get('/accounts/check',
-        function checkLogin(req, res) {
-            var uid = UserService.getUid(req, res);
-            if (uid) {
-                return res.ok();
-            }
-            return res.fail();
-        });
+    router.put('/accounts/logout', function (req, res) {
+        UserService.logout(req, res);
+        res.ok();
+    })
 };

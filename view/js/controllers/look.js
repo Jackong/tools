@@ -5,48 +5,49 @@ define(['angular', 'ngTagsInput'], function (angular) {
     angular.module('iWomen.controllers.look', [
         'bootstrap-tagsinput'
     ])
-    .controller('FashionCtrl', function ($scope, LookService) {
-        $scope.view = 'partials/look/list.html';
-        $scope.tags = [];
-
-        LookService.favorites(function (favorites) {
-            $scope.favorites = favorites;
-        });
-
-        $scope.changedFavorite = function () {
-            $scope.tags.splice(0, 1, $scope.favorites[$scope.favorite]);
-        };
-        $scope.changeImage = function (elem) {
-            LookService.getImage(elem, function (data) {
-                if (data === null) {
+    .controller('PublishCtrl', function ($scope, LookService) {
+            LookService.getImage(function (image) {
+                if (image === null) {
                     return $scope.warning = '图片上传失败，请使用格式及大小正确的图片重试';
                 }
-                $scope.img = data.image;
-                $scope.hash = data.hash;
+                $scope.img = image.image;
+                $scope.hash = image.hash;
             });
-        };
 
-        $scope.publish = function () {
-            LookService.publish($scope, $scope.hash, $scope.img, $scope.description,
-                $scope.favorite, $scope.tags,
-                function (newLook) {
-                    if (!newLook) {
-                        return;
-                    }
-                    var replace = false;
-                    for(var idx = 0; idx < $scope.looks.length; idx++) {
-                        if ($scope.looks[idx]._id === newLook._id) {
-                            $scope.looks[idx] = newLook;
-                            replace = true;
-                            break;
+            $scope.tags = [];
+
+            LookService.favorites(function (favorites) {
+                $scope.favorites = favorites;
+            });
+
+            $scope.changedFavorite = function () {
+                $scope.tags.splice(0, 1, $scope.favorites[$scope.favorite]);
+            };
+
+            $scope.publish = function () {
+                LookService.publish($scope, $scope.hash, $scope.img, $scope.description,
+                    $scope.favorite, $scope.tags,
+                    function (newLook) {
+                        if (!newLook) {
+                            return;
+                        }
+                        var replace = false;
+                        for(var idx = 0; idx < $scope.looks.length; idx++) {
+                            if ($scope.looks[idx]._id === newLook._id) {
+                                $scope.looks[idx] = newLook;
+                                replace = true;
+                                break;
+                            }
+                        }
+                        if (!replace) {
+                            $scope.looks.push(newLook);
                         }
                     }
-                    if (!replace) {
-                        $scope.looks.push(newLook);
-                    }
-                }
-            );
-        };
+                );
+            };
+    })
+    .controller('FashionCtrl', function ($scope, LookService) {
+        $scope.view = 'partials/look/list.html';
 
         LookService.gets('fashion', 0, 5, function (looks) {
             $scope.looks = looks;
@@ -67,25 +68,6 @@ define(['angular', 'ngTagsInput'], function (angular) {
             LookService.favorites(function (favorites) {
                 $scope.favorites = favorites;
             });
-
-            $scope.changedFavorite = function () {
-                $scope.tags.splice(0, 1, $scope.favorites[$scope.favorite]);
-            };
-            $scope.changeImage = function (elem) {
-                LookService.getImage(elem, function (data) {
-                    if (data === null) {
-                        return $scope.warning = '图片上传失败，请使用格式及大小正确的图片重试';
-                    }
-                    $scope.img = data.image;
-                    $scope.hash = data.hash;
-                });
-            };
-
-            $scope.publish = function () {
-                LookService.publish($scope, $scope.hash, $scope.img, $scope.description,
-                    $scope.favorite, $scope.tags,
-                    function (newLook) {});
-            };
 
             LookService.getById(lookId, function (look) {
                 $scope.look = look;

@@ -9,6 +9,9 @@ define(['angular'], function (angular) {
             return $resource('api/users', {}, {
                 getMyInfo: {
                     method: 'GET'
+                },
+                logout: {
+                    method: 'PUT'
                 }
             })
         })
@@ -27,6 +30,9 @@ define(['angular'], function (angular) {
                         callback(res.data.user);
                         cache.put('myInfo', res.data.user);
                     });
+                },
+                logout: function (callback) {
+                    UserResource.logout(callback);
                 }
             };
         });
