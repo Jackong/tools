@@ -52,7 +52,7 @@ Look.static('appendTagsAndFavorites', function (lookId, tags, favorites, time, c
     );
 });
 
-Look.static('getTrend', function (start, num, callback) {
+Look.static('getFashion', function (start, num, callback) {
     if (start < 0 || num <= 0) {
         return callback(null, []);
     }

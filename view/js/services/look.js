@@ -5,13 +5,40 @@ define(['angular', 'angularResource'], function (angular) {
     'use strict';
     return angular.module('iWomen.services.look',['ngResource'])
         .factory('LookResource', function ($resource) {
-            return $resource('api/looks/:lookId', {}, {
-                gets: {
-                    method: 'GET', url: 'api/looks/:type'
+            return $resource('api/looks/:lookId',
+                {
+                },
+                {
+                    gets: {
+                        method: 'GET', url: 'api/looks/:type'
+                    },
+                    addTip: {
+                        method: 'POST', url: 'api/looks/:lookId/favorites/:aspect/tips',
+                        params: {
+                            lookId: '@lookId',
+                            aspect: '@aspect'
+                        }
+                    },
+                    comment: {
+                        method: 'PUT', url: 'api/looks/:lookId/favorites/:aspect/tips/:tipId/comments',
+                        params: {
+                            lookId: '@lookId',
+                            aspect: '@aspect',
+                            tipId: '@tipId'
+                        }
+                    },
+                    getTips: {
+                        method: 'GET', url: 'api/looks/:lookId/favorites/:aspect/tips/:tipIds',
+                        params: {
+                            lookId: '@lookId',
+                            aspect: '@aspect',
+                            tipIds: '@tipIds'
+                        }
+                    }
                 }
-            })
+            );
         })
-        .factory('LookService', function ($http) {
+        .factory('LookService', function ($http, LookResource, $cacheFactory, Response) {
             return {
                 getImage: function (elem, callback) {
                     var fd = new FormData();
@@ -35,26 +62,28 @@ define(['angular', 'angularResource'], function (angular) {
                     .error(function (res) {
                         alert('上传失败！（如果你是使用的是Chrome，请关闭 设置=>宽带管理=>减少流量消耗）');
                     });
-                }
-            }
-        })
-        .factory('LookCache', function ($cacheFactory, LookResource, Tip) {
-            return {
-                publish: function (lookId, image, description, aspect, tags, callback) {
+                },
+                addTip: function (scope, params, callback) {
+                    LookResource.addTip(params, Response.handle(scope, callback));
+                },
+                comment: function (scope, params, callback) {
+                    LookResource.comment(params, Response.handle(scope, callback));
+                },
+                publish: function (scope, lookId, image, description, aspect, tags, callback) {
                     LookResource.save({
                         lookId: lookId,
                         image: image,
                         description: description,
                         aspect: aspect,
                         tags: tags
-                    }, function (res) {
-                        if (res.code !== 0) {
+                    }, Response.handle(scope, function (ok, data) {
+                        if (!ok) {
                             return callback(null);
                         }
                         $('#publishModal').modal('hide');
                         var cache = $cacheFactory.get('looks');
-                        callback(cache.put(lookId, res.data.look));
-                    });
+                        callback(cache.put(lookId, data.look));
+                    }));
                 },
                 gets: function (type, page, num, callabck) {
                     var cache = $cacheFactory.get('looks');
@@ -82,7 +111,7 @@ define(['angular', 'angularResource'], function (angular) {
                                 continue;
                             }
                             var getTips = function (favorite) {
-                                Tip.getsByIds({
+                                LookResource.getTips({
                                     lookId: look._id,
                                     aspect: favorite.aspect,
                                     tipIds: favorite.tips.join(',')
@@ -115,6 +144,6 @@ define(['angular', 'angularResource'], function (angular) {
                         callback(favorites);
                     });
                 }
-            };
+            }
         });
 });

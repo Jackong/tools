@@ -121,8 +121,8 @@ module.exports = {
             return self.firstPublish(look, callback);
         });
     },
-    getTrend: function (start, num, callback) {
-        Look.getTrend(parseInt(start), parseInt(num), function (err, looks) {
+    getFashion: function (start, num, callback) {
+        Look.getFashion(parseInt(start), parseInt(num), function (err, looks) {
             if (null !== err || looks.length <= 0) {
                 return callback(err, looks);
             }

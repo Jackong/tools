@@ -1,5 +1,9 @@
+<div ng-include="'partials/header.html'"></div>
+
+<div ng-include="'partials/look/publish.html'"></div>
+
 <div class="row">
-    <div ng-repeat="look in looks" class="col-sm-6 col-md-4">
+    <div ng-repeat="look in looks" class="col-sm-12 col-md-6 col-lg-4">
         <div class="thumbnail">
             <div ng-include="'partials/look/publisher.html'"></div>
             <a href="#/looks/{{look._id}}">
@@ -24,3 +28,5 @@
         </div>
     </div>
 </div>
+
+<div ng-include="'partials/footer.html'"></div>

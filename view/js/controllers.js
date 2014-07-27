@@ -1,13 +1,13 @@
 /**
  * Created by daisy on 14-7-5.
  */
-define(['angular', 'controllers/look'], function (angular) {
+define(['angular', 'controllers/look', 'services'], function (angular) {
     'use strict';
     return angular.module('iWomen.controllers',
-        ['iWomen.controllers.look']
+        ['iWomen.services', 'iWomen.controllers.look']
     )
-    .controller('RootCtrl', function ($rootScope, AccountCache) {
-        AccountCache.getMyInfo(function (user) {
+    .controller('RootCtrl', function ($rootScope, UserService) {
+        UserService.getMyInfo(function (user) {
             $rootScope.isLogin = (user !== null && typeof user !== 'undefined');
         });
         $rootScope.requireLogin = function () {
@@ -23,7 +23,8 @@ define(['angular', 'controllers/look'], function (angular) {
         $rootScope.showFooter = true;
         $rootScope.listenScroll = true;
         $rootScope.scroll = function () {
-            $rootScope.showFooter = lastScrollY >= window.pageYOffset;
+            var isShow = (lastScrollY >= window.pageYOffset);
+            $rootScope.showFooter = isShow;
             lastScrollY = window.pageYOffset;
             $rootScope.$apply();
         };

@@ -1,43 +1,29 @@
 /**
  * Created by daisy on 14-7-5.
  */
-define(['angular', 'services/look'], function (angular) {
+define(['angular', 'services/look', 'services/user'], function (angular) {
     'use strict';
 
-    return angular.module('iWomen.services', ['ngResource', 'iWomen.services.look'])
-        .factory('Account', function ($resource) {
-            return $resource('api/users', {}, {
-                getMyInfo: {
-                    method: 'GET'
-                }
-            })
-        })
-        .factory('Tip', function ($resource) {
-            return $resource('api/tips/:tipIds', {}, {
-                getsByIds: {
-                    method: 'GET', url: 'api/looks/:lookId/favorites/:aspect/tips/:tipIds'
-                },
-                comment: {
-                    method: 'PUT', url: 'api/tips/comments'
-                }
-            });
-        })
-        .factory('AccountCache', function ($cacheFactory, Account) {
+    return angular.module('iWomen.services', ['ngResource', 'iWomen.services.look', 'iWomen.services.user'])
+        .factory('Response', function () {
             return {
-                getMyInfo: function (callback) {
-                    var cache = $cacheFactory.get('users');
-                    if (cache) {
-                        return callback(cache.get('myInfo'));
-                    }
-                    cache = $cacheFactory('users');
-                    Account.getMyInfo({}, function (res) {
-                        if (res.code !== 0 || !res.data) {
-                            return callback(null);
+                handle: function (scope, callback) {
+                    scope.warning = null;
+                    return function (res) {
+                        var ok = (res.code === 0);
+                        callback(ok, res.data);
+                        if (ok) {
+                            return;
                         }
-                        callback(res.data.user);
-                        cache.put('myInfo', res.data.user);
-                    });
+                        if (res.code !== 2) {
+                            scope.warning = res.msg;
+                            return;
+                        }
+                        require(['socialLogin'], function () {
+                            $('#loginModal').modal('show');
+                        });
+                    }
                 }
-            };
+            }
         });
 });

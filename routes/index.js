@@ -6,10 +6,8 @@ require('./response');
 
 require('./accounts')(router);
 require('./looks')(router);
-require('./favorites')(router);
 require('./notifications')(router);
 require('./settings')(router);
-require('./tips')(router);
 require('./users')(router);
 
 module.exports = router;

@@ -1,5 +1,9 @@
+<div ng-include="'partials/header.html'"></div>
+
+<div ng-include="'partials/look/publish.html'"></div>
+
 <div class="row">
-    <div class="col-sm-12 col-md-12">
+    <div class="col-sm-12 col-md-12 col-lg-12">
         <div class="thumbnail">
             <div ng-include="'partials/look/publisher.html'"></div>
             <img ng-src="{{look.image | formatImage}}" class="img-rounded img-responsive" alt="{{look.description}}">
@@ -65,7 +69,7 @@
                                 </a>
                                 <div class="media-body">
                                 <span class="form-group">
-                                    <textarea class="form-control" rows="2" ng-keyup="commentContent = ($event.keyCode === 13 ? (requireLogin() && addComment(tip, commentContent)) : commentContent)" ng-model="commentContent" placeholder="评论这条小贴士"></textarea>
+                                    <textarea class="form-control" rows="2" ng-keyup="commentContent = ($event.keyCode === 13 ? (requireLogin() && addComment(favorite.aspect, tip, commentContent)) : commentContent)" ng-model="commentContent" placeholder="评论这条小贴士"></textarea>
                                 </span>
                                 </div>
                             </li>
@@ -120,19 +124,10 @@
 
             <div class="modal-body">
                 <div class="form-group">
-                    <div class="dropdown">
-                        <button class="btn btn-default dropdown-toggle" type="button" id="aspects" data-toggle="dropdown">
-                            我中意她的这款{{aspect ? favorites[aspect] : "..."}}
-                            <span class="caret"></span>
-                        </button>
-                        <ul class="dropdown-menu" role="menu" aria-labelledby="aspects">
-                            <li role="presentation" ng-repeat="(key, value) in favorites">
-                                <a role="menuitem" tabindex="-1" href="" ng-click="selectedFavorite(key)">{{value}}</a>
-                            </li>
-                        </ul>
-                    </div>
+                    <select class="form-control" ng-model="favorite" ng-change="changedFavorite()" ng-options="key as value for (key, value) in favorites">
+                        <option value="">我中意她的这款...</option>
+                    </select>
                 </div>
-
                 <div ng-if="warning" class="form-group">
                     <div class="alert alert-warning" role="alert">{{warning}}</div>
                 </div>
@@ -144,3 +139,5 @@
         </div>
     </div>
 </div>
+
+<div ng-include="'partials/footer.html'"></div>

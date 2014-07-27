@@ -5,11 +5,11 @@ define(['angular', 'ngTagsInput'], function (angular) {
     angular.module('iWomen.controllers.look', [
         'bootstrap-tagsinput'
     ])
-    .controller('TrendCtrl', function ($scope, $http, LookCache, LookService) {
+    .controller('FashionCtrl', function ($scope, LookService) {
         $scope.view = 'partials/look/list.html';
         $scope.tags = [];
 
-        LookCache.favorites(function (favorites) {
+        LookService.favorites(function (favorites) {
             $scope.favorites = favorites;
         });
 
@@ -27,11 +27,10 @@ define(['angular', 'ngTagsInput'], function (angular) {
         };
 
         $scope.publish = function () {
-            LookCache.publish($scope.hash, $scope.img, $scope.description,
+            LookService.publish($scope, $scope.hash, $scope.img, $scope.description,
                 $scope.favorite, $scope.tags,
                 function (newLook) {
                     if (!newLook) {
-                        $scope.warning = '发布失败，请重试';
                         return;
                     }
                     var replace = false;
@@ -49,7 +48,7 @@ define(['angular', 'ngTagsInput'], function (angular) {
             );
         };
 
-        LookCache.gets('trend', 0, 5, function (looks) {
+        LookService.gets('fashion', 0, 5, function (looks) {
             $scope.looks = looks;
         });
 
@@ -60,13 +59,12 @@ define(['angular', 'ngTagsInput'], function (angular) {
             //todo
         };
     })
-    .controller('LookDetailCtrl', function ($scope, $routeParams, LookCache, LookService, Tip) {
+    .controller('LookDetailCtrl', function ($scope, $routeParams, LookService) {
             $scope.view = 'partials/look/detail.html?v=3';
-
 
             var lookId = $routeParams.lookId;
 
-            LookCache.favorites(function (favorites) {
+            LookService.favorites(function (favorites) {
                 $scope.favorites = favorites;
             });
 
@@ -84,16 +82,12 @@ define(['angular', 'ngTagsInput'], function (angular) {
             };
 
             $scope.publish = function () {
-                LookCache.publish($scope.hash, $scope.img, $scope.description,
+                LookService.publish($scope, $scope.hash, $scope.img, $scope.description,
                     $scope.favorite, $scope.tags,
-                    function (newLook) {
-                        if (!newLook) {
-                            $scope.warning = '发布失败，请重试';
-                        }
-                    });
+                    function (newLook) {});
             };
 
-            LookCache.getById(lookId, function (look) {
+            LookService.getById(lookId, function (look) {
                 $scope.look = look;
 
                 window._bd_share_config = {
@@ -142,18 +136,18 @@ define(['angular', 'ngTagsInput'], function (angular) {
                 $scope.aspect = aspect;
             };
             $scope.addTip = function (content) {
-                Tip.save({
+                LookService.addTip($scope, {
                     lookId: $scope.look._id,
                     aspect: $scope.aspect,
                     content: content
-                }, function (res) {
-                    if (res.code !== 0) {
+                }, function (ok, data) {
+                    if (!ok) {
                         return;
                     }
                     for(var idx = 0; idx < $scope.look.favorites.length; idx++) {
                         var favorite = $scope.look.favorites[idx];
                         if (favorite.aspect === $scope.aspect) {
-                            favorite.tips.push(res.data.tip);
+                            favorite.tips.push(data.tip);
                             break;
                         }
                     }
@@ -162,13 +156,13 @@ define(['angular', 'ngTagsInput'], function (angular) {
             $scope.share = function () {
                 //todo
             };
-            $scope.addComment = function (tip, content) {
-                Tip.comment({tipId: tip._id, content: content},
-                    function (res) {
-                        if (data.code !== 0) {
+            $scope.addComment = function (aspect, tip, content) {
+                LookService.comment($scope, {lookId: $scope.look._id, aspect: aspect, tipId: tip._id, content: content},
+                    function (ok, data) {
+                        if (!ok) {
                             return;
                         }
-                        tip.comments.push(res.comment);
+                        tip.comments.push(data.comment);
                     }
                 );
                 return '';
