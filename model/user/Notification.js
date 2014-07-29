@@ -68,6 +68,9 @@ UserNotification.static('gets', function(uid, start, num, callback) {
 				$slice: [start, num]
 			}
 		},
+        {
+            lean: true
+        },
 		callback
 	);
 });

@@ -7,8 +7,34 @@ var Tip = require('../model/Tip');
 var Look = require('../model/Look');
 var Favorite = require('../model/Favorite');
 var UserNotification = require('../model/user/Notification');
+var User = require('../model/User');
 
 module.exports = {
+    gets: function (uid, page, num, callback) {
+        async.waterfall([
+            function (callback) {
+                UserNotification.gets(uid, page, num, callback);
+            },
+            function (doc, callback) {
+                if (!doc || doc.notifications.length === 0) {
+                    return callback('notifications not found or empty', []);
+                }
+                async.map(doc.notifications, function (notification, callback) {
+                    callback(null, notification.from);
+                }, function (err, uids) {
+                    callback(err, uids, doc.notifications);
+                });
+            },
+            function (uids, notifications, callback) {
+                User.perfect(uids, function (err, userMap) {
+                    async.map(notifications, function (notification, callback) {
+                        notification.from = userMap[notification.from];
+                        callback(null, notification);
+                    }, callback)
+                });
+            }
+        ], callback)
+    },
 	onWant: function(lookId, uid, callback) {
 		Look.getOne(lookId, function(err, look) {
 			if (err || !look) {

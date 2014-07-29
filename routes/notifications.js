@@ -3,20 +3,18 @@ var logger = require('../common/logger');
 require('../common/mongo');
 var Notification = require('../model/user/Notification');
 var UserService = require('../services/User');
+var NotificationService = require('../services/Notification');
 
 module.exports = function users(router) {
     router.get('/notifications', 
 	router.checker.query('page', 'num'),	
 	function getNotificationsByPaging(req, res) {
 		var uid = UserService.getUid(req, res);
-		Notification.gets(uid, req.query.page * req.query.num, req.query.num, function(err, notification) {
-			var notifications = [];
+        NotificationService.gets(uid, req.query.page * req.query.num, req.query.num, function(err, notifications) {
 			if (err) {
+                notifications = [];
 				logger.error('notifications not found', {uid: uid, err: err});
-			} else {
-				notifications = notification.notifications;
 			}
-
 			res.ok({notifications: notifications});
 		});
     });
