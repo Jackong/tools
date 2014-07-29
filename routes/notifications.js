@@ -19,6 +19,5 @@ module.exports = function users(router) {
 
 			res.ok({notifications: notifications});
 		});
-    	}
-    );
-}; 
+    });
+};

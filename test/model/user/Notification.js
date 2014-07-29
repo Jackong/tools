@@ -55,5 +55,13 @@ describe('Notification', function() {
 				done();
 			});	
 		});
+
+        it('should be fail when the from is the to', function (done) {
+            UserNotification.add(from, from, ACTION.LIKE_MY_TIP, look, function(err, num) {
+                should.not.exist(err);
+                num.should.be.exactly(0);
+                done();
+            });
+        });
 	});
 });

@@ -29,6 +29,9 @@ var UserNotification = Schema(
 );
 
 UserNotification.static('add', function(from, to, action, look, callback) {
+    if (from == to) {
+        return callback(null, 0)
+    }
 	this.update(
 		{
 			_id: to
