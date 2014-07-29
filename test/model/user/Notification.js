@@ -1,5 +1,7 @@
 
 var should = require('should');
+var async = require('async');
+var mongoose = require('mongoose');
 
 require('../../../common/mongo');
 
@@ -8,12 +10,13 @@ var UserNotification = require('../../../model/user/Notification');
 
 describe('Notification', function() {
 
+    var to = 'to-uid';
+    var toExisted = 'to-uid-exist';
+    var from = 'from-uid';
+    var action = ACTION.LIKE_MY_LOOK;
+    var look = 'look-id';
+
 	describe('.add()', function() {
-		var to = 'to-uid';
-		var toExisted = 'to-uid-exist';	
-		var from = 'from-uid';
-		var action = ACTION.LIKE_MY_LOOK;
-		var look = 'look-id';
 
 		before(function(done){
 			UserNotification.create({_id: toExisted, notifications: [{from: from, action: ACTION.LIKE_MY_TIP, look: look}]}, function(err, doc) {
@@ -64,4 +67,50 @@ describe('Notification', function() {
             });
         });
 	});
+    
+    describe('.read()', function () {
+        before(function (done) {
+            UserNotification.add(from, to, ACTION.LIKE_MY_TIP, look, function(err, num) {
+                should.not.exist(err);
+                num.should.be.exactly(1);
+                done();
+            });
+        });
+
+        after(function () {
+            UserNotification.remove({_id: to}).exec();
+        });
+
+        it('should be success when pass only with _id', function (done) {
+            async.waterfall([
+                function (callback) {
+                    UserNotification.gets(to, 0, 1, callback);
+                },
+                function (notification, callback) {
+                    notification.should.have.property('notifications').with.lengthOf(1);
+                    UserNotification.read(to, [notification.notifications[0]._id], callback);
+                }
+            ], function (err, num) {
+                should.not.exist(err);
+                num.should.be.exactly(1);
+                done();
+            });
+        });
+
+        it('should be fail when the _id is not exist', function (done) {
+            UserNotification.read(to, [new mongoose.Types.ObjectId], function (err, num) {
+                should.not.exist(err);
+                num.should.be.exactly(0);
+                done();
+            });
+        });
+
+        it('should be fail when the user without any notification', function (done) {
+            UserNotification.read(from, [new mongoose.Types.ObjectId], function (err, num) {
+                should.not.exist(err);
+                num.should.be.exactly(0);
+                done();
+            });
+        });
+    })
 });

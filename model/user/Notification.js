@@ -53,7 +53,7 @@ UserNotification.static('add', function(from, to, action, look, callback) {
 	);
 });
 
-UserNotification.static('gets', function(uid, start, num) {
+UserNotification.static('gets', function(uid, start, num, callback) {
 	if (start < 0 || num <= 0) {
 		return callback(null, null);
 	}
@@ -70,4 +70,22 @@ UserNotification.static('gets', function(uid, start, num) {
 		callback
 	);
 });
+
+UserNotification.static('read', function (uid, nids, callback) {
+    this.update(
+        {
+            _id: uid,
+            'notifications._id': {
+		    $in: nids
+	    }
+        },
+        {
+            $set: {
+                'notifications.$.isRead': true
+            }
+        },
+        callback
+    );
+});
+
 module.exports = mongoose.model('UserNotification', UserNotification);
