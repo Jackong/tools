@@ -1,25 +1,25 @@
 require.config({
 	paths: {
 		angular: [
-            //'http://cdn.bootcss.com/angular.js/1.2.16/angular.min',
+            'http://cdn.bootcss.com/angular.js/1.2.16/angular.min',
             'libs/angular/angular'
         ],
         angularRoute: [
-            //'http://cdn.bootcss.com/angular.js/1.2.16/angular-route.min',
+            'http://cdn.bootcss.com/angular.js/1.2.16/angular-route.min',
             'libs/angular-route/angular-route'
         ],
 		angularResource: [
-            //'http://cdn.bootcss.com/angular.js/1.2.16/angular-resource.min',
+            'http://cdn.bootcss.com/angular.js/1.2.16/angular-resource.min',
             'libs/angular-resource/angular-resource'
         ],
         ngTagsInput: 'libs/bootstrap-tagsinput/dist/bootstrap-tagsinput-angular',
         ngTagsInputOrigin: 'libs/bootstrap-tagsinput/dist/bootstrap-tagsinput.min',
         jquery: [
-            //'http://cdn.bootcss.com/jquery/1.10.2/jquery.min',
+            'http://cdn.bootcss.com/jquery/1.10.2/jquery.min',
             'libs/jquery/jquery.min'
         ],
         bootstrap: [
-            //'http://cdn.bootcss.com/twitter-bootstrap/3.0.3/js/bootstrap.min',
+            'http://cdn.bootcss.com/twitter-bootstrap/3.0.3/js/bootstrap.min',
             'libs/bootstrap/dist/js/bootstrap.min'
         ],
         socialLogin: "http://openapi.baidu.com/social/oauth/2.0/connect/login?redirect_uri="

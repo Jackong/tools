@@ -6,12 +6,12 @@ body {
 .iNav {
     padding:10px;
 }
-.iNav a {
+.iNav > div > a {
     font-size:12pt;
     color:#ddd;
     text-decoration:none;
 }
-.iNav a:hover {
+.iNav > div > a:hover {
     color:#fff;
 }
 
