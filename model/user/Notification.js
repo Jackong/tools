@@ -59,7 +59,8 @@ UserNotification.static('gets', function(uid, start, num, callback) {
 	}
 	this.findOne(
 		{
-			_id: uid
+			_id: uid,
+			'notifications.isRead': false
 		},
 		{
 			notifications: 
@@ -72,12 +73,16 @@ UserNotification.static('gets', function(uid, start, num, callback) {
 });
 
 UserNotification.static('read', function (uid, nids, callback) {
+    if (!(nids instanceof Array) || nids.length < 0) {
+        return callback('The ids is not an array or empty', 0);
+    }
     this.update(
         {
             _id: uid,
+	        'notifications.isRead': false,
             'notifications._id': {
-		    $in: nids
-	    }
+		        $in: nids
+	        }
         },
         {
             $set: {

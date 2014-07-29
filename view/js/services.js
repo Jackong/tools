@@ -1,10 +1,12 @@
 /**
  * Created by daisy on 14-7-5.
  */
-define(['angular', 'services/look', 'services/user', 'services/setting'], function (angular) {
+define(['angular', 'services/look', 'services/user', 'services/setting', 'services/notification'], function (angular) {
     'use strict';
 
-    return angular.module('iWomen.services', ['ngResource', 'iWomen.services.look', 'iWomen.services.user', 'iWomen.services.setting'])
+    return angular.module('iWomen.services', ['ngResource',
+        'iWomen.services.look', 'iWomen.services.user',
+        'iWomen.services.setting', 'iWomen.services.notification'])
         .factory('Response', function () {
             return {
                 handle: function (scope, callback) {

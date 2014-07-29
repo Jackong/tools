@@ -12,7 +12,7 @@ module.exports = function users(router) {
 		Notification.gets(uid, req.query.page * req.query.num, req.query.num, function(err, notification) {
 			var notifications = [];
 			if (err) {
-				logger.error('notifications not found', uid, err);
+				logger.error('notifications not found', {uid: uid, err: err});
 			} else {
 				notifications = notification.notifications;
 			}
@@ -20,4 +20,17 @@ module.exports = function users(router) {
 			res.ok({notifications: notifications});
 		});
     });
+
+    router.put('/notifications',
+        function readNotifications(req, res) {
+            var uid = UserService.getUid(req, res);
+            Notification.read(uid, req.body.nids, function(err, num) {
+                if (err) {
+                    logger.error('read notification fail', {uid: uid, err: err});
+                    return res.fail();
+                }
+                res.ok();
+            });
+        }
+    );
 };

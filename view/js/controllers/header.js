@@ -1,7 +1,7 @@
 /**
  * Created by daisy on 14-7-5.
  */
-define(['angular', 'services', 'controllers/look'], function (angular) {
+define(['angular', 'services'], function (angular) {
     angular.module('iWomen.controllers.header', ['iWomen.services'])
     .controller('ImageCtrl', function ($scope, LookService) {
             $scope.changeImage = LookService.uploadImage;
@@ -29,25 +29,48 @@ define(['angular', 'services', 'controllers/look'], function (angular) {
                 })
             };
     })
-    .controller('NotificationCtrl', function ($scope) {
-            $scope.num = 1;
-            $scope.popover = function () {
-                var content = '<div class="media">' +
-                    '<a class="pull-left" href="#">' +
-                    '<img class="media-object" src="..." alt="...">' +
-                    '</a>' +
-                    '<div class="media-body">' +
-                    '<h6 class="media-heading">Daisy</h6>' +
-                    '<a href="#/looks/">喜欢了你发布的宝贝</a>' +
-                    '</div>' +
-                    '</div>';
+    .controller('NotificationCtrl', function ($scope, NotificationService) {
+            var action = function (action) {
+                switch (action) {
+                    case 1: return '喜欢了我的小贴士';
+                    case 2: return '评论了我的小贴士';
+                    case 3: return '喜欢了我发的宝贝';
+                    case 4: return '告诉了我哪儿有我想要的宝贝';
+                    case 5: return '想要我发的宝贝';
+                }
+            };
+
+            NotificationService.gets($scope, 0, 10, function (ok, data) {
+                $scope.num = data.notifications.length;
+                if ($scope.num === 0) {
+                    return;
+                }
+                var content = '';
+                for(var idx = 0; idx < $scope.num; idx++) {
+                    var notification = data.notifications[idx];
+                    content += '<div class="media">' +
+                        '<a class="pull-left" href="#/users/'+ notification.from._id +'">' +
+                        '<img class="media-object" src="' + notification.from.avatar + '" alt="">' +
+                        '</a>' +
+                        '<div class="media-body">' +
+                        '<h6 class="media-heading">'+ notification.nick +'</h6>' +
+                        '<a href="#/looks/'+ notification.look +'">' + action(notification.action) + '</a>' +
+                        '</div>' +
+                        '</div>';
+                }
+
                 $('#notification')
                 .popover({
                     html: true,
                     content: content
-                })
-                .popover('toggle');
-                $scope.num = 0;
-            }
+                });
+            });
+
+            $scope.popover = function () {
+                if ($scope.num <= 0) {
+                    return;
+                }
+                $('#notification').popover('toggle');
+            };
     });
 });

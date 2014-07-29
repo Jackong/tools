@@ -1,7 +1,7 @@
 /**
  * Created by daisy on 14-7-5.
  */
-define(['angular', 'services'], function (angular) {
+define(['angular'], function (angular) {
     'use strict';
 
     return angular.module('iWomen.services.setting', ['ngResource', 'iWomen.services'])
