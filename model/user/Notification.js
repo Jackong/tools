@@ -3,6 +3,7 @@
  */
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
+var logger = require('../../common/logger');
 
 /**
  * user._id as _id
@@ -63,9 +64,8 @@ UserNotification.static('gets', function(uid, start, num, callback) {
 			'notifications.isRead': false
 		},
 		{
-			notifications: 
-			{
-				$slice: [start, num]
+			notifications: {
+				$slice: [start, parseInt(num)]
 			}
 		},
         {

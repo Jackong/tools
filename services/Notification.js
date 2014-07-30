@@ -10,10 +10,10 @@ var UserNotification = require('../model/user/Notification');
 var User = require('../model/User');
 
 module.exports = {
-    gets: function (uid, page, num, callback) {
+    gets: function (uid, start, num, callback) {
         async.waterfall([
             function (callback) {
-                UserNotification.gets(uid, page, num, callback);
+                UserNotification.gets(uid, start, num, callback);
             },
             function (doc, callback) {
                 if (!doc || doc.notifications.length === 0) {

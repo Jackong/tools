@@ -49,21 +49,28 @@ define(['angular', 'services'], function (angular) {
                 if ($scope.num === 0) {
                     return;
                 }
-                var content = '';
+                var content = '<ul class="media-list">';
                 for(var idx = 0; idx < $scope.num; idx++) {
                     var notification = $scope.notifications[idx];
-                    content += '<div class="media">' +
+                    content += '<li class="media">' +
                         '<a class="pull-left" href="#/users/'+ notification.from._id +'">' +
-                        '<img class="media-object" src="' + notification.from.avatar + '" alt="">' +
+                        '<img class="media-object img-circle img-responsive" src="' + notification.from.avatar + '" alt="">' +
                         '</a>' +
                         '<div class="media-body">' +
-                        '<h6 class="media-heading">'+ notification.nick +'</h6>' +
+                        '<h6 class="media-heading">'+ notification.from.nick +'</h6>' +
                         '<a href="#/looks/'+ notification.look +'">' + action(notification.action) + '</a>' +
                         '</div>' +
-                        '</div>';
+                        '</li>';
                 }
-
+                content += '</ul>';
                 $('#notification')
+                .on('hidden.bs.popover', function () {
+                    $scope.num = 0;
+/*                    NotificationService.read($scope, $scope.notifications, function (ok, data) {
+
+                    });*/
+                    $scope.$apply();
+                })
                 .popover({
                     html: true,
                     content: content === '' ? '没有新提醒~' : content
@@ -74,10 +81,7 @@ define(['angular', 'services'], function (angular) {
                 if ($scope.num <= 0) {
                     return;
                 }
-                $('#notification').popover('toggle');
-                NotificationService.read($scope, $scope.notifications, function (ok, data) {
-
-                })
+                $('#notification').popover('show');
             };
     });
 });

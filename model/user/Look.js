@@ -48,8 +48,11 @@ UserLook.static('gets', function (uid, start, num, callback) {
         },
         {
             looks: {
-                $slice: [start, num]
+                $slice: [start, parseInt(num)]
             }
+        },
+        {
+            lean: true
         },
         callback
     );

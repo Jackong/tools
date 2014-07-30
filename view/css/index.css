@@ -1,6 +1,11 @@
 body {
 	margin-top: 50px;
-    background-color: #f4a8aa;
+    background-color: #FF9999;
+}
+
+.popover {
+    width:280px;
+    height:300px;
 }
 
 .iNav {
@@ -21,15 +26,15 @@ body {
 
 
 .btn-default {
-    color: #f46cb3;
-    border-color: #f46cb3;
+    color: #FF99CC;
+    border-color: #FF99CC;
 }
 .btn-default:hover {
     color: #f43946;
     border-color: #f43946;
 }
 .icon {
-    color: #f489a5;
+    color: #FF9999;
 }
 
 span, p, h4{
@@ -37,5 +42,5 @@ span, p, h4{
 }
 
 a {
-    color: #f46cb3;
+    color: #FF99CC;
 }
