@@ -49,6 +49,10 @@ define(['angular', 'ngTagsInput'], function (angular) {
     .controller('FashionCtrl', function ($scope, LookService) {
         $scope.view = 'partials/look/list.html';
 
+        LookService.favorites(function (favorites) {
+            $scope.favorites = favorites;
+        });
+
         LookService.gets('fashion', 0, 5, function (looks) {
             $scope.looks = looks;
         });
@@ -126,6 +130,7 @@ define(['angular', 'ngTagsInput'], function (angular) {
                     if (!ok) {
                         return;
                     }
+                    $('#tipModal').modal('hide');
                     for(var idx = 0; idx < $scope.look.favorites.length; idx++) {
                         var favorite = $scope.look.favorites[idx];
                         if (favorite.aspect === $scope.aspect) {

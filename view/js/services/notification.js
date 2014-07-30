@@ -16,7 +16,11 @@ define(['angular'], function (angular) {
                 gets: function (scope, page, num, callback) {
                     api.gets({page: page, num: num}, Response.handle(scope, callback));
                 },
-                read: function (scope, nids, callback) {
+                read: function (scope, notifications, callback) {
+                    var nids = [];
+                    for(var idx = 0; idx < notifications.length; idx++) {
+                        nids.push(notifications[idx]._id);
+                    }
                     api.read({nids: nids}, Response.handle(scope, callback));
                 }
             }

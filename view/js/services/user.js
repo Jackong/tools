@@ -11,7 +11,8 @@ define(['angular'], function (angular) {
                     method: 'GET'
                 },
                 logout: {
-                    method: 'PUT'
+                    method: 'PUT',
+                    url: 'api/accounts/logout'
                 }
             })
         })

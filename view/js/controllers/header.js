@@ -24,8 +24,11 @@ define(['angular', 'services'], function (angular) {
             };
             
             $scope.logout = function () {
-                UserService.logout(function () {
+                UserService.logout(function (ok) {
                     $rootScope.isLogin = false;
+                    if (ok) {
+                        $('#settingModal').modal('hide');
+                    }
                 })
             };
     })
@@ -41,13 +44,14 @@ define(['angular', 'services'], function (angular) {
             };
 
             NotificationService.gets($scope, 0, 10, function (ok, data) {
-                $scope.num = data.notifications.length;
+                $scope.notifications = data.notifications;
+                $scope.num = $scope.notifications.length;
                 if ($scope.num === 0) {
                     return;
                 }
                 var content = '';
                 for(var idx = 0; idx < $scope.num; idx++) {
-                    var notification = data.notifications[idx];
+                    var notification = $scope.notifications[idx];
                     content += '<div class="media">' +
                         '<a class="pull-left" href="#/users/'+ notification.from._id +'">' +
                         '<img class="media-object" src="' + notification.from.avatar + '" alt="">' +
@@ -62,7 +66,7 @@ define(['angular', 'services'], function (angular) {
                 $('#notification')
                 .popover({
                     html: true,
-                    content: content
+                    content: content === '' ? '没有新提醒~' : content
                 });
             });
 
@@ -71,6 +75,9 @@ define(['angular', 'services'], function (angular) {
                     return;
                 }
                 $('#notification').popover('toggle');
+                NotificationService.read($scope, $scope.notifications, function (ok, data) {
+
+                })
             };
     });
 });
