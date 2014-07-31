@@ -1,22 +1,22 @@
-<div class="col-xs-12 navbar-default navbar-fixed-top">
+<div ng-show="showNav" class="col-xs-12 navbar-default navbar-fixed-top">
     <div class="row iNav">
         <div class="col-xs-4 text-center">
-            <a href="" class="iMenu" ng-click="requireLogin() && (setting='partials/setting.html')" data-toggle="modal" data-target="#settingModal">
+            <a href="" class="iMenu" ng-click="requireLogin() && (modal='partials/setting.html')" data-toggle="modal" data-target="#settingModal">
                 <li class="glyphicon glyphicon-th"></li>
             </a>
         </div>
         <div ng-controller="NotificationCtrl" class="col-xs-4 text-center">
-            <a href="" tabindex="0" id="notification" class="iMenu" ng-click="requireLogin() && popover()" data-placement="bottom" title="提醒" data-trigger="focus">
-                <li class="glyphicon glyphicon-bell"><span ng-if="num" class="badge" style="background-color: #f48fbe">{{num}}</span></li>
+            <a href="" tabindex="0" id="notification" class="iMenu" ng-click="requireLogin() && popover('notification')" data-placement="bottom" title="提醒" data-trigger="focus">
+                <li class="glyphicon glyphicon-bell"><span ng-if="num" class="badge" >{{num}}</span></li>
             </a>
         </div>
         <div ng-controller="ImageCtrl" class="col-xs-4 text-center">
-            <a class='glyphicon glyphicon-camera' ng-click="requireLogin()" href='javascript:;' style="color: #838383;">
+            <a class='glyphicon glyphicon-camera' ng-click="requireLogin()" href='javascript:;' style="color: #fff;">
                 <input ng-show="isLogin" type="file" style='position:absolute;z-index:2;top:0;left:0;filter: alpha(opacity=0);-ms-filter:"progid:DXImageTransform.Microsoft.Alpha(Opacity=0)";opacity:0;background-color:transparent;color:transparent;' name="image" onchange="angular.element(this).scope().changeImage(this)"  size="40"/>
             </a>
         </div>
     </div>
 </div>
 
-<div ng-include="setting"></div>
+<div ng-include="modal"></div>
 <div ng-include="'partials/look/publish.html'"></div>

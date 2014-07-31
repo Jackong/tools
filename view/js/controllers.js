@@ -1,15 +1,18 @@
 /**
  * Created by daisy on 14-7-5.
  */
-define(['angular', 'controllers/look', 'controllers/header', 'services'], function (angular) {
+define(['angular', 'controllers/look', 'controllers/mine', 'controllers/header', 'services'], function (angular) {
     'use strict';
     return angular.module('iWomen.controllers',
-        ['iWomen.services', 'iWomen.controllers.look', 'iWomen.controllers.header']
+        ['iWomen.services', 'iWomen.controllers.look', 'iWomen.controllers.mine', 'iWomen.controllers.header']
     )
     .controller('RootCtrl', function ($rootScope, UserService) {
         UserService.getMyInfo(function (user) {
             $rootScope.isLogin = (user !== null && typeof user !== 'undefined');
         });
+        $rootScope.popover = function (id) {
+            $('#' + id).popover('show');
+        };
         $rootScope.requireLogin = function () {
             if ($rootScope.isLogin) {
                 return true;
@@ -20,11 +23,9 @@ define(['angular', 'controllers/look', 'controllers/header', 'services'], functi
             return false;
         };
         var lastScrollY = 0;
-        $rootScope.showFooter = true;
-        $rootScope.listenScroll = true;
+        $rootScope.showNav = true;
         $rootScope.scroll = function () {
-            var isShow = (lastScrollY >= window.pageYOffset);
-            $rootScope.showFooter = isShow;
+            $rootScope.showNav = (lastScrollY - window.pageYOffset > 0);
             lastScrollY = window.pageYOffset;
             $rootScope.$apply();
         };

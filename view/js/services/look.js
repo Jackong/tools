@@ -46,7 +46,24 @@ define(['angular', 'angularResource'], function (angular) {
         })
         .factory('LookService', function ($http, LookResource, $cacheFactory, Response) {
             var onUpload = null;
+            var listType = null;
             return {
+                setType: function (type) {
+                    listType = type;
+                },
+                gets: function (page, num, callabck) {
+                    var cache = $cacheFactory.get('looks');
+                    if (!cache) {
+                        cache = $cacheFactory('looks');
+                    }
+                    LookResource.gets({type: listType, page: page, num: num}, function (res) {
+                        var looks = res.data.looks;
+                        angular.forEach(looks, function(look, key) {
+                            cache.put(look._id, look);
+                        });
+                        callabck(looks);
+                    });
+                },
                 uploadImage: function (elem) {
                     var fd = new FormData();
                     angular.forEach(elem.files, function (file) {
@@ -93,19 +110,6 @@ define(['angular', 'angularResource'], function (angular) {
                         var cache = $cacheFactory.get('looks');
                         callback(cache.put(lookId, data.look));
                     }));
-                },
-                gets: function (type, page, num, callabck) {
-                    var cache = $cacheFactory.get('looks');
-                    if (!cache) {
-                        cache = $cacheFactory('looks');
-                    }
-                    LookResource.gets({type: type, page: page, num: num}, function (res) {
-                        var looks = res.data.looks;
-                        angular.forEach(looks, function(look, key) {
-                            cache.put(look._id, look);
-                        });
-                        callabck(looks);
-                    });
                 },
                 getById: function (lookId, callback) {
                     var cache = $cacheFactory.get('looks');

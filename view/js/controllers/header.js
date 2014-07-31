@@ -32,6 +32,9 @@ define(['angular', 'services'], function (angular) {
                 })
             };
     })
+    .controller('AboutCtrl', function ($scope) {
+            $('#aboutModal').modal('show');
+    })
     .controller('NotificationCtrl', function ($scope, NotificationService) {
             var action = function (action) {
                 switch (action) {
@@ -57,8 +60,8 @@ define(['angular', 'services'], function (angular) {
                         '<img class="media-object img-circle img-responsive" src="' + notification.from.avatar + '" alt="">' +
                         '</a>' +
                         '<div class="media-body">' +
-                        '<h6 class="media-heading">'+ notification.from.nick +'</h6>' +
-                        '<a href="#/looks/'+ notification.look +'">' + action(notification.action) + '</a>' +
+                        '<h5 class="media-heading">'+ notification.from.nick +'</h5>' +
+                        '<a class="pull-left" href="#/looks/'+ notification.look +'">' + action(notification.action) + '</a>' +
                         '</div>' +
                         '</li>';
                 }
@@ -76,12 +79,5 @@ define(['angular', 'services'], function (angular) {
                     content: content === '' ? '没有新提醒~' : content
                 });
             });
-
-            $scope.popover = function () {
-                if ($scope.num <= 0) {
-                    return;
-                }
-                $('#notification').popover('show');
-            };
     });
 });

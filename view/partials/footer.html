@@ -1,23 +1,30 @@
-<footer ng-show="showFooter">
+<footer ng-show="showNav">
     <div class="col-xs-12 navbar-default navbar-fixed-bottom">
         <div class="row iNav">
-            <div class="col-xs-4 text-center">
-                <a href="#/newest" style="color: #f489a5;">
+            <div class="col-xs-4 text-center iMenu">
+                <a href="#/newest">
                     <li class="glyphicon glyphicon-time"></li>
                     <br/>新潮
                 </a>
             </div>
-            <div class="col-xs-4 text-center">
-                <a href="#/fashion" style="color: #f489a5;">
+            <div class="col-xs-4 text-center iMenu">
+                <a href="#/fashion">
                     <li class="glyphicon glyphicon-signal"></li>
                     <br/>时尚
                 </a>
             </div>
-            <div class="col-xs-4 text-center">
-                <a href="#/mine" ng-click="requireLogin()" style="color: #f489a5;">
+            <div class="col-xs-4 text-center btn-group dropup iMenu">
+                <a href="" class="dropdown-toggle" data-toggle="dropdown" ng-click="requireLogin()">
                     <li class="glyphicon glyphicon-user"></li>
                     <br/>我的
                 </a>
+                <ul class="dropdown-menu pull-right" role="menu">
+                    <li><a href="#/wants">想要的</a></li>
+                    <li class="divider"></li>
+                    <li><a href="#/likes">喜欢的</a></li>
+                    <li class="divider"></li>
+                    <li><a href="#/tips">知道的</a></li>
+                </ul>
             </div>
         </div>
     </div>

@@ -22,8 +22,51 @@ var FavoriteService = require('../services/Favorite');
 var favorites = require('../config/look/favorites');
 
 module.exports = function (router) {
+    router.get('/looks/newest',
+        router.checker.query('page'),
+        router.checker.query('num'),
+        function (req, res) {
+            var page = req.query.page;
+            var num = req.query.num;
+            LookService.getFashion(page * num, num, function (err, looks) {
+                res.ok({looks: looks});
+            });
+        });
 
     router.get('/looks/fashion',
+        router.checker.query('page'),
+        router.checker.query('num'),
+        function (req, res) {
+            var page = req.query.page;
+            var num = req.query.num;
+            LookService.getFashion(page * num, num, function (err, looks) {
+                res.ok({looks: looks});
+            });
+        });
+
+    router.get('/looks/wants',
+        router.checker.query('page'),
+        router.checker.query('num'),
+        function (req, res) {
+            var page = req.query.page;
+            var num = req.query.num;
+            LookService.getFashion(page * num, num, function (err, looks) {
+                res.ok({looks: looks});
+            });
+        });
+
+    router.get('/looks/likes',
+        router.checker.query('page'),
+        router.checker.query('num'),
+        function (req, res) {
+            var page = req.query.page;
+            var num = req.query.num;
+            LookService.getFashion(page * num, num, function (err, looks) {
+                res.ok({looks: looks});
+            });
+        });
+
+    router.get('/looks/tips',
         router.checker.query('page'),
         router.checker.query('num'),
         function (req, res) {

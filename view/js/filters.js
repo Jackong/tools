@@ -25,7 +25,11 @@ define(['angular'], function (angular) {
                     return '前天';
                 }
                 var date = new Date(time);
-                return date.getFullYear() + '年' + date.getMonth() + '月' + date.getDate();
+                var current = new Date(now);
+                if (current.getFullYear() === date.getFullYear()) {
+                    return date.getMonth() + '月' + date.getDate() + '日';
+                }
+                return date.getFullYear() + '年' + date.getMonth() + '月' + date.getDate() + '日';
             }
         }])
         .filter('formatAvatar', [function () {

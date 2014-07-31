@@ -1,6 +1,4 @@
-<div ng-include="'partials/header.html'"></div>
-
-<div class="row">
+<div class="row" ng-controller="LookListCtrl">
     <div ng-repeat="look in looks" class="col-sm-12 col-md-6 col-lg-4">
         <div class="thumbnail">
             <div ng-include="'partials/look/publisher.html'"></div>
@@ -26,5 +24,3 @@
         </div>
     </div>
 </div>
-
-<div ng-include="'partials/footer.html'"></div>

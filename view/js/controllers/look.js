@@ -5,6 +5,12 @@ define(['angular', 'ngTagsInput'], function (angular) {
     angular.module('iWomen.controllers.look', [
         'bootstrap-tagsinput'
     ])
+    .controller('FashionCtrl', function ($scope, LookService) {
+        LookService.setType('fashion');
+    })
+    .controller('NewestCtrl', function ($scope, LookService) {
+        LookService.setType('newest');
+    })
     .controller('PublishCtrl', function ($scope, LookService) {
             LookService.getImage(function (image) {
                 if (image === null) {
@@ -46,14 +52,14 @@ define(['angular', 'ngTagsInput'], function (angular) {
                 );
             };
     })
-    .controller('FashionCtrl', function ($scope, LookService) {
-        $scope.view = 'partials/look/list.html';
+    .controller('LookListCtrl', function ($scope, LookService) {
+        var NUM = 5;
+        var start = 0;
 
         LookService.favorites(function (favorites) {
             $scope.favorites = favorites;
         });
-
-        LookService.gets('fashion', 0, 5, function (looks) {
+        LookService.gets(0, NUM, function (looks) {
             $scope.looks = looks;
         });
 
@@ -65,8 +71,6 @@ define(['angular', 'ngTagsInput'], function (angular) {
         };
     })
     .controller('LookDetailCtrl', function ($scope, $routeParams, LookService) {
-            $scope.view = 'partials/look/detail.html?v=3';
-
             var lookId = $routeParams.lookId;
 
             LookService.favorites(function (favorites) {
