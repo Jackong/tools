@@ -19,17 +19,9 @@ define(['angular', 'angularRoute', 'controllers'], function (angular) {
                     templateUrl: 'partials/look.html',
                     controller: 'LookDetailCtrl'
                 })
-                .when('/wants', {
-                    templateUrl: 'partials/mine/wants.html',
-                    controller: 'WantsCtrl'
-                })
-                .when('/likes', {
-                    templateUrl: 'partials/mine/likes.html',
-                    controller: 'LikesCtrl'
-                })
-                .when('/tips', {
-                    templateUrl: 'partials/mine/tips.html',
-                    controller: 'TipsCtrl'
+                .when('/mine', {
+                    templateUrl: 'partials/user.html',
+                    controller: 'UserCtrl'
                 })
                 .otherwise({redirectTo: '/fashion'});
         }]);
