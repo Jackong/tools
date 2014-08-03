@@ -48,9 +48,10 @@ module.exports = function (router) {
         router.checker.query('page'),
         router.checker.query('num'),
         function (req, res) {
+            var uid = UserService.getUid(req, res);
             var page = req.query.page;
             var num = req.query.num;
-            LookService.getFashion(page * num, num, function (err, looks) {
+            LookService.getMyWants(uid, page * num, num, function (err, looks) {
                 res.ok({looks: looks});
             });
         });
@@ -59,9 +60,11 @@ module.exports = function (router) {
         router.checker.query('page'),
         router.checker.query('num'),
         function (req, res) {
+            var uid = UserService.getUid(req, res);
+
             var page = req.query.page;
             var num = req.query.num;
-            LookService.getFashion(page * num, num, function (err, looks) {
+            LookService.getMyLikes(uid, page * num, num, function (err, looks) {
                 res.ok({looks: looks});
             });
         });
@@ -70,9 +73,11 @@ module.exports = function (router) {
         router.checker.query('page'),
         router.checker.query('num'),
         function (req, res) {
+            var uid = UserService.getUid(req, res);
+
             var page = req.query.page;
             var num = req.query.num;
-            LookService.getFashion(page * num, num, function (err, looks) {
+            LookService.getMyTips(uid, page * num, num, function (err, looks) {
                 res.ok({looks: looks});
             });
         });

@@ -20,6 +20,29 @@ var NotificationService = require('../services/Notification');
 
 Look.onLike(NotificationService.onLike);
 
+var perfectFavorites = function(looks, callback) {
+    async.map(looks, function (look, callback) {
+        if (look.favorites.length <= 0) {
+            return callback(null, look);
+        }
+        Favorite.perfect(look._id, look.favorites, function (err, favorites) {
+            if (err) {
+                logger.error('perfect favorites', err);
+                favorites = [];
+            }
+            look.favorites = favorites;
+            callback(null, look);
+        });
+    }, callback)
+};
+
+var calcLikeCount = function (looks, callback) {
+    async.map(looks, function (look, callback) {
+        look.likeCount = 0;//todo
+        callback(null, look);
+    }, callback);
+};
+
 module.exports = {
     firstPublish: function (look, callback) {
         async.parallel({
@@ -138,27 +161,13 @@ module.exports = {
                 function perfectDetailAndfilterNull(publisherMap, callback) {
                     async.filter(looks, function (look, callback) {
                         look.publisher = publisherMap[look.publisher];
-                        look.likeCount = 0;//todo query like count map
                         callback(look.publisher);
                     }, function (looks) {
                         callback(null, looks);
                     });
                 },
-                function perfectFavorites(looks, callback) {
-                    async.map(looks, function (look, callback) {
-                        if (look.favorites.length <= 0) {
-                            return callback(null, look);
-                        }
-                        Favorite.perfect(look._id, look.favorites, function (err, favorites) {
-                            if (err) {
-                                logger.error('perfect favorites', err);
-                                favorites = [];
-                            }
-                            look.favorites = favorites;
-                            callback(null, look);
-                        });
-                    }, callback)
-                }
+                calcLikeCount,
+                perfectFavorites
             ], callback);
         });
     },
@@ -169,7 +178,7 @@ module.exports = {
         this.getMyLooks(uid, UserLike, start, num, callback);
     },
     getMyTips: function (uid, start, num, callback) {
-        this.getMyLooks(uid, start, num, callback);
+        this.getMyLooks(uid, UserTip, start, num, callback);
     },
     getMyLooks: function (uid, UserLook, start, num, callback) {
         async.waterfall([
@@ -181,7 +190,9 @@ module.exports = {
                     return callback(null, []);
                 }
                 Look.gets(userLook.looks, callback);
-            }
+            },
+            calcLikeCount,
+            perfectFavorites
         ], callback)
     },
     getDetail: function (id, callback) {
