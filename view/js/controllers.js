@@ -7,7 +7,11 @@ define(['angular', 'controllers/look', 'controllers/user', 'controllers/header',
         ['iWomen.services', 'iWomen.controllers.look', 'iWomen.controllers.user', 'iWomen.controllers.header']
     )
     .controller('RootCtrl', function ($rootScope, UserService) {
+        $rootScope.isMe = function (uid) {
+            return $rootScope.myId === uid;
+        };
         UserService.getMyInfo(function (user) {
+            $rootScope.myId = user._id;
             $rootScope.isLogin = (user !== null && typeof user !== 'undefined');
         });
         $rootScope.popover = function (id) {

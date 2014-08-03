@@ -13,8 +13,10 @@ define(['angular', 'services', 'services/look', 'services/user'], function (angu
 
             $scope.uid = $routeParams.uid;
             UserService.getUser($scope.uid, function (user) {
-                console.log(user);
                 $scope.user = user;
             });
+        })
+        .controller('ProfileCtrl', function ($scope, UserService) {
+
         });
 });
