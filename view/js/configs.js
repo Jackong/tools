@@ -19,7 +19,7 @@ define(['angular', 'angularRoute', 'controllers'], function (angular) {
                     templateUrl: 'partials/look.html',
                     controller: 'LookDetailCtrl'
                 })
-                .when('/mine', {
+                .when('/users/:uid', {
                     templateUrl: 'partials/user.html',
                     controller: 'UserCtrl'
                 })

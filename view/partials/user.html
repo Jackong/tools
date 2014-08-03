@@ -1,4 +1,22 @@
 <div ng-include="'partials/header.html'"></div>
+
+<div class="media">
+    <a class="pull-left" href="">
+        <img width="70" height="70" class="media-object img-circle img-responsive" ng-src="{{user.avatar | formatAvatar}}">
+    </a>
+    <div class="media-body">
+        <h4 class="media-heading">{{user.nick | formatNick}}</h4>
+        <p class="glyphicon glyphicon-map-marker">{{user.city | formatCity}}</p>
+        <p ng-if="user.webSite">
+            <a href="{{user.webSite}}" class="glyphicon glyphicon-link">个人主页</a>
+        </p>
+        <p ng-if="user.intro">{{user.intro}}</p>
+        <button class="btn btn-default pull-right">编辑资料</button>
+    </div>
+</div>
+
+<hr/>
+
 <div class="btn-group btn-group-justified">
     <div class="btn-group">
         <button type="button" class="btn btn-default" ng-click="change('wants')">想要的</button>

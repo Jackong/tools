@@ -69,7 +69,11 @@ User.static('getOne', function (uid, callback) {
         },
         {
             nick: 1,
-            avatar: 1
+            avatar: 1,
+            city: 1,
+            intro: 1,
+            webSite: 1,
+            points: 1
         },
         {
             lean: true

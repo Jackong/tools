@@ -39,12 +39,17 @@ define(['angular'], function (angular) {
         }])
         .filter('formatNick', [function () {
             return function (nick) {
-                return nick ? nick : 'Daisy';
+                return nick ? nick : '匿名';
             }
         }])
         .filter('formatImage', [function () {
             return function (image) {
                 return (image && image.length > 5) ? image : 'http://www.placehold.it/300x200/EFEFEF/AAAAAA&text=iWomen';
+            }
+        }])
+        .filter('formatCity', [function () {
+            return function (city) {
+                return (city && city.length > 0) ? city: '未知';
             }
         }]);
 });

@@ -89,6 +89,7 @@ Look.static('gets', function (lookIds, callback) {
             isValid: true
         },
         {
+            publisher: 1,
             image: 1,
             tags: 1,
             description: 1,

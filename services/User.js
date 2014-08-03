@@ -89,7 +89,7 @@ module.exports = {
     },
     getUserInfo: function (uid, callback) {
         if (!uid) {
-            return callback('auth id or uid is valid');
+            return callback('uid is valid');
         }
         User.getOne(uid, callback);
     }

@@ -20,6 +20,30 @@ var NotificationService = require('../services/Notification');
 
 Look.onLike(NotificationService.onLike);
 
+var perfectPublisher = function (looks, callback) {
+    if (looks.length <= 0) {
+        return callback('looks is empty', looks);
+    }
+    async.waterfall([
+        function makePublisherIds(callback) {
+            async.map(looks, function (look, callback) {
+                callback(null, look.publisher);
+            }, callback);
+        },
+        function makePublisherMap(publisherIds, callback) {
+            User.perfect(publisherIds, callback);
+        },
+        function perfectDetailAndfilterNull(publisherMap, callback) {
+            async.filter(looks, function (look, callback) {
+                look.publisher = publisherMap[look.publisher];
+                callback(look.publisher);
+            }, function (looks) {
+                callback(null, looks);
+            });
+        }
+    ], callback);
+};
+
 var perfectFavorites = function(looks, callback) {
     async.map(looks, function (look, callback) {
         if (look.favorites.length <= 0) {
@@ -145,31 +169,14 @@ module.exports = {
         });
     },
     getFashion: function (start, num, callback) {
-        Look.getFashion(parseInt(start), parseInt(num), function (err, looks) {
-            if (null !== err || looks.length <= 0) {
-                return callback(err, looks);
-            }
-            async.waterfall([
-                function makePublisherIds(callback) {
-                    async.map(looks, function (look, callback) {
-                        callback(null, look.publisher);
-                    }, callback);
-                },
-                function makePublisherMap(publisherIds, callback) {
-                    User.perfect(publisherIds, callback);
-                },
-                function perfectDetailAndfilterNull(publisherMap, callback) {
-                    async.filter(looks, function (look, callback) {
-                        look.publisher = publisherMap[look.publisher];
-                        callback(look.publisher);
-                    }, function (looks) {
-                        callback(null, looks);
-                    });
-                },
-                calcLikeCount,
-                perfectFavorites
-            ], callback);
-        });
+        async.waterfall([
+            function (callback) {
+                Look.getFashion(parseInt(start), parseInt(num), callback);
+            },
+            perfectPublisher,
+            calcLikeCount,
+            perfectFavorites
+        ], callback);
     },
     getMyWants: function (uid, start, num, callback) {
         this.getMyLooks(uid, UserWant, start, num, callback);
@@ -191,6 +198,7 @@ module.exports = {
                 }
                 Look.gets(userLook.looks, callback);
             },
+            perfectPublisher,
             calcLikeCount,
             perfectFavorites
         ], callback)
