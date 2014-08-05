@@ -4,25 +4,13 @@
 define(['angular', 'angularRoute', 'controllers'], function (angular) {
     'use strict';
 
-    return angular.module('iWomen.configs', ['ngRoute', 'iWomen.controllers'])
+    return angular.module('seed.configs', ['ngRoute', 'seed.controllers'])
         .config(['$routeProvider', function ($routeProvider) {
             $routeProvider
-                .when('/fashion', {
-                    templateUrl: 'partials/fashion.html',
-                    controller: 'FashionCtrl'
-                })
-                .when('/newest', {
-                    templateUrl: 'partials/newest.html',
-                    controller: 'NewestCtrl'
-                })
-                .when('/looks/:lookId', {
-                    templateUrl: 'partials/look.html',
-                    controller: 'LookDetailCtrl'
-                })
                 .when('/users/:uid', {
                     templateUrl: 'partials/user.html',
                     controller: 'UserCtrl'
                 })
-                .otherwise({redirectTo: '/fashion'});
+                .otherwise({redirectTo: '/'});
         }]);
 });

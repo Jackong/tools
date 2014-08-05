@@ -1,8 +1,8 @@
 {
-    "name": "women",
+    "name": "seed",
     "version": "1.0.0",
     "author": "jackong",
-    "description": "women",
+    "description": "seed project",
     "private": true,
     "scripts": {
         "start": "supervisor server.js"

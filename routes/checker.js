@@ -5,15 +5,6 @@
 var logger = require('../common/logger');
 
 var map = {
-    account: /^[A-Za-z0-9]+([-_.][A-Za-z0-9]+)*@([A-Za-z0-9]+[-.])+[A-Za-z0-9]{2,5}$/,
-    password: /^[0-9a-zA-Z]{32}$/,
-    page: /^[0-9]+$/,
-    num: /^[1-9][0-9]?$/,
-    image: /^\/tmp\/.*$/,
-    lookId: /^[0-9A-Fa-f]{32}$/,
-    aspect: require('../config/look/favorites'),
-    tipId: /^[0-9a-fA-F]{24}$/,
-    content: /.+/
 };
 
 var check = function (req, res, next, from, name, defaultValue) {

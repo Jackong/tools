@@ -1,7 +1,0 @@
-{
-    "apiKey": "2o6HoeD4IBHsXTQWd023VLTh",
-    "secretKey": "ks6YqoLoZGv1nnsH24v5UjHpCxu1Re5x",
-    "tokenUrl": "https://openapi.baidu.com/social/oauth/2.0/token",
-    "grantType": "authorization_code",
-    "userInfoUrl": "https://openapi.baidu.com/social/api/2.0/user/info"
-}

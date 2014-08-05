@@ -9,10 +9,8 @@ define([
 
     // Declare app level module which depends on filters, and services
 
-    return angular.module('iWomen', [
-        'iWomen.configs',
-        'iWomen.controllers',
-        'iWomen.services',
-        'iWomen.filters'
+    return angular.module('seed', [
+        'seed.configs',
+        'seed.controllers'
     ]);
 });
