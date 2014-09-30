@@ -1,11 +1,11 @@
 {
-    "name": "seed",
+    "name": "service4tools",
     "version": "1.0.0",
     "author": "jackong",
-    "description": "seed project",
+    "description": "service for tools",
     "private": true,
     "scripts": {
-        "start": "supervisor server.js"
+        "start": "node server.js"
     },
     "devDependencies": {
         "should": "~3.3.2",
