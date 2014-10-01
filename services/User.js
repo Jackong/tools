@@ -45,7 +45,7 @@ module.exports = {
                 async.filter(access, function (item, callback) {
                     callback(item.tag == tag);
                 }, function (results) {
-                    callback(results.length > 0 ? null : {msg: '该账号没有这项权限', condition: condition, actual: user}, access);
+                    callback(results.length > 0 ? null : {msg: '该账号没有这项权限', condition: condition, access: access}, access);
                 });
             },
             function (access, callback) {
@@ -80,7 +80,7 @@ module.exports = {
                 async.filter(access, function (item, callback) {
                     callback(item.tag == tag);
                 }, function (results) {
-                    callback(results.length > 0 ? null : {msg: '该账号没有这项权限', condition: condition, actual: user}, access);
+                    callback(results.length > 0 ? null : {msg: '该账号没有这项权限', condition: condition, access: access}, access);
                 });
             },
             function (access, callback) {
