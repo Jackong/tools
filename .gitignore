@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 .idea
 .baeapp
 node_modules
@@ -8,6 +9,8 @@ build
 view/images/looks
 view/js/libs/*
 
+=======
+>>>>>>> 54438106c58f283aca8afcd5910c56a45885067f
 # Logs
 logs
 *.log
@@ -30,6 +33,15 @@ coverage
 build/Release
 
 # Dependency directory
+<<<<<<< HEAD
 # Deployed apps should consider commenting this line out:
 # see https://npmjs.org/doc/faq.html#Should-I-check-my-node_modules-folder-into-git
 node_modules
+=======
+# Commenting this out is preferred by some people, see
+# https://www.npmjs.org/doc/misc/npm-faq.html#should-i-check-my-node_modules-folder-into-git-
+node_modules
+
+# Users Environment Variables
+.lock-wscript
+>>>>>>> 54438106c58f283aca8afcd5910c56a45885067f

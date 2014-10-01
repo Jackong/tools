@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 #BAE开发环境：
 ##修改bae_build为:
 nodejs_build()
@@ -38,3 +39,9 @@ bae_build nodejs /home/vagrant/iwomen iwomen.duapp.com
 
 #docker开发环境
 参考（For Mac）：https://www.dockboard.org/boot2docker-together-with-virtualbox-guest-additions/
+=======
+tools
+=====
+
+tools for services
+>>>>>>> 54438106c58f283aca8afcd5910c56a45885067f
