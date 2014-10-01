@@ -1,4 +1,4 @@
-var port = 18080;
+var port = 80;
 global.APP_DIR = __dirname;
 global.APP_VIEW_DIR = __dirname + '/view';
 

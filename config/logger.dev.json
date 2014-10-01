@@ -1,4 +1,4 @@
 {
     "level": "debug",
-    "file": "/var/log/node/iwomen.log"
+    "file": "/var/log/user.log"
 }

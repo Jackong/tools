@@ -1,8 +1,8 @@
 {
     "username":"",
     "password":"",
-    "host":"192.168.59.103",
-    "name":"iwomen",
+    "host":"tools-mongodb",
+    "name":"tools",
     "port":27017,
     "poolSize":5
 }
