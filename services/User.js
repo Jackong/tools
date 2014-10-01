@@ -14,6 +14,7 @@ module.exports = {
      * @param callback
      */
     online: function (condition, callback) {
+        var tag = condition.tag.trim().toLowerCase();
         async.waterfall([
             function (callback) {
                 User.getOne(condition, callback);
@@ -23,7 +24,7 @@ module.exports = {
                     return callback({msg: '账号或密码错误', condition: condition});
                 }
                 async.map(user.access, function (item, callback) {
-                    if (item.tag !== condition.tag.trim().toLowerCase()) {
+                    if (item.tag !== tag) {
                         return callback(null, item);
                     }
                     if (item.expired <= helper.now()) {
@@ -41,6 +42,13 @@ module.exports = {
                 }, callback);
             },
             function (access, callback) {
+                async.filter(access, function (item, callback) {
+                    callback(item.tag == tag);
+                }, function (results) {
+                    callback(results.length > 0 ? null : {msg: '该账号没有这项权限', condition: condition, actual: user}, access);
+                });
+            },
+            function (access, callback) {
                 User.updateAccess(condition, access, callback);
             }
         ], callback);
@@ -51,13 +59,14 @@ module.exports = {
      * @param callback
      */
     offline: function (condition, callback) {
+        var tag = condition.tag.toLowerCase().trim();
         async.waterfall([
             function (callback) {
                 User.getOne(condition, callback);
             },
             function (user, callback) {
                 async.map(user.access, function (item, callback) {
-                    if (item.tag !== condition.tag.toLowerCase().trim()) {
+                    if (item.tag !== tag) {
                         return callback(null);
                     }
                     if (item.expired <= helper.now()) {
@@ -66,6 +75,13 @@ module.exports = {
                     item.token = null;
                     callback(null, item);
                 }, callback);
+            },
+            function (access, callback) {
+                async.filter(access, function (item, callback) {
+                    callback(item.tag == tag);
+                }, function (results) {
+                    callback(results.length > 0 ? null : {msg: '该账号没有这项权限', condition: condition, actual: user}, access);
+                });
             },
             function (access, callback) {
                 User.updateAccess(condition, access, callback);
