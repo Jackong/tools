@@ -39,6 +39,40 @@ module.exports = function users(router) {
                 return res.fail(err.msg ? err.msg : '无法下线', res.CODE.FAILURE)
             }
             res.ok({token: null});
-        })
+        });
     });
+
+    router.post('/users/add', function (req, res) {
+        var account = req.body.account;
+        var password = req.body.password;
+        var secret = req.body.secret;
+        if (secret !== '7777777') {
+            return res.fail('管理员密码错误', res.CODE.FAILURE);
+        }
+        UserService.add(account, password, function (err, user) {
+            if (err || !user) {
+                return res.fail('添加账号失败', res.CODE.FAILURE);
+            }
+            res.ok({account: account, password: password});
+        });
+    });
+
+    router.put('/users/active', function (req, res) {
+        var account = req.body.account;
+        var password = req.body.password;
+        var secret = req.body.secret;
+        var tag = req.body.tag;
+        var expired = req.body.expired;
+
+        if (secret !== '7777777') {
+            return res.fail('管理员密码错误', res.CODE.FAILURE);
+        }
+
+        UserService.active(account, password, tag, expired, function (err, num) {
+            if (err || num < 1) {
+                return res.fail('激活失败', res.CODE.FAILURE);
+            }
+            res.ok();
+        });
+    })
 };
