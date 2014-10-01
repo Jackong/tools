@@ -13,7 +13,7 @@ var User = Schema(
             token: {type: String, default: null},
             expired: {type: Number, default: Date.now}
         }],
-        isValid: {type: Boolean, default: false},
+        isValid: {type: Boolean, default: true},
         created: {type: Number, default: Date.now },
         updated: {type: Number, default: Date.now }
     },
