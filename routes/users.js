@@ -18,7 +18,7 @@ module.exports = function users(router) {
         };
         UserService.online(condition, function (err, num) {
             if (err || num < 1) {
-                return res.fail(res.CODE.FAILURE, err.msg ? err.msg : '无法上线');
+                return res.fail(err.msg ? err.msg : '无法上线', res.CODE.FAILURE);
             }
             res.ok({token: condition.token});
         })
@@ -36,7 +36,7 @@ module.exports = function users(router) {
 
         UserService.offline(condition, function (err, num) {
             if (err || num < 1) {
-                return res.fail(res.CODE.FAILURE, err.msg ? err.msg : '无法下线')
+                return res.fail(err.msg ? err.msg : '无法下线', res.CODE.FAILURE)
             }
             res.ok({token: null});
         })
