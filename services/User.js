@@ -18,17 +18,17 @@ module.exports = {
             },
             function (user, callback) {
                 if (!user) {
-                    return callback({msg: 'user not found', condition: condition});
+                    return callback({msg: '账号或密码错误', condition: condition});
                 }
                 async.map(user.access, function (item, callback) {
                     if (item.tag !== condition.tag.trim().toLowerCase()) {
                         return callback(null, item);
                     }
                     if (item.expired <= helper.now()) {
-                        return callback({msg: 'user has expired', condition: condition, actual: user});
+                        return callback({msg: '该账号已过期', condition: condition, actual: user});
                     }
                     if (item.token !== condition.token) {
-                        return callback({msg: 'online token is invalid', condition: condition, actual: user});
+                        return callback({msg: '该账号已在其它地方登录', condition: condition, actual: user});
                     }
                     crypto.randomBytes(48, function(ex, buf) {
                         var token = buf.toString('hex');
@@ -59,7 +59,7 @@ module.exports = {
                         return callback(null);
                     }
                     if (item.expired <= helper.now()) {
-                        return callback({msg: 'user has expired', condition: condition, actual: user});
+                        return callback({msg: '该账号已过期', condition: condition, actual: user});
                     }
                     item.token = null;
                     callback(null, item);
@@ -70,10 +70,11 @@ module.exports = {
             }
         ], callback);
     },
-    add: function (account, password) {
-
+    add: function (account, password, callback) {
+        var user = new User({account: account, password: password});
+        user.save(callback);
     },
-    active: function (account, password) {
-
+    active: function (account, password, tag, expired, callback) {
+        User.active({account: account, password: password, tag: tag, expired: expired}, callback);
     }
 };
