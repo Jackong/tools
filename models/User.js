@@ -10,7 +10,7 @@ var User = Schema(
         password: String,
         access: [{
             tag: {type: String, lowercase: true, trim: true},
-            token: {type: String, default: null},
+            token: {type: String, default: ''},
             expired: {type: Number, default: Date.now}
         }],
         isValid: {type: Boolean, default: true},
