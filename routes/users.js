@@ -6,10 +6,10 @@ require('../common/mongo');
 var UserService = require('../services/User');
 module.exports = function users(router) {
     router.post('/users/online', function getUser(req, res) {
-        var account = req.body('account');
-        var password = req.body('password');
-        var tag = req.body('tag');
-        var token = req.body('token');
+        var account = req.body.account;
+        var password = req.body.password;
+        var tag = req.body.tag;
+        var token = req.body.token;
         var condition = {
             account: account,
             password: password,
@@ -25,9 +25,9 @@ module.exports = function users(router) {
     });
 
     router.post('/users/offline', function (req, res) {
-        var account = req.body('account');
-        var password = req.body('password');
-        var tag = req.body('tag');
+        var account = req.body.account;
+        var password = req.body.password;
+        var tag = req.body.tag;
         var condition = {
             account: account,
             password: password,
