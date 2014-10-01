@@ -26,7 +26,7 @@ var User = Schema(
 );
 User.static('active', function (user, callback) {
     this.update({
-        _id: user.account,
+        _id: user._id,
         password: user.password
     }, {
         $push: {
@@ -40,7 +40,7 @@ User.static('active', function (user, callback) {
 
 User.static('getOne', function (condition, callback) {
     this.findOne({
-            _id: condition.account,
+            _id: condition._id,
             password: condition.password,
             isValid: true
         },
@@ -56,7 +56,7 @@ User.static('getOne', function (condition, callback) {
 
 User.static('updateAccess', function (condition, access, callback) {
     this.update({
-            _id: condition.account,
+            _id: condition._id,
             password: condition.password
         },
         {

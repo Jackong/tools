@@ -81,7 +81,7 @@ module.exports = function users(router) {
                     tag: tag,
                     expired: expired,
                     err: err,
-                    user: user
+                    num: num
                 });
                 return res.fail('激活失败', res.CODE.FAILURE);
             }
