@@ -11,14 +11,14 @@ module.exports = function users(router) {
         var tag = req.body.tag;
         var token = req.body.token;
         var condition = {
-            account: account,
+            _id: account,
             password: password,
             tag: tag,
             token: token
         };
         UserService.online(condition, function (err, num) {
             if (err || num < 1) {
-                logger.error({err: err, num: num});
+                logger.error('fail to online', {err: err, num: num});
                 return res.fail(err.msg ? err.msg : '无法上线', res.CODE.FAILURE);
             }
             res.ok({token: condition.token});
@@ -30,14 +30,14 @@ module.exports = function users(router) {
         var password = req.body.password;
         var tag = req.body.tag;
         var condition = {
-            account: account,
+            _id: account,
             password: password,
             tag: tag
         };
 
         UserService.offline(condition, function (err, num) {
             if (err || num < 1) {
-                logger.error({err: err, num: num});
+                logger.error('fail to offline', {err: err, num: num});
                 return res.fail(err.msg ? err.msg : '无法下线', res.CODE.FAILURE)
             }
             res.ok({token: null});
@@ -49,12 +49,12 @@ module.exports = function users(router) {
         var password = req.body.password;
         var secret = req.body.secret;
         if (secret !== '7777777') {
-            logger.error({msg: 'wrong secret', secret: secret});
+            logger.error('wrong secret', {secret: secret});
             return res.fail('管理员密码错误', res.CODE.FAILURE);
         }
         UserService.add(account, password, function (err, user) {
             if (err || !user) {
-                logger.error({msg:'fail to add user', account: account, password: password, err: err, user: user});
+                logger.error('fail to add user', {account: account, password: password, err: err, user: user});
                 return res.fail('添加账号失败', res.CODE.FAILURE);
             }
             res.ok({account: account, password: password});
@@ -69,14 +69,13 @@ module.exports = function users(router) {
         var expired = req.body.expired;
 
         if (secret !== '7777777') {
-            logger.error({msg: 'wrong secret', secret: secret});
+            logger.error('wrong secret', {secret: secret});
             return res.fail('管理员密码错误', res.CODE.FAILURE);
         }
 
         UserService.active(account, password, tag, expired, function (err, num) {
             if (err || num < 1) {
-                logger.error({
-                    msg:'fail to add user',
+                logger.error('fail to add user', {
                     account: account,
                     password: password,
                     tag: tag,

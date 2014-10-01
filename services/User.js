@@ -2,6 +2,8 @@
  * Created by daisy on 14-9-30.
  */
 var async = require('async');
+var crypto = require('crypto');
+
 var User = require('../models/User');
 
 var helper = require('../common/helper');
@@ -71,10 +73,10 @@ module.exports = {
         ], callback);
     },
     add: function (account, password, callback) {
-        var user = new User({account: account, password: password});
+        var user = new User({_id: account, password: password});
         user.save(callback);
     },
     active: function (account, password, tag, expired, callback) {
-        User.active({account: account, password: password, tag: tag, expired: expired}, callback);
+        User.active({_id: account, password: password, tag: tag, expired: expired}, callback);
     }
 };

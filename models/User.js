@@ -3,8 +3,6 @@
  */
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
-var async = require('async');
-var crypto = require('crypto');
 
 var User = Schema(
     {
