@@ -40,7 +40,7 @@ module.exports = function users(router) {
                 logger.error('fail to offline', {err: err, num: num});
                 return res.fail(err.msg ? err.msg : '无法下线', res.CODE.FAILURE)
             }
-            res.ok({token: null});
+            res.ok({token: condition.token});
         });
     });
 

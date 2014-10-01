@@ -72,7 +72,8 @@ module.exports = {
                     if (item.expired <= helper.now()) {
                         return callback({msg: '该账号已过期', condition: condition, actual: user});
                     }
-                    item.token = null;
+                    item.token = '';
+                    condition.token = '';
                     callback(null, item);
                 }, callback);
             },
