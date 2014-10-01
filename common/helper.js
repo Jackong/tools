@@ -3,7 +3,6 @@
  */
 var crypto = require('crypto');
 var system = require('./config')('system');
-var message = require('bae-message');
 var msgConfig = require('../common/config')('message');
 var fs = require('fs');
 
@@ -53,15 +52,6 @@ exports.decrypt = function (crypted) {
     var dec = decipher.update(crypted, 'hex','utf8');
     dec += decipher.final('utf8');
     return dec;
-};
-
-exports.email = function (to, subject, body) {
-    var bae = new message({
-        key: msgConfig.key,
-        secret: msgConfig.secret,
-        queue: msgConfig.queue
-    });
-    bae.mail('no-reply', to, subject, body);
 };
 
 exports.modelMethods = function (methodObj, methods) {
