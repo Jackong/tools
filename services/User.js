@@ -24,7 +24,7 @@ module.exports = {
                     return callback({msg: '账号或密码错误', condition: condition});
                 }
                 async.map(user.access, function (item, callback) {
-                    if (item.tag !== tag) {
+                    if (item && item.tag !== tag) {
                         return callback(null, item);
                     }
                     if (item.expired <= helper.now()) {
@@ -79,7 +79,7 @@ module.exports = {
             },
             function (access, callback) {
                 async.filter(access, function (item, callback) {
-                    callback(item.tag == tag);
+                    callback(item && item.tag == tag);
                 }, function (results) {
                     callback(results.length > 0 ? null : {msg: '该账号没有这项权限', condition: condition, access: access}, access);
                 });
