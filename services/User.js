@@ -33,7 +33,7 @@ module.exports = {
                     if (item.token !== condition.token) {
                         return callback({msg: '该账号已在其它地方登录', condition: condition, actual: user});
                     }
-                    crypto.randomBytes(48, function(ex, buf) {
+                    crypto.randomBytes(8, function(ex, buf) {
                         var token = buf.toString('hex');
                         condition.token = token;
                         item.token = token;
